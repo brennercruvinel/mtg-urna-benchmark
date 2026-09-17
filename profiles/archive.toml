@@ -4,8 +4,7 @@
 # file) with media embedded via the 0x17 blob section. the original bytes of all
 # 38627 cards are recoverable from the single file. the v0.3 archive release recipe.
 #
-# the forge needs nest with ${VAR} expansion in spec paths (hoffresearch/nest
-# pull request #131, merged 2026-09-12). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
 #   nest build --spec profiles/archive.toml

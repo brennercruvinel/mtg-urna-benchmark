@@ -34,7 +34,7 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export NEST_REPO=/path/to/nest             # a checkout of hoffresearch/nest
+export NEST_REPO=/path/to/nest             # a checkout of hoffresearch/nest at v0.4.0 or later
 ```
 
 ```sh

@@ -4,8 +4,7 @@
 # via the 0x17 blob section. the best quality-per-byte point of the av1 ladder
 # on the 2048-card sample (benchmark/experiments/02-av1-variants).
 #
-# the forge needs nest with ${VAR} expansion in spec paths (hoffresearch/nest
-# pull request #131, merged 2026-09-12). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
 #   nest build --spec profiles/stills.toml

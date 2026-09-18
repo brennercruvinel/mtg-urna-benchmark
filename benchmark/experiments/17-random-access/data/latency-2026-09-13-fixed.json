@@ -230,7 +230,7 @@
     "mean": 31.22,
     "n": 200
    },
-   "path": "candidates/v03-avif-q48/mtgdataset.nest",
+   "path": "candidates/v03-avif-q48/mtgdataset.urna",
    "wall_s": 17.2
   },
   "archive": {
@@ -251,7 +251,7 @@
     "mean": 16.96,
     "n": 200
    },
-   "path": "candidates/archive/mtgdataset.nest",
+   "path": "candidates/archive/mtgdataset.urna",
    "wall_s": 38.3
   }
  }

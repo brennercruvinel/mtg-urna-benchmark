@@ -14,7 +14,7 @@ backends and knobs (the forge's own encoders, letterbox to 488x680):
   av1-default-s6   the same with svt-av1's default tune
   avif-s6, avif-s8 avifenc -q 20..90 (higher = better), speed 6 or 8, yuv420
 
-usage (repo root, MTG_DATA and NEST_REPO set):
+usage (repo root, MTG_DATA and URNA_REPO set):
   python3 benchmark/tools/crf_for_target.py --target 61.96 --out data/target.json
 """
 
@@ -32,7 +32,7 @@ from PIL import Image
 
 import _bench_env as env
 
-env.add_nest_to_path()
+env.add_urna_to_path()
 from forge.image_decode import decode_avif, decode_frames  # noqa: E402
 from forge.image_encode import encode_av1  # noqa: E402
 from forge.image_encode_still import encode_avif  # noqa: E402

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """text-to-image hit@k with the whole corpus as queries, one image space at a time.
 
-nest_model_bench.py draws a few hundred query items and re-embeds their
+urna_model_bench.py draws a few hundred query items and re-embeds their
 source images for its stability tiers, which is what makes it expensive.
 this tool asks only the utility question and asks it of every item: embed
 one text query per card with the model's text tower, search the space the
-.nest already stores, and count the hits by chunk_id. 38627 queries give a
+.urna already stores, and count the hits by chunk_id. 38627 queries give a
 standard error of about 0.0015 on hit@1 instead of the 0.02 to 0.03 of a
 200-query run, and a bootstrap interval comes with the point.
 
-usage (repo root, NEST_REPO set, NEST_ALLOW_REMOTE_CODE for jina and wemm):
-  python3 benchmark/tools/bench_full_corpus.py candidates/stills-5models/mtgdataset.nest \\
+usage (repo root, URNA_REPO set, URNA_ALLOW_REMOTE_CODE for jina and wemm):
+  python3 benchmark/tools/bench_full_corpus.py candidates/stills-5models/mtgdataset.urna \\
       --preset siglip2 --template "artwork of the card {label}" --out data/full.siglip2.json
 """
 
@@ -26,8 +26,8 @@ import numpy as np
 
 import _bench_env as env
 
-env.add_nest_to_path()
-import nest  # noqa: E402
+env.add_urna_to_path()
+import urna  # noqa: E402
 
 from forge import model_registry  # noqa: E402
 
@@ -73,7 +73,7 @@ def main() -> None:
         rng = np.random.default_rng(args.seed)
         idx = sorted(rng.choice(len(items), min(args.queries, len(items)), replace=False).tolist())
 
-    allowed = frozenset(p.strip() for p in os.environ.get("NEST_ALLOW_REMOTE_CODE", "").split(",") if p.strip())
+    allowed = frozenset(p.strip() for p in os.environ.get("URNA_ALLOW_REMOTE_CODE", "").split(",") if p.strip())
     recipe = manifest["models"][args.preset].get("recipe", {})
     adapter = model_registry.create_embedder(
         args.preset, allow_remote_code=allowed, allow_heavy=True, usage=recipe, batch_size=args.batch
@@ -86,7 +86,7 @@ def main() -> None:
     tq_full = np.concatenate(chunks)
     embed_s = time.perf_counter() - t0
 
-    db = nest.open(str(args.index))
+    db = urna.open(str(args.index))
     chunk_ids = db.chunk_ids()
     ks = sorted(args.k)
     report = {

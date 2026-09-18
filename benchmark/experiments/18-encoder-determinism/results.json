@@ -252,7 +252,7 @@
     }
    ],
    "notes": [
-    "avifenc's default is -j all. the forge did not pass -j before nest #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file)."
+    "avifenc's default is -j all. the forge did not pass -j before urna #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file)."
    ]
   }
  ],

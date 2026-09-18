@@ -2,7 +2,7 @@
  "name": "sample-2048",
  "n": 2048,
  "seed": null,
- "rule": "rows[int(i * 38627 / 2048)] for i in range(2048) over rows sorted by (img_id, oracle_id); this is nest build --sample 2048 (forge corpus_sources.load_rows), evenly spaced, the --seed flag has no effect",
+ "rule": "rows[int(i * 38627 / 2048)] for i in range(2048) over rows sorted by (img_id, oracle_id); this is urna build --sample 2048 (forge corpus_sources.load_rows), evenly spaced, the --seed flag has no effect",
  "derived_from": "benchmark/runs/control/mtgdataset.manifest.json items[].key, verified equal to the rule over the full row order",
  "ids": [
   "00006596-1166-4a79-8443-ca9f82e6db4e|8ae3562f-28b7-4462-96ed-be0cf7052ccc",

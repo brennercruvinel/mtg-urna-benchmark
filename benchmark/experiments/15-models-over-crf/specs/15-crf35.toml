@@ -4,7 +4,7 @@
 # (profiles/retrieval.toml). fixed crf, no gate, so the bench isolates the
 # codec step alone. run from the repo root:
 #
-#   python python/tools/nest_forge.py --spec benchmark/experiments/15-models-over-crf/specs/15-crf35.toml --sample 512
+#   python python/tools/urna_forge.py --spec benchmark/experiments/15-models-over-crf/specs/15-crf35.toml --sample 512
 
 [corpus]
 name = "mtgdataset"

@@ -1,13 +1,13 @@
-# archive profile: lossless, one self-contained .nest
+# archive profile: lossless, one self-contained .urna
 #
 # jxl-transcode (bit-reversible jpeg repack, round-trip verified by sha256 file by
 # file) with media embedded via the 0x17 blob section. the original bytes of all
 # 38627 cards are recoverable from the single file. the v0.3 archive release recipe.
 #
-# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs urna v0.4.0 or later (hoffresearch/urna, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
-#   nest build --spec profiles/archive.toml
+#   urna build --spec profiles/archive.toml
 #
 # output lands in candidates/archive/ (gitignored); promote it with
 # benchmark/tools/promote.py once it is validated.

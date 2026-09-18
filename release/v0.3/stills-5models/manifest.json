@@ -213,10 +213,10 @@
  "n_unique_frames": 38627,
  "name": "mtgdataset",
  "outputs": {
-  "mtgdataset.nest": {
+  "mtgdataset.urna": {
    "build_s": 117.256,
    "bytes": 1444424636,
-   "file": "candidates/stills-5models/mtgdataset.nest",
+   "file": "candidates/stills-5models/mtgdataset.urna",
    "file_hash": "sha256:6b2bc21a2057bccea054fa331ee91c04f2b7ee80156f01144399c3065e7d4b3f"
   }
  },

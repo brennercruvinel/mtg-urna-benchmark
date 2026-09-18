@@ -1,5 +1,5 @@
 {
- "index": "candidates/stills-5models/mtgdataset.nest",
+ "index": "candidates/stills-5models/mtgdataset.urna",
  "preset": "siglip2",
  "template": "artwork of the card {label}",
  "queries": 38627,

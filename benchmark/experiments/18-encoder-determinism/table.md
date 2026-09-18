@@ -38,7 +38,7 @@
 | 4 | 7552460 | bed0339b4887e8d5 | 0 | 23.1 |
 | 16 | 7552460 | bed0339b4887e8d5 | 0 | 21.1 |
 
-- avifenc's default is -j all. the forge did not pass -j before nest #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file).
+- avifenc's default is -j all. the forge did not pass -j before urna #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file).
 
 - cross-version and cross-platform determinism are not measured here: one machine, one toolchain. the manifest's toolchain record (encoder version and params) remains the only guard for those, and a release's file_hash is reproducible only under that record.
 

@@ -1,13 +1,13 @@
-# stills profile: unique images, one self-contained .nest
+# stills profile: unique images, one self-contained .urna
 #
 # av1 all-intra, crf 35, speed 6, tune still, single segment, media embedded
 # via the 0x17 blob section. the best quality-per-byte point of the av1 ladder
 # on the 2048-card sample (benchmark/experiments/02-av1-variants).
 #
-# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs urna v0.4.0 or later (hoffresearch/urna, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
-#   nest build --spec profiles/stills.toml
+#   urna build --spec profiles/stills.toml
 #
 # output lands in candidates/stills/ (gitignored); promote it with
 # benchmark/tools/promote.py once it is validated.

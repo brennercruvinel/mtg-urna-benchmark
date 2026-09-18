@@ -1,6 +1,6 @@
 {
  "bench_schema_version": 1,
- "index": "candidates/neardup/mtgdataset.nest",
+ "index": "candidates/neardup/mtgdataset.urna",
  "n_query_items": 1000,
  "ks": [
   1,

@@ -1,6 +1,6 @@
 """shared plumbing for the bench tools.
 
-repo-relative paths, the nest checkout (NEST_REPO), the spellbook data
+repo-relative paths, the urna checkout (URNA_REPO), the spellbook data
 root (MTG_DATA, legacy alias SPELLBOOK_DATA) and the jpegtran binary
 (JPEGTRAN override, else PATH). every tool imports this instead of
 guessing where it sits.
@@ -31,19 +31,19 @@ def die(msg: str) -> None:
     raise SystemExit(2)
 
 
-def nest_repo() -> Path:
-    """the nest checkout; NEST_REPO is mandatory, there is no guessed default."""
-    raw = os.environ.get("NEST_REPO", "").strip()
+def urna_repo() -> Path:
+    """the urna checkout; URNA_REPO is mandatory, there is no guessed default."""
+    raw = os.environ.get("URNA_REPO", "").strip()
     if not raw:
-        die("NEST_REPO is not set; export NEST_REPO=/path/to/nest (the hoffresearch/nest checkout)")
+        die("URNA_REPO is not set; export URNA_REPO=/path/to/urna (the hoffresearch/urna checkout)")
     root = Path(os.path.expanduser(raw)).resolve()
     if not (root / "python" / "forge").is_dir():
-        die(f"NEST_REPO={root} has no python/forge package; point it at the nest checkout root")
+        die(f"URNA_REPO={root} has no python/forge package; point it at the urna checkout root")
     return root
 
 
-def add_nest_to_path() -> Path:
-    root = nest_repo()
+def add_urna_to_path() -> Path:
+    root = urna_repo()
     sys.path.insert(0, str(root / "python"))
     return root
 

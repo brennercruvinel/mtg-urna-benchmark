@@ -6,7 +6,7 @@
 # signal tolerates. it picked none and fell back to crf40 (candidates/v03-retrieval,
 # built 2026-09-03). not for serving display-quality images.
 #
-#   nest build --spec benchmark/experiments/13-retrieval-crf/specs/retrieval-crf-auto.toml
+#   urna build --spec benchmark/experiments/13-retrieval-crf/specs/retrieval-crf-auto.toml
 
 [corpus]
 name = "mtgdataset"

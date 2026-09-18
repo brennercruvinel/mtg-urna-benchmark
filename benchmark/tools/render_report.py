@@ -49,7 +49,7 @@ do not edit by hand: change the json or the readme and rerun
 
 units: bytes are stored exact; MB = bytes / 1e6 and GB = bytes / 1e9 (decimal, never MiB or GiB).
 full-corpus rows carry two ratios against the 3975063106-byte jpeg source (38627 cards, normal/front):
-ratio_nest = source_bytes / nest_bytes (the whole self-contained file) and
+ratio_urna = source_bytes / urna_bytes (the whole self-contained file) and
 ratio_media = source_bytes / media_bytes (the embedded media blob alone).
 sample rows use the 211018809-byte source of the 2048-card sample.
 every section ends with its provenance: `measured` means the numbers were read from artifacts

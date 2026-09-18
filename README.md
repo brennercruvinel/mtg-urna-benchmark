@@ -1,8 +1,8 @@
-# mtg-nest-benchmark
+# mtg-urna-benchmark
 
-38,627 magic card scans and their text in one searchable `.nest` file, and what it cost to get there.
+38,627 magic card scans and their text in one searchable `.urna` file, and what it cost to get there.
 
-the source is about 4 GB of jpeg from scryfall. the [nest](https://github.com/hoffresearch/nest) forge packs the images as codec media and embeds them with clip, the card text with potion. it writes one memory-mapped file with the vectors, an hnsw index, bm25 and a graph inside. this repo is the benchmark that picked the recipes: what compresses, what keeps search working, what does not.
+the source is about 4 GB of jpeg from scryfall. the [urna](https://github.com/hoffresearch/urna) forge packs the images as codec media and embeds them with clip, the card text with potion. it writes one memory-mapped file with the vectors, an hnsw index, bm25 and a graph inside. this repo is the benchmark that picked the recipes: what compresses, what keeps search working, what does not.
 
 one file. no loose media dir, no sidecar index.
 
@@ -15,7 +15,7 @@ one file. no loose media dir, no sidecar index.
 | stills    | av1 all-intra, tune still                    | 1.4 GB  | unique images, the default                   |
 | retrieval | av1 all-intra, crf 50                        | 533 MB  | search only, never display                   |
 
-all four share one content_hash: same text, same vectors, four media encodings. a `nest://` citation resolves in any of them.
+all four share one content_hash: same text, same vectors, four media encodings. a `urna://` citation resolves in any of them.
 
 ## what we found
 
@@ -34,11 +34,11 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export NEST_REPO=/path/to/nest             # a checkout of hoffresearch/nest at v0.4.0 or later
+export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.4.0 or later
 ```
 
 ```sh
-nest build --spec profiles/stills.toml     # lands in candidates/stills/
+urna build --spec profiles/stills.toml     # lands in candidates/stills/
 ```
 
 ```sh
@@ -59,14 +59,14 @@ release/v0.3/<profile>/  build lock, stripped manifest, SHA256SUMS, CITATION_KEY
 docs/                    methodology, hypotheses, references, roadmap, glossary, changelog
 ```
 
-`.nest` files, media and caches are gitignored. `render_report.py --check` is the ci gate.
+`.urna` files, media and caches are gitignored. `render_report.py --check` is the ci gate.
 
 </details>
 
 <details>
 <summary>artifacts</summary>
 
-the `.nest` files are on hugging face: [brennercruvinel/mtg-nest-benchmark](https://huggingface.co/datasets/brennercruvinel/mtg-nest-benchmark). `release/v0.3/<profile>/SHA256SUMS` pins the bytes, `CITATION_KEY` pins the identity read from inside the file with `nest inspect --json`.
+the `.urna` files are on hugging face: [brennercruvinel/mtg-urna-benchmark](https://huggingface.co/datasets/brennercruvinel/mtg-urna-benchmark). `release/v0.3/<profile>/SHA256SUMS` pins the bytes, `CITATION_KEY` pins the identity read from inside the file with `urna inspect --json`.
 
 </details>
 
@@ -86,4 +86,4 @@ the `.nest` files are on hugging face: [brennercruvinel/mtg-nest-benchmark](http
 
 ## license
 
-code, specs and results: MIT (`LICENSE`). the `.nest` artifacts on hugging face: CC BY 4.0. the card images belong to wizards of the coast and are served by scryfall under their terms; this repo tracks none of them, and the compressed media inside each `.nest` is a derived encoding of that data, not a redistribution of the originals.
+code, specs and results: MIT (`LICENSE`). the `.urna` artifacts on hugging face: CC BY 4.0. the card images belong to wizards of the coast and are served by scryfall under their terms; this repo tracks none of them, and the compressed media inside each `.urna` is a derived encoding of that data, not a redistribution of the originals.

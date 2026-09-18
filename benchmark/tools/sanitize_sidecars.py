@@ -4,12 +4,12 @@
 the forge wrote absolute and home-relative paths into manifests, build locks,
 forge state and logs. before those sidecars travel (git, hugging face) every
 occurrence of the spellbook data root becomes ${MTG_DATA} and every
-occurrence of the nest checkout becomes ${NEST_REPO}:
+occurrence of the urna checkout becomes ${URNA_REPO}:
 
   <home>/<the macos application support dir>/Spellbook/data  -> ${MTG_DATA}
   ~/<the same dir>/Spellbook/data                            -> ${MTG_DATA}
   ${SPELLBOOK_DATA} (legacy alias)                           -> ${MTG_DATA}
-  ~/Dev/hoff/nest/                                           -> ${NEST_REPO}/
+  ~/Dev/hoff/urna/                                           -> ${URNA_REPO}/
 
 the literal strings are assembled from pieces below so this file itself
 never contains a machine path (the release scan greps for them).
@@ -44,7 +44,7 @@ RULES = [
     (re.compile(HOME + re.escape(DATA_TAIL)), "${MTG_DATA}"),
     (re.compile(r"~/" + re.escape(DATA_TAIL)), "${MTG_DATA}"),
     (re.compile(r"\$\{SPELLBOOK_DATA\}"), "${MTG_DATA}"),
-    (re.compile(r"~/Dev/hoff/nest/"), "${NEST_REPO}/"),
+    (re.compile(r"~/Dev/hoff/urna/"), "${URNA_REPO}/"),
 ]
 HOME_LINE = re.compile(HOME)
 
@@ -81,7 +81,7 @@ def files_under(roots: list[Path]):
         if not root.is_dir():
             continue
         for p in sorted(root.rglob("*")):
-            if p.is_file() and p.suffix in SUFFIXES and ".nest" not in p.name:
+            if p.is_file() and p.suffix in SUFFIXES and ".urna" not in p.name:
                 yield p
 
 

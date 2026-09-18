@@ -3,7 +3,7 @@
  "title": "text-to-image hit@k with every card as a query, four models on the 38627-card file",
  "provenance": {
   "status": "measured",
-  "source": "benchmark/experiments/20-full-corpus-utility/data/full.<preset>.json (benchmark/tools/bench_full_corpus.py over release/v0.3/stills-5models/mtgdataset.nest, file_hash 6b2bc21a); build timings from candidates/stills-5models/mtgdataset.manifest.json",
+  "source": "benchmark/experiments/20-full-corpus-utility/data/full.<preset>.json (benchmark/tools/bench_full_corpus.py over release/v0.3/stills-5models/mtgdataset.urna, file_hash 6b2bc21a); build timings from candidates/stills-5models/mtgdataset.manifest.json",
   "date": "2026-09-14",
   "notes": "one query per card, 'artwork of the card {name}' through each model's text tower, searched in that model's image space inside the file (int8 rows, the space the file serves); a hit is the card's own chunk_id in the top k. 38627 queries, so the standard error on hit@1 is 0.0015 to 0.0024 and the 95% interval is a 1000-draw bootstrap. the 512-card column is experiment 15's lossless row (200 queries, se 0.02 to 0.03). media is the stills recipe (av1 all-intra crf35 tune still), the same as the stills release. apple m4 mps fp16; the text embed rate is the bench's, the image rate is the forge's from the build manifest."
  },

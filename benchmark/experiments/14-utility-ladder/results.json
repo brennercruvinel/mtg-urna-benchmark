@@ -3,9 +3,9 @@
  "title": "text-to-image utility at n=1000 on the five full-corpus files: lossless to crf50 inside one standard error",
  "provenance": {
   "status": "measured",
-  "source": "nest_model_bench.py (nest forge checkout at commit cbc326de, 2026-09-12) with --queries 1000 --seed 7 -k 1 5 10 --text-query-template 'artwork of the card {label}' on candidates/{archive,neardup,v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.nest with their full candidate manifests; raw bench output kept under bench/<name>.json; nest_bytes from the files on disk; the n=100 column is copied from experiment 13",
+  "source": "urna_model_bench.py (urna forge checkout at commit cbc326de, 2026-09-12) with --queries 1000 --seed 7 -k 1 5 10 --text-query-template 'artwork of the card {label}' on candidates/{archive,neardup,v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.urna with their full candidate manifests; raw bench output kept under bench/<name>.json; urna_bytes from the files on disk; the n=100 column is copied from experiment 13",
   "date": "2026-09-12",
-  "notes": "same 1000 items in every run (default_rng(7) over the 38627 items, identical ordinals across files because all five manifests share the item order); clip-vit-b32 is the only image space in these files; hits matched by chunk_id. the archive and neardup files are the 2026-09-12 rebuilds, byte-identical to release/v0.3/{archive,neardup}/mtgdataset.nest (sha256 88242709... and 071233c5... match the release SHA256SUMS), media identical to the 2026-09-03 builds that experiment 13 measured at n=100. wall time is the whole bench process on apple silicon mps (clip load, 1000 source-image embeds, 1000 text embeds, 2000 searches) while a forge build chain ran on the same machine. the release-shaped manifest.json without the items list was not needed: every candidate dir carries the full mtgdataset.manifest.json sidecar and the bench read it directly. txt@k se is the binomial standard error sqrt(p(1-p)/n); z is (txt@1 - lossless txt@1) over the pooled se of the two rows. stills, crf55 and crf60 rows are left for a later pass, their builds were still running. crf55 and crf60 were built and measured later the same day with the same command (05:10 to 05:15 local); their rows sit at the end of the table."
+  "notes": "same 1000 items in every run (default_rng(7) over the 38627 items, identical ordinals across files because all five manifests share the item order); clip-vit-b32 is the only image space in these files; hits matched by chunk_id. the archive and neardup files are the 2026-09-12 rebuilds, byte-identical to release/v0.3/{archive,neardup}/mtgdataset.urna (sha256 88242709... and 071233c5... match the release SHA256SUMS), media identical to the 2026-09-03 builds that experiment 13 measured at n=100. wall time is the whole bench process on apple silicon mps (clip load, 1000 source-image embeds, 1000 text embeds, 2000 searches) while a forge build chain ran on the same machine. the release-shaped manifest.json without the items list was not needed: every candidate dir carries the full mtgdataset.manifest.json sidecar and the bench read it directly. txt@k se is the binomial standard error sqrt(p(1-p)/n); z is (txt@1 - lossless txt@1) over the pooled se of the two rows. stills, crf55 and crf60 rows are left for a later pass, their builds were still running. crf55 and crf60 were built and measured later the same day with the same command (05:10 to 05:15 local); their rows sit at the end of the table."
  },
  "constants": {
   "source_bytes": 3975063106
@@ -23,16 +23,16 @@
      "label": "media"
     },
     {
-     "key": "nest_bytes",
-     "label": "nest bytes",
+     "key": "urna_bytes",
+     "label": "urna bytes",
      "fmt": "int"
     },
     {
-     "key": "ratio_nest",
-     "label": "ratio_nest",
+     "key": "ratio_urna",
+     "label": "ratio_urna",
      "fmt": "ratio",
      "num": "source_bytes",
-     "den": "nest_bytes"
+     "den": "urna_bytes"
     },
     {
      "key": "identity_at_1",
@@ -84,7 +84,7 @@
     {
      "corpus": "archive (lossless)",
      "recipe": "jxl-transcode lossless, 38627 blobs",
-     "nest_bytes": 3606342844,
+     "urna_bytes": 3606342844,
      "identity_at_1": 1.0,
      "identity_at_10": 1.0,
      "drift_p10": 0.9968,
@@ -105,7 +105,7 @@
     {
      "corpus": "neardup (av1 crf35)",
      "recipe": "av1 crf35 tune still, cluster order, 19 shards",
-     "nest_bytes": 1374447548,
+     "urna_bytes": 1374447548,
      "identity_at_1": 1.0,
      "identity_at_10": 1.0,
      "drift_p10": 0.9666,
@@ -126,7 +126,7 @@
     {
      "corpus": "avif q48",
      "recipe": "avifenc q48 speed 8 yuv420, 38627 blobs",
-     "nest_bytes": 1195973116,
+     "urna_bytes": 1195973116,
      "identity_at_1": 1.0,
      "identity_at_10": 1.0,
      "drift_p10": 0.968,
@@ -147,7 +147,7 @@
     {
      "corpus": "retrieval av1 crf40",
      "recipe": "av1 crf40 tune still, single segment",
-     "nest_bytes": 980715452,
+     "urna_bytes": 980715452,
      "identity_at_1": 1.0,
      "identity_at_10": 1.0,
      "drift_p10": 0.9594,
@@ -168,7 +168,7 @@
     {
      "corpus": "retrieval av1 crf50",
      "recipe": "av1 crf50 tune still, single segment",
-     "nest_bytes": 532671548,
+     "urna_bytes": 532671548,
      "identity_at_1": 0.998,
      "identity_at_10": 1.0,
      "drift_p10": 0.9389,
@@ -189,7 +189,7 @@
     {
      "corpus": "retrieval crf55",
      "recipe": "av1 crf55 tune still intra, one blob",
-     "nest_bytes": 370108284,
+     "urna_bytes": 370108284,
      "identity_at_1": 0.995,
      "identity_at_10": 0.999,
      "drift_p10": 0.9211,
@@ -210,7 +210,7 @@
     {
      "corpus": "retrieval crf60",
      "recipe": "av1 crf60 tune still intra, one blob",
-     "nest_bytes": 229972284,
+     "urna_bytes": 229972284,
      "identity_at_1": 0.971,
      "identity_at_10": 0.992,
      "drift_p10": 0.8866,
@@ -353,7 +353,7 @@
     }
    ],
    "notes": [
-    "the n=100 column is the transcribed table of experiment 13 (no bench json survived); the 100-item and 1000-item draws of default_rng(7) share only 2 items (numpy's choice without replacement does not nest across sizes), so the two columns are independent samples of the same corpus.",
+    "the n=100 column is the transcribed table of experiment 13 (no bench json survived); the 100-item and 1000-item draws of default_rng(7) share only 2 items (numpy's choice without replacement does not urna across sizes), so the two columns are independent samples of the same corpus.",
     "at n=100 the spread across files was 0.050 to 0.090, a 0.040 range that looked like lossless losing to every lossy file; at n=1000 the spread is 0.089 to 0.096. the n=100 range was entirely sampling noise (se 0.022 to 0.029 per cell, so a 0.040 gap is about one pooled se).",
     "drift p10 moved by at most 0.004 between the two draws: the cosine statistic was already stable at n=100, the hit rate was not."
    ]

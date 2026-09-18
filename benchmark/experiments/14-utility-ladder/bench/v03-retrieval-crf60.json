@@ -1,6 +1,6 @@
 {
  "bench_schema_version": 1,
- "index": "candidates/v03-retrieval-crf60/mtgdataset.nest",
+ "index": "candidates/v03-retrieval-crf60/mtgdataset.urna",
  "n_query_items": 1000,
  "ks": [
   1,

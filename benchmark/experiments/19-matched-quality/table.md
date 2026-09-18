@@ -9,7 +9,7 @@
 | av1 all-intra, tune still, preset 6 (the stills-av1 and retrieval recipe) | 35 | 63.22 | 71048645 | 36 | 61.48 | 66503378 | 67757245 | 0.0 |
 | av1 all-intra, svt default tune, preset 6 | 30 | 62.24 | 83062805 | 31 | 60.06 | 78085563 | 82423526 | 21.6 |
 | avif, libaom speed 6 | 49 | 62.02 | 64530334 | 48 | 60.20 | 60529995 | 64398455 | -5.0 |
-| avif, libaom speed 8 (the nest #137 stills profile) | 50 | 62.23 | 69096173 | 49 | 60.51 | 65194156 | 68483647 | 1.1 |
+| avif, libaom speed 8 (the urna #137 stills profile) | 50 | 62.23 | 69096173 | 49 | 60.51 | 65194156 | 68483647 | 1.1 |
 
 - av1 knob = crf (higher is smaller), avif knob = avifenc -q (higher is better). the interpolation is linear in ssim2 between the two brackets.
 
@@ -19,11 +19,11 @@
 | --- | ---: | ---: | ---: | ---: |
 | av1 still s6 crf35, tune_resolved 3 (stills release, 2026-09-12) | 63.22 | 1.26 | 71048645 | 67757245 |
 | av1 still s6 crf35 as experiment 11 measured it (tune fell back to 4) | 61.96 | 0.00 | 70092669 | 67757245 |
-| avif q48 speed 8 (v03-avif-q48 candidate, nest #137 stills profile) | 58.63 | -3.33 | 61335914 | 68483647 |
+| avif q48 speed 8 (v03-avif-q48 candidate, urna #137 stills profile) | 58.63 | -3.33 | 61335914 | 68483647 |
 | avif q48 speed 6 (experiment 11's calibrated avif row, aom 3.14.1 then) | 60.72 | -1.24 | 61434107 | 64398455 |
 | avif q48 speed 6, aom 3.15.0 today | 60.20 | -1.76 | 60529995 | 64398455 |
 
-- the 13% of nest #137 compares the third row (58.63) against the first (63.22): 4.6 ssimulacra2 points apart. on the same ruler avif speed 8 needs 68.5 MB and the av1 still stream 67.8 MB.
+- the 13% of urna #137 compares the third row (58.63) against the first (63.22): 4.6 ssimulacra2 points apart. on the same ruler avif speed 8 needs 68.5 MB and the av1 still stream 67.8 MB.
 - experiment 11's baseline was tune 4 (the silent fallback the battery itself found); the fixed forge encodes tune 3, byte-identical to the battery's svt-p6-crf35-tune3 row (71048645 bytes), two weeks apart on the same svt-av1 4.2.0.
 - aom 3.14.1 to 3.15.0 at the same knob: 61434107 to 60529995 bytes and 60.72 to 60.20 ssim2. a minor version moved the bytes by 1.5%.
 

@@ -3,7 +3,7 @@
  "title": "four image models over three media levels: who loses retrieval utility at crf50",
  "provenance": {
   "status": "measured",
-  "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (nest_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
+  "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (urna_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
   "date": "2026-09-12",
   "notes": "one evenly spaced --sample 512 of the mtgdataset corpus (512 items, chunker mtgdataset/1), the same cards in the three builds; potion text default plus four image spaces per build; embedding.image_input = decoded_media, so drift is source-embed vs the stored vector of the decoded frame; jina and wemm sliced to their validated mrl dim 256; mps fp16 for every torch model. the 200 query items are drawn by default_rng(7) over the 512, so identical across models and media levels. with n=200 one hit is 0.005 of txt@k; a delta needs to clear roughly 0.03 to 0.04 to be more than noise at this size."
  },

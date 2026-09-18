@@ -1,6 +1,6 @@
 # glossary
 
-the vocabulary of the benchmark and of the nest forge as it is used in `RESULTS.md`, the experiment readmes and the specs.
+the vocabulary of the benchmark and of the urna forge as it is used in `RESULTS.md`, the experiment readmes and the specs.
 
 ## profiles
 
@@ -62,4 +62,4 @@ dual gate: `crf=auto`. a ladder of crf values, a stratified sample per bucket (r
 
 ## variant naming
 
-sample variants are `<backend>-<knob>-<value>`: `av1-still-s6-crf35`, `av1-auto-dualgate`, `avif-crf35`; `selfcontained-<recipe>` embeds the media in the `.nest`. full-corpus builds are `v03-<profile>` in `candidates/` and `<profile>` under `release/v0.3/`. experiment 11 names encoders `<encoder>-<preset>-<quality>`: `svt-p6-crf35`, `avif-s6-q48`, `x264-crf31`.
+sample variants are `<backend>-<knob>-<value>`: `av1-still-s6-crf35`, `av1-auto-dualgate`, `avif-crf35`; `selfcontained-<recipe>` embeds the media in the `.urna`. full-corpus builds are `v03-<profile>` in `candidates/` and `<profile>` under `release/v0.3/`. experiment 11 names encoders `<encoder>-<preset>-<quality>`: `svt-p6-crf35`, `avif-s6-q48`, `x264-crf31`.

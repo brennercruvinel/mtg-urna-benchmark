@@ -16,7 +16,7 @@ anyone with the spellbook sqlite can rebuild the exact samples.
                 ordinals of the 2048 sample mapped to keys (measure_variants.py
                 and the i-frame battery quality sample).
   queries-100   numpy default_rng(7).choice(38627, 100, replace=False) over the
-                full manifest, mapped to keys (nest_model_bench.py --queries 100 --seed 7).
+                full manifest, mapped to keys (urna_model_bench.py --queries 100 --seed 7).
   reprints-2787 printings whose normal/front file exists locally, grouped by
                 illustration_id, keeping groups with more than one printing
                 (corpus B of 09-inter-ordering). needs the sqlite and the images.
@@ -53,7 +53,7 @@ def stem(uri: str) -> str:
 
 
 def evenly_spaced(rows: list, n: int) -> list:
-    """the forge sampling rule (nest python/forge/corpus_sources.py load_rows)."""
+    """the forge sampling rule (urna python/forge/corpus_sources.py load_rows)."""
     if n >= len(rows):
         return list(rows)
     step = len(rows) / n
@@ -167,7 +167,7 @@ def main() -> int:
             "sample-2048",
             None,
             f"rows[int(i * {N_FULL} / 2048)] for i in range(2048) over rows sorted by (img_id, oracle_id); "
-            "this is nest build --sample 2048 (forge corpus_sources.load_rows), evenly spaced, the --seed flag has no effect",
+            "this is urna build --sample 2048 (forge corpus_sources.load_rows), evenly spaced, the --seed flag has no effect",
             from_2048,
             keys_2048,
         )
@@ -179,7 +179,7 @@ def main() -> int:
             "sample-1500",
             None,
             f"rows[int(i * {N_FULL} / 1500)] for i in range(1500) over rows sorted by (img_id, oracle_id); "
-            "this is nest build --sample 1500 (the five-model verification build of 03-image-models)",
+            "this is urna build --sample 1500 (the five-model verification build of 03-image-models)",
             full_from,
             evenly_spaced(full_keys, 1500),
         )
@@ -208,7 +208,7 @@ def main() -> int:
             "queries-100",
             7,
             f"sorted(numpy.random.default_rng(7).choice({N_FULL}, size=100, replace=False)) as ordinals of the full corpus, mapped to keys "
-            "(nest python/tools/nest_model_bench.py pick_items with --queries 100 --seed 7; items filtered to those with image_path, which is all of them)",
+            "(urna python/tools/urna_model_bench.py pick_items with --queries 100 --seed 7; items filtered to those with image_path, which is all of them)",
             full_from,
             [full_keys[i] for i in idx100],
             ordinals=idx100,

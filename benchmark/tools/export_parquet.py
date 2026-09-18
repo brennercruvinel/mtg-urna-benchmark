@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""the corpus as parquet: one row per card, the scan as an image column, the same order as the .nest.
+"""the corpus as parquet: one row per card, the scan as an image column, the same order as the .urna.
 
-the .nest is the artifact and nothing on the hub can render it. this writes
+the .urna is the artifact and nothing on the hub can render it. this writes
 the same 38,627 rows as sharded parquet with the jpeg bytes in an `image`
 column the hub viewer knows how to draw, plus the fields the text template
 was rendered from and the ordinal that maps the row to its chunk in every

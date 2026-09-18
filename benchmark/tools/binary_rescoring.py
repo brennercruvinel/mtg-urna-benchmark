@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """binary hamming prefilter with int8 rescoring: how much recall a 1-bit index keeps.
 
-the nest int8 ladder stores one byte per dimension and searches it with an
+the urna int8 ladder stores one byte per dimension and searches it with an
 hnsw over the int8 rows. a 1-bit-per-dimension index is 8x smaller still and
 searches with popcount. the question is whether a hamming top-K over the
 sign bits, rescored with the int8 dot on those K rows, finds the same
@@ -12,7 +12,7 @@ exact f32 cosine top-k per query row, the query itself excluded. queries are
 corpus rows, so this measures the index, not a task.
 
 usage (repo root):
-  python3 benchmark/tools/binary_rescoring.py ~/.cache/nest/embed/siglip2/<hash>.npz \\
+  python3 benchmark/tools/binary_rescoring.py ~/.cache/urna/embed/siglip2/<hash>.npz \\
       --key image_unique --out data/binary.json
 """
 

@@ -5,7 +5,7 @@
 # image keeps O(1) access without video decode). built 2026-09-03 as
 # candidates/v03-avif-q48.
 #
-#   nest build --spec benchmark/experiments/13-retrieval-crf/specs/avif-q48.toml
+#   urna build --spec benchmark/experiments/13-retrieval-crf/specs/avif-q48.toml
 
 [corpus]
 name = "mtgdataset"

@@ -1,4 +1,4 @@
-# near-dup profile: reprints and near-duplicates, one self-contained .nest
+# near-dup profile: reprints and near-duplicates, one self-contained .urna
 #
 # order=cluster + per-segment gop probe + tune still (profile near-dup).
 # -29% on a corpus of same-artwork reprints (benchmark/experiments/09-inter-ordering);
@@ -8,7 +8,7 @@
 # the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
-#   nest build --spec profiles/neardup.toml
+#   urna build --spec profiles/neardup.toml
 #
 # output lands in candidates/neardup/ (gitignored); promote it with
 # benchmark/tools/promote.py once it is validated.

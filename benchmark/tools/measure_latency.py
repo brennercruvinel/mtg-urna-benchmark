@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""random-access cost per media backend: ms to get one card's pixels out of a .nest.
+"""random-access cost per media backend: ms to get one card's pixels out of a .urna.
 
 the compression tables say how many bytes a profile saves; this says what a
 reader pays to open one card. every backend the forge ships decodes through
@@ -10,15 +10,15 @@ that is the real cost today, not a kernel benchmark.
 per file, on a fixed sample of item ordinals:
   av1 stream (one blob)     decode_frame_ms      one ffmpeg per card, -ss seek to the frame
                             batched10_per_frame  decode_frames_at with 10 hits in one ffmpeg,
-                                                 divided by 10 (the batched path nest offers)
+                                                 divided by 10 (the batched path urna offers)
   per-image blobs           blob_bytes_ms        mmap lookup of the encoded bytes
                             blob_plus_decode_ms  bytes written to a temp file, then decoded
 
-usage (repo root, NEST_REPO set):
+usage (repo root, URNA_REPO set):
   python3 benchmark/tools/measure_latency.py --out data/latency.json \\
-      av1:stills=candidates/stills/mtgdataset.nest \\
-      avif:avif-q48=candidates/v03-avif-q48/mtgdataset.nest \\
-      jxl:archive=candidates/archive/mtgdataset.nest
+      av1:stills=candidates/stills/mtgdataset.urna \\
+      avif:avif-q48=candidates/v03-avif-q48/mtgdataset.urna \\
+      jxl:archive=candidates/archive/mtgdataset.urna
 """
 
 from __future__ import annotations
@@ -35,8 +35,8 @@ import numpy as np
 
 import _bench_env as env
 
-env.add_nest_to_path()
-import nest  # noqa: E402
+env.add_urna_to_path()
+import urna  # noqa: E402
 
 from forge.image_decode import decode_avif, decode_frame, decode_frames_at, decode_jxl  # noqa: E402
 
@@ -65,7 +65,7 @@ def timed(fn, ordinals: list[int]) -> dict:
 
 
 def measure_stream(path: Path, ordinals: list[int]) -> dict:
-    f = nest.open(str(path))
+    f = urna.open(str(path))
     refs = f.blob_refs()
     tmp = Path(tempfile.mkdtemp()) / "stream.mp4"
     t = time.perf_counter()
@@ -95,7 +95,7 @@ def measure_stream(path: Path, ordinals: list[int]) -> dict:
 
 def measure_per_image(path: Path, ordinals: list[int], kind: str) -> dict:
     decode, ext = DECODERS[kind]
-    f = nest.open(str(path))
+    f = urna.open(str(path))
     refs = f.blob_refs()
     tmpd = Path(tempfile.mkdtemp())
 

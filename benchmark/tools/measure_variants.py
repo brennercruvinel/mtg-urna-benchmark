@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """uniform quality/size measurement over every variant in benchmark/runs/.
 
-for each run: media bytes on disk, file count, nest bytes, encode time
+for each run: media bytes on disk, file count, urna bytes, encode time
 from the manifest, crf chosen, and on the same deterministic 96-item
 sample (numpy default_rng(7)) SSIMULACRA2 (letterboxed source vs decoded
 frame) and clip cosine drift. lossless backends are asserted, not scored.
@@ -13,9 +13,9 @@ results files: 01-baselines/results.json and 02-av1-variants/results.json.
 a run whose media dir was pruned keeps its previous measurements.json
 entry verbatim (that is how the 15 rows survive without 1 GB of media).
 
-usage (from the repo root, with the nest venv python):
-  export NEST_REPO=/path/to/nest MTG_DATA="/path/to/Spellbook/data"
-  $NEST_REPO/.venv/bin/python benchmark/tools/measure_variants.py [--no-baselines]
+usage (from the repo root, with the urna venv python):
+  export URNA_REPO=/path/to/urna MTG_DATA="/path/to/Spellbook/data"
+  $URNA_REPO/.venv/bin/python benchmark/tools/measure_variants.py [--no-baselines]
 """
 
 from __future__ import annotations
@@ -62,8 +62,8 @@ class MediaPruned(FileNotFoundError):
 
 
 def _forge():
-    """import the nest forge lazily: only real measurement needs torch and ffmpeg."""
-    env.add_nest_to_path()
+    """import the urna forge lazily: only real measurement needs torch and ffmpeg."""
+    env.add_urna_to_path()
     import numpy as np
     from PIL import Image
 
@@ -108,7 +108,7 @@ def measure_variant(run: Path, clip_holder: dict) -> dict | None:
         "backend": backend,
         "media_bytes": sum(p.stat().st_size for p in files),
         "media_files": len(files),
-        "nest_bytes": (run / "mtgdataset.nest").stat().st_size,
+        "urna_bytes": (run / "mtgdataset.urna").stat().st_size,
         "encode_s": manifest["timings"].get("media"),
         "embed_clip_s": manifest["timings"].get("embed.clip-vit-b32"),
         "n_items": manifest["n_items"],
@@ -119,7 +119,7 @@ def measure_variant(run: Path, clip_holder: dict) -> dict | None:
         else None,
     }
     src_arrays, dec_arrays, scores = [], [], []
-    with tempfile.TemporaryDirectory(prefix="nest-bench-q-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="urna-bench-q-") as tmp:
         tmp = Path(tmp)
         for i, (it, sp) in enumerate(zip(sample, src_paths, strict=True)):
             with Image.open(sp) as img:
@@ -173,7 +173,7 @@ def baselines(control_manifest: Path) -> dict:
     manifest = json.loads(control_manifest.read_text())
     paths = [env.expand_path(it["image_path"]) for it in manifest["items"] if it.get("image_path")]
     out = {"source_jpg_bytes": sum(p.stat().st_size for p in paths), "n_files": len(paths)}
-    with tempfile.TemporaryDirectory(prefix="nest-bench-zip-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="urna-bench-zip-") as tmp:
         tmp = Path(tmp)
         listing = tmp / "list.txt"
         listing.write_text("\n".join(str(p) for p in paths))
@@ -243,7 +243,7 @@ def results_from_measurements(m: dict) -> tuple[dict, dict]:
                 "backend": r["backend"],
                 "media_bytes": r["media_bytes"],
                 "media_files": r["media_files"],
-                "nest_bytes": r["nest_bytes"],
+                "urna_bytes": r["urna_bytes"],
                 "encode_s": r["encode_s"],
                 "crf": r.get("crf_chosen"),
                 "ssim2_p50": s2["p50"],
@@ -263,10 +263,10 @@ def results_from_measurements(m: dict) -> tuple[dict, dict]:
             "status": "measured",
             "source": "benchmark/experiments/02-av1-variants/measurements.json (measure_variants.py over benchmark/runs/<variant>)",
             "date": MEASURED_DATE,
-            "notes": "media dirs were pruned after measurement; the .nest, manifest and build lock of every run remain under benchmark/runs/. "
+            "notes": "media dirs were pruned after measurement; the .urna, manifest and build lock of every run remain under benchmark/runs/. "
             "quality on 96 frames (numpy default_rng(7).choice(2048, 96)): SSIMULACRA2 letterboxed source vs decoded frame, clip cosine drift source vs decoded. "
             "the 2048-card sample is evenly spaced (rows[int(i * 38627 / 2048)] over rows sorted by (img_id, oracle_id)); the seed flag has no effect. "
-            "selfcontained-neardup here is the pre-fix probe build (inter chosen, quality degraded); the .nest now on disk is the post-fix rebuild (intra, 73127600 bytes). "
+            "selfcontained-neardup here is the pre-fix probe build (inter chosen, quality degraded); the .urna now on disk is the post-fix rebuild (intra, 73127600 bytes). "
             "manifest_source_bytes for the avif rows is the letterboxed png intermediate (avif backend bug), the ratio column uses the jpeg source.",
         },
         "constants": {"source_bytes": src},
@@ -279,7 +279,7 @@ def results_from_measurements(m: dict) -> tuple[dict, dict]:
                     {"key": "media_mb", "label": "media MB", "fmt": "mb", "from": "media_bytes"},
                     {"key": "ratio", "label": "ratio", "fmt": "ratio", "num": "source_bytes", "den": "media_bytes"},
                     {"key": "media_files", "label": "files", "fmt": "int"},
-                    {"key": "nest_bytes", "label": "nest bytes", "fmt": "int"},
+                    {"key": "urna_bytes", "label": "urna bytes", "fmt": "int"},
                     {"key": "encode_s", "label": "encode s", "fmt": "f1"},
                     {"key": "crf", "label": "crf"},
                     {"key": "ssim2_p50", "label": "ssim2 p50", "fmt": "f2"},

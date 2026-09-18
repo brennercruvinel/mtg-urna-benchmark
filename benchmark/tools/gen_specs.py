@@ -8,7 +8,7 @@ benchmark/experiments/02-av1-variants/specs/<variant>.toml with the output
 dir benchmark/runs/<variant> and ${MTG_DATA} sources.
 
 the 2048 sample is not in the spec: it comes from the cli flag
-  nest build --spec benchmark/experiments/02-av1-variants/specs/<variant>.toml --sample 2048
+  urna build --spec benchmark/experiments/02-av1-variants/specs/<variant>.toml --sample 2048
 and is evenly spaced over the sorted rows (rows[int(i * n / 2048)]), so it
 is identical across variants and independent of any seed.
 
@@ -119,7 +119,7 @@ VARIANTS: dict[str, str] = {
     "jxl-transcode": 'backend = "jxl-transcode"',
     # letterboxed lossless control (ruler)
     "control": 'backend = "control"',
-    # single-file .nest per backend type: media inlined via the 0x17 blob
+    # single-file .urna per backend type: media inlined via the 0x17 blob
     # section. neardup uses shard_size=512 so the 2048 sample actually
     # exercises the per-segment gop probe (4 shards).
     "selfcontained-still-s6": STILL_S6,

@@ -10,6 +10,6 @@
 | after 60x speed-up, 30 fps h.264 export | 30200000 | 30.2 | 1055 | -56.9% |
 
 - the halving is real but comes from two losses: the 30 fps export samples the accelerated timeline and drops 993 of 2048 cards (48%), and the rest is re-encoded h.264 over already compressed material. not a compression path.
-- the experiment exposed a real bug: decode_frame assumed fps=1 on random frame access; fixed in the nest forge (fps flows from the manifest to the seek).
+- the experiment exposed a real bug: decode_frame assumed fps=1 on random frame access; fixed in the urna forge (fps flows from the manifest to the seek).
 
-provenance: transcribed; source: section 10 of the 2026-09-03 report; the exported mp4 was not kept and the exact ffmpeg recipe (60x setpts, 30 fps export, h.264 defaults) is recorded only in prose; date: 2026-08-31; notes: the input is the still-s6 shard of 02-av1-variants (70092669 bytes, exact, still embedded in benchmark/runs/selfcontained-still-s6/mtgdataset.nest); the output size is the report's 30.2 MB times 1e6.
+provenance: transcribed; source: section 10 of the 2026-09-03 report; the exported mp4 was not kept and the exact ffmpeg recipe (60x setpts, 30 fps export, h.264 defaults) is recorded only in prose; date: 2026-08-31; notes: the input is the still-s6 shard of 02-av1-variants (70092669 bytes, exact, still embedded in benchmark/runs/selfcontained-still-s6/mtgdataset.urna); the output size is the report's 30.2 MB times 1e6.

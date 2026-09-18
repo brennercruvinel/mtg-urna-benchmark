@@ -5,7 +5,7 @@ build manifests. stdlib only. run from the repo root:
   python3 benchmark/experiments/15-models-over-crf/assemble.py
 
 reads  benchmark/runs/15-<variant>/mtgdataset.manifest.json  (media bytes, build-side embed rate and seconds per model)
-       benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json  (nest_model_bench output, one preset per file)
+       benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json  (urna_model_bench output, one preset per file)
 writes benchmark/experiments/15-models-over-crf/results.json
 
 a missing bench file (a model that failed to load) leaves its cells as null,
@@ -99,7 +99,7 @@ def main() -> int:
         "title": "four image models over three media levels: who loses retrieval utility at crf50",
         "provenance": {
             "status": "measured",
-            "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (nest_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
+            "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (urna_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
             "date": "2026-09-12",
             "notes": (
                 f"one evenly spaced --sample 512 of the mtgdataset corpus ({n_items} items, chunker mtgdataset/1), "

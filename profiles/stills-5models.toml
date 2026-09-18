@@ -1,8 +1,8 @@
 # stills profile with the five model spaces (potion text, clip, siglip2, jina-v5-omni-nano, wemm-2b).
 # same media recipe as profiles/stills.toml; the 38k build with every model was never run before
 # 2026-09-12; built 2026-09-12 to 14 in 35 hours on an m4 (wemm-2b 1.0 img/s, jina 3.5, siglip2 53),
-# resumable through the shared cache; needs urna v0.4.0 or later. run from the repo root:
-#   urna build --spec profiles/stills-5models.toml --resume
+# resumable through the shared cache; needs nest v0.4.0 or later. run from the repo root:
+#   nest build --spec profiles/stills-5models.toml --resume
 [corpus]
 name = "mtgdataset"
 title = "MTG card dataset (self-contained)"

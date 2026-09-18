@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.nest` releases 
 
 ## [unreleased]
 
+### changed, 2026-09-17
+
+- the forge the specs need is a release now: nest v0.4.0 (the tag that carries #131 to #141). `profiles/*.toml` and the readme name the tag instead of a pull request; the hub card names it in the build section.
+
 ### added, 2026-09-14 and 15
 
 - `data/cards-*.parquet` on the hub (4.0 GB, 8 shards): the corpus as one row per card with the scan as an image column, the text fields, an `art_series` flag and the ordinal that maps to every release; the hub viewer renders it. tool `benchmark/tools/export_parquet.py`, written from the release's `items.jsonl.gz`.

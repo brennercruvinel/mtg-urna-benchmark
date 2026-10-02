@@ -34,7 +34,7 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.4.0 or later
+export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.0 or later
 ```
 
 ```sh

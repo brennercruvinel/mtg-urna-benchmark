@@ -6,8 +6,8 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ### fixed, 2026-10-02
 
-- `promote.py` wrote `built_with` from the urna cli that ran the promote, not the one that built the file. the sidecars do not record the building urna, so `built_with` is now kept from an existing `CITATION_KEY` or given with `--built-with`, and `read_with` records the cli version that read the file. the keys already under `release/v0.3/` stay as they are.
-- `promote.py` validates before it writes: `urna validate` on the candidate and the manifest's item count against the file's chunks; after writing it runs the new `check`, which verifies `SHA256SUMS` and the file_hash and content_hash in `CITATION_KEY` against the file. `check` also verifies a release downloaded from the hub.
+- `promote.py` wrote `built_with` from the urna cli that ran the promote, not the one that built the file. the sidecars do not record the building urna, so `built_with` is now kept from an existing `CITATION_KEY` only when that key names the same file_hash, or given with `--built-with` (a disagreeing flag for the same file is refused), and `read_with` records the cli version that read the file. the keys already under `release/v0.3/` stay as they are.
+- `promote.py` validates before it writes: `urna validate` on the candidate and the manifest's item count against the file's chunks; after writing it runs the new `check`, which requires a complete release (the `.urna`, the three sidecars and `CITATION_KEY`, each listed in `SHA256SUMS` with a matching digest) and the file_hash and content_hash in `CITATION_KEY` equal to the file's. `benchmark/tests/test_promote.py` covers both. `check` also verifies a release downloaded from the hub.
 
 ### changed, 2026-09-17
 

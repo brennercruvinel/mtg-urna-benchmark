@@ -8,17 +8,19 @@ what a release dir holds:
   items.jsonl.gz     the stripped items[], one json object per line (gitignored)
   SHA256SUMS         sha256 of the .urna and of every sidecar above
   CITATION_KEY       identity of the file, read from the .urna with `urna inspect --json`;
-                     built_with is the urna that built the file (kept from an existing key,
-                     or given with --built-with: the sidecars do not record it), read_with
-                     the urna that read it
+                     built_with is the urna that built the file: kept from an existing key
+                     only when that key names the same file_hash, else given with
+                     --built-with (the sidecars do not record it); read_with the urna that read it
 
 subcommands:
   promote  <candidate-dir> <version> <profile> [--built-with "urna X.Y.Z"] [--dry-run] [--force]
            validates the candidate (urna validate, the manifest's item count against the
            file's chunks), copies the .urna, strips the manifest, writes the sums and the
            key, then checks the result. refuses to overwrite a release dir unless --force.
-  check    <release-dir> [...]         verify SHA256SUMS, and the file_hash and content_hash
-                                       in CITATION_KEY against the file.
+  check    <release-dir> [...]         a complete release: the .urna, the three sidecars and
+                                       CITATION_KEY present, each listed in SHA256SUMS with a
+                                       matching digest, and CITATION_KEY's file_hash and
+                                       content_hash equal to the file's.
   strip    <manifest.json> <out-dir>   only the manifest split (used to convert
            legacy release sidecars in place).
   key      <file.urna> [out] [--built-with ...]  only CITATION_KEY (stdout when out is omitted).
@@ -84,13 +86,25 @@ def validate(urna: Path) -> None:
         env.die(f"urna validate failed on {env.rel(urna)}: {(r.stdout + r.stderr).strip()[-300:]}")
 
 
-def existing_built_with(key_path: Path) -> str | None:
+def key_fields(key_path: Path) -> dict[str, str]:
     if not key_path.is_file():
-        return None
-    for line in key_path.read_text().splitlines():
-        if line.startswith("built_with = "):
-            return line.split(" = ", 1)[1].strip()
-    return None
+        return {}
+    return dict(line.split(" = ", 1) for line in key_path.read_text().splitlines() if " = " in line)
+
+
+def resolve_built_with(key_path: Path, file_hash: str, given: str | None) -> str:
+    """built_with is kept from an existing key only when that key names the same file."""
+    old = key_fields(key_path)
+    same_file = old.get("file_hash") == file_hash and old.get("built_with")
+    if same_file and given and given != old["built_with"]:
+        env.die(f"the existing CITATION_KEY says {old['built_with']} for this file; --built-with {given} disagrees")
+    if same_file:
+        return old["built_with"]
+    if given:
+        return given
+    if old:
+        env.die('the existing CITATION_KEY names another file; pass --built-with "urna X.Y.Z" for this one')
+    env.die('pass --built-with "urna X.Y.Z": the sidecars do not record the urna that built the file')
 
 
 def citation_key(urna: Path, built_with: str) -> str:
@@ -113,13 +127,26 @@ def citation_key(urna: Path, built_with: str) -> str:
 
 
 def check(release_dir: Path) -> bool:
-    """SHA256SUMS against the files, and CITATION_KEY against the file it names."""
+    """A complete release: the .urna and every sidecar present and listed in SHA256SUMS, every
+    listed digest matching, and CITATION_KEY naming the file's file_hash and content_hash."""
     ok = True
+    required = (URNA_NAME, *SIDECARS)
+    for name in (*required, "SHA256SUMS", "CITATION_KEY"):
+        if not (release_dir / name).is_file():
+            print(f"  missing {name}")
+            ok = False
     sums = release_dir / "SHA256SUMS"
     if not sums.is_file():
-        print(f"{env.rel(release_dir)}: no SHA256SUMS")
+        print(f"{env.rel(release_dir)}: MISMATCH")
         return False
+    listed = {line.split(maxsplit=1)[1].strip() for line in sums.read_text().splitlines() if line.strip()}
+    for name in required:
+        if name not in listed:
+            print(f"  SHA256SUMS has no entry for {name}")
+            ok = False
     for line in sums.read_text().splitlines():
+        if not line.strip():
+            continue
         digest, name = line.split(maxsplit=1)
         p = release_dir / name.strip()
         if not p.is_file():
@@ -130,7 +157,7 @@ def check(release_dir: Path) -> bool:
             ok = False
     urna = release_dir / URNA_NAME
     key = (release_dir / "CITATION_KEY").read_text() if (release_dir / "CITATION_KEY").is_file() else ""
-    if urna.is_file():
+    if urna.is_file() and key:
         info = inspect(urna)
         for field in ("file_hash", "content_hash"):
             if f"{field} = {info.get(field)}" not in key:
@@ -196,9 +223,7 @@ def cmd_promote(args) -> int:
     n_items, _ = strip_manifest(manifest, dest, dry_run=True)
     if n_chunks is not None and n_items != n_chunks:
         env.die(f"{manifest.name} lists {n_items} items, the file holds {n_chunks} chunks")
-    built_with = existing_built_with(dest / "CITATION_KEY") or args.built_with
-    if not built_with:
-        env.die('pass --built-with "urna X.Y.Z": the sidecars do not record the urna that built the file')
+    built_with = resolve_built_with(dest / "CITATION_KEY", "sha256:" + sha256(urna), args.built_with)
     print(f"candidate: {env.rel(cand)}")
     print(f"  urna: {urna.name} {urna.stat().st_size} bytes, content_hash {info.get('content_hash')}")
     print(
@@ -253,9 +278,8 @@ def main() -> int:
     if args.cmd == "check":
         return 0 if all([check(Path(d)) for d in args.release_dirs]) else 1
     if args.cmd == "key":
-        built_with = (existing_built_with(Path(args.out)) if args.out else None) or args.built_with
-        if not built_with:
-            env.die('pass --built-with "urna X.Y.Z": the sidecars do not record the urna that built the file')
+        key_path = Path(args.out) if args.out else Path("/nonexistent/CITATION_KEY")
+        built_with = resolve_built_with(key_path, "sha256:" + sha256(Path(args.urna)), args.built_with)
         text = citation_key(Path(args.urna), built_with)
         if args.out:
             Path(args.out).write_text(text)

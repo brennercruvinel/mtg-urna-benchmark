@@ -130,5 +130,15 @@
     "product fallout: gop=inter emits keyint=16 with scene-cut detection off (INTER_KEYINT in the urna forge); the gop probe became quality-aware."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048 and reprints-2787",
+   "list": "benchmark/corpora/reprints-2787.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "transcribed; no artifact or script survives"
+ }
 }

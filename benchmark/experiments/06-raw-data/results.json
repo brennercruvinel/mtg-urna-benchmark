@@ -123,5 +123,15 @@
     "md5 duplicates in the raw cache (38 groups in the old report) were not re-verified; no hash list survives."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "raw cache",
+   "note": "the Spellbook cache under MTG_DATA, all image classes"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "the cache was never published or hashed"
+ }
 }

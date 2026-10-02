@@ -288,5 +288,41 @@
     "the bench matches hits by chunk_id (identity N3), not by ordinal, after the ordinal match zeroed neardup and archive."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 100,
+   "seed": 7,
+   "list": "benchmark/corpora/queries-100.json"
+  },
+  "models": [
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [
+   {
+    "path": "candidates/v03-retrieval/mtgdataset.urna",
+    "file_hash": "sha256:1fa37ef5717529f5b92e0e9445d8133f065990bf4cd744b21ac317cce08dd270",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
+    "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-avif-q48/mtgdataset.urna",
+    "file_hash": "sha256:dbc5734a622483b08c6a6b1acc90a831287b0e79e779e75e70285cde91019cce",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ],
+  "unrecorded": "the txt@k columns are transcribed from the 2026-09-03 report"
+ }
 }

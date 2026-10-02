@@ -258,5 +258,15 @@
  ],
  "notes": [
   "cross-version and cross-platform determinism are not measured here: one machine, one toolchain. the manifest's toolchain record (encoder version and params) remains the only guard for those, and a release's file_hash is reproducible only under that record."
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "every eighth id of sample-2048",
+   "list": "benchmark/corpora/sample-2048.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "encoder outputs; the hash of each run is in data/"
+ }
 }

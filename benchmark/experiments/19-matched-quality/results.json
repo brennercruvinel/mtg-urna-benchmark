@@ -355,5 +355,15 @@
     }
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "frames-96 of sample-2048",
+   "list": "benchmark/corpora/frames-96.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "encoder outputs, measured and not kept"
+ }
 }

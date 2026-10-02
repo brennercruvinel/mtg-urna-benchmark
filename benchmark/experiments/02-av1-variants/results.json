@@ -342,5 +342,15 @@
     "the jxl rows score ssim2 92.8 because PIL and djxl round the same jpeg differently; the transcode is bit-exact (2048/2048 sha256 round-trips in the build)."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048",
+   "list": "benchmark/corpora/sample-2048.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "the variant builds under benchmark/runs/ are local and were not published"
+ }
 }

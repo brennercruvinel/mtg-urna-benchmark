@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### added, 2026-10-02
+
+- every `results.json` carries an `identity` block: the source (corpus, id list, `corpus_input_hash`), the queries, the models with their model_hash, and each measured file by file_hash and content_hash. the content_hash alone does not identify a file, because the releases share it. files that were local or are gone are not given a hash after the fact: `unrecorded` says why. `render_report.py --check` validates the block, checks release files against their `SHA256SUMS`, and every section of `RESULTS.md` ends with an identity line.
+
 ### changed, 2026-09-17
 
 - the forge the specs need is a release now: urna v0.4.0 (the tag that carries #131 to #141). `profiles/*.toml` and the readme name the tag instead of a pull request; the hub card names it in the build section.

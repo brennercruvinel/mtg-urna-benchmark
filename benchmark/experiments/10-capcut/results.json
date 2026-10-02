@@ -58,5 +58,15 @@
     "the experiment exposed a real bug: decode_frame assumed fps=1 on random frame access; fixed in the urna forge (fps flows from the manifest to the seek)."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048",
+   "list": "benchmark/corpora/sample-2048.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "the input shard sits in a local benchmark/runs build; the exported mp4 was not kept"
+ }
 }

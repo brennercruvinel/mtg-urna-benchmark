@@ -55,5 +55,15 @@
     "2048 files. generic archivers do not compress jpeg; every gain below comes from an image or video codec."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048",
+   "list": "benchmark/corpora/sample-2048.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "tar archives of the sample's JPEG files; measured and not kept"
+ }
 }

@@ -13,8 +13,17 @@ results.json contract:
     "provenance": {"status": "measured"|"transcribed", "source": "...", "date": "...", "notes": "..."},
     "constants": {"source_bytes": 3975063106, ...},          optional, row-level fallback values
     "tables": [{"title": "...", "columns": [...], "rows": [{...}], "notes": ["..."]}],
-    "notes": ["..."]                                          optional, after the tables
+    "notes": ["..."],                                         optional, after the tables
+    "identity": {                                             what was measured
+      "source": {"corpus": "full" | "sample-2048" | ..., "list": "benchmark/corpora/...", "corpus_input_hash": ...},
+      "queries": null | {"n": ..., "seed": ..., "rule" or "list": ...},
+      "models": [{"preset": ..., "model_hash": "sha256:..." or null}],
+      "files": [{"path": ..., "file_hash": "sha256:...", "content_hash": "sha256:..."}],
+      "unrecorded": "why a measured file has no hash"         required when files is empty
+    }
   }
+a file under release/ must carry the file_hash its SHA256SUMS records; the content_hash
+alone never identifies a file, because the releases share it.
 column spec: {"key", "label", "fmt", "from", "num", "den"}; fmt is one of
   str (default), int, f1..f9, mb (bytes/1e6, 1 decimal), gb (bytes/1e9, 3 decimals),
   ratio (num/den, 2 decimals + x), pct_change ((num/den - 1) * 100, signed, 1 decimal).
@@ -39,6 +48,8 @@ import _bench_env as env  # noqa: E402
 RESULTS_MD = env.REPO / "RESULTS.md"
 README_KEYS = ("hypothesis", "method", "verdict")
 SECTION_RE = re.compile(r"^(\d+)-(.+)$")
+HASH_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+IDENTITY_KEYS = ("source", "queries", "models", "files")
 
 HEADER = """# mtg card corpus benchmark: results
 
@@ -144,8 +155,59 @@ def render_section(exp_dir: Path, doc: dict, with_context: bool) -> list[str]:
     line = f"provenance: {p['status']}; source: {p['source']}; date: {p['date']}"
     if p.get("notes"):
         line += f"; notes: {p['notes']}"
-    out += [line, ""]
+    out += [line, identity_line(doc["identity"]), ""]
     return out
+
+
+def release_digest(path: str) -> str | None:
+    """sha256 of a release file as its SHA256SUMS records it; None when the path is not a release file."""
+    parts = Path(path).parts
+    if len(parts) != 4 or parts[0] != "release":
+        return None
+    sums = env.RELEASE / parts[1] / parts[2] / "SHA256SUMS"
+    if not sums.is_file():
+        return None
+    for line in sums.read_text().splitlines():
+        digest, name = line.split(maxsplit=1)
+        if name.strip() == parts[3]:
+            return "sha256:" + digest
+    return None
+
+
+def check_identity(rj: Path, ident) -> None:
+    """what was measured: source, queries, models and the files, each file by file_hash and content_hash."""
+    if not isinstance(ident, dict) or any(k not in ident for k in IDENTITY_KEYS):
+        env.die(f"{env.rel(rj)}: identity needs {', '.join(IDENTITY_KEYS)}")
+    for m in ident["models"]:
+        if m.get("model_hash") is not None and not HASH_RE.match(m["model_hash"]):
+            env.die(f"{env.rel(rj)}: model_hash of {m.get('preset')} is not sha256:<64 hex>")
+    for f in ident["files"]:
+        for key in ("path", "file_hash", "content_hash"):
+            if not f.get(key):
+                env.die(f"{env.rel(rj)}: a measured file lacks {key}")
+        for key in ("file_hash", "content_hash"):
+            if not HASH_RE.match(f[key]):
+                env.die(f"{env.rel(rj)}: {key} of {f['path']} is not sha256:<64 hex>")
+        recorded = release_digest(f["path"])
+        if recorded is not None and recorded != f["file_hash"]:
+            env.die(f"{env.rel(rj)}: {f['path']} file_hash differs from its release SHA256SUMS")
+    if not ident["files"] and not ident.get("unrecorded"):
+        env.die(f"{env.rel(rj)}: no measured file listed and no 'unrecorded' saying why")
+
+
+def identity_line(ident: dict) -> str:
+    src = ident["source"]
+    parts = [f"source {src.get('corpus')}"]
+    if ident["queries"]:
+        q = ident["queries"]
+        parts.append(f"queries n={q.get('n')}" + (f" seed {q['seed']}" if "seed" in q else ""))
+    if ident["models"]:
+        parts.append("models " + ", ".join(m["preset"] for m in ident["models"]))
+    if ident["files"]:
+        parts.append("files " + ", ".join(f"{f['path']} ({f['file_hash'][7:15]})" for f in ident["files"]))
+    if ident.get("unrecorded"):
+        parts.append(f"unrecorded: {ident['unrecorded']}")
+    return "identity: " + "; ".join(parts)
 
 
 def experiments() -> list[tuple[Path, dict]]:
@@ -164,6 +226,7 @@ def experiments() -> list[tuple[Path, dict]]:
                     env.die(f"{env.rel(rj)}: provenance missing '{key}'")
             if doc["provenance"]["status"] not in ("measured", "transcribed"):
                 env.die(f"{env.rel(rj)}: provenance.status must be measured or transcribed")
+            check_identity(rj, doc.get("identity"))
             found.append((d, doc))
     found.sort(key=lambda t: int(SECTION_RE.match(t[0].name).group(1)) if SECTION_RE.match(t[0].name) else 999)
     return found

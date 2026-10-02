@@ -108,5 +108,35 @@
     "the full 38627-card five-model build was never run (wemm-2b estimated at 18 to 20 hours on this machine)."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-1500",
+   "list": "benchmark/corpora/sample-1500.json"
+  },
+  "queries": {
+   "n": 60,
+   "rule": "artwork of the card {name}, seeded draw"
+  },
+  "models": [
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": null
+   },
+   {
+    "preset": "siglip2",
+    "model_hash": null
+   },
+   {
+    "preset": "jina-v5-omni-nano",
+    "model_hash": null
+   },
+   {
+    "preset": "wemm-2b",
+    "model_hash": null
+   }
+  ],
+  "files": [],
+  "unrecorded": "the 1500-card verification file was lost; model hashes of that build were not recorded"
+ }
 }

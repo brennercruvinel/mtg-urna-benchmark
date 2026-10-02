@@ -28,3 +28,4 @@
 - product fallout: gop=inter emits keyint=16 with scene-cut detection off (INTER_KEYINT in the urna forge); the gop probe became quality-aware.
 
 provenance: transcribed; source: section 9 of the 2026-09-03 report (docs/archive/results-2026-09-03-pt.md); encoded artifacts not retained, no script survives; date: 2026-08-31; notes: bytes are the MB figures of the report times 1e6 (0.1 MB precision). all rows crf35 speed6 yuv420, bytes at fixed crf: this matrix is NOT quality matched; the forge probe later measured inter at crf35 losing about 16 ssim2 points on unique cards. corpus A = the 2048-card sample (benchmark/corpora/sample-2048.json); corpus B = 2787 printings of the same artwork in 1359 illustration_id groups (benchmark/corpora/reprints-2787.json), source 245.7 MB.
+identity: source sample-2048 and reprints-2787; unrecorded: transcribed; no artifact or script survives

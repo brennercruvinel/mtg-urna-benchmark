@@ -4,6 +4,12 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### fixed, 2026-10-02
+
+- `bench_full_corpus.py` reads a published release: `manifest.json` with its items in `items.jsonl.gz`, as `promote.py` writes them, besides a candidate's `<name>.manifest.json`. it looked only for the second, so it could not run on anything downloaded from the hub.
+- the evaluator checks the model before it embeds a query: the snapshot's model_hash must equal the manifest's record and the model_hash of every space it searches, and each space's dim must fit the model. a different snapshot used to produce numbers silently. the report now records the file_hash, content_hash and model_hash it measured.
+- `benchmark/tests/test_release.py` covers both layouts and the refusals; with `MTG_RELEASE_DIR` set it reads a real release and checks its spaces.
+
 ### changed, 2026-09-17
 
 - the forge the specs need is a release now: urna v0.4.0 (the tag that carries #131 to #141). `profiles/*.toml` and the readme name the tag instead of a pull request; the hub card names it in the build section.

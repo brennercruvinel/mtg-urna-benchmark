@@ -4,6 +4,12 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### added, 2026-10-02
+
+- `sources/sources.toml` and `benchmark/tools/prepare_from_hub.py`: the source data can be rebuilt by anyone. the Spellbook cache the v0.3 files came from was never published and was not hashed at build time; the hub dataset's Parquet carries the same 38,627 rows with every scan and its SHA-256. the tool rebuilds `MTG_DATA` (`mtg.sqlite` with `cards` and `names_localized`, and the scans under `images/normal/front/`) from it at a pinned revision, checks every scan, and recomputes the forge's `corpus_input_hash` from the profile template: `sha256:5639a3b7...`, the value in all five release manifests, so the rebuilt data feeds the forge the exact items the files were built from. the images tree hash and the keys hash are pinned too.
+- `pyproject.toml` and `uv.lock`: Python 3.12; the base set for the tools that need no urna checkout, and a `forge` extra pinned to the packages every v0.3 build lock records (torch 2.13.0, open-clip-torch 3.3.0, sentence-transformers 6.0.1, transformers 5.2.0, tokenizers 0.22.2, numpy 2.5.2, pillow 12.3.0).
+- `docs/environment.md`: which tools need a checkout of urna and how to set it up, the model_hash of each model (the locks record no hub revisions; the fingerprint is what Urna checks), and the codec versions with where each is recorded.
+
 ### changed, 2026-09-17
 
 - the forge the specs need is a release now: urna v0.4.0 (the tag that carries #131 to #141). `profiles/*.toml` and the readme name the tag instead of a pull request; the hub card names it in the build section.

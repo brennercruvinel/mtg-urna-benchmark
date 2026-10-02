@@ -1,0 +1,26 @@
+# Where the corpus comes from, pinned.
+#
+# origin: Scryfall bulk data as cached by the Spellbook app (mtg.sqlite and the
+# normal front scans). That cache was never published and its exact state was not
+# hashed when the v0.3 files were built, so it is recorded here as history only.
+#
+# snapshot: the reproducible source. The hub dataset's Parquet carries the same
+# 38,627 rows with each scan and its SHA-256; benchmark/tools/prepare_from_hub.py
+# rebuilds MTG_DATA from it at this revision and refuses unless the recomputed
+# corpus_input_hash equals the one recorded in every release/v0.3 manifest.
+
+[origin]
+provider = "Scryfall bulk data, via the Spellbook app's local cache"
+terms = "https://scryfall.com/docs/api"
+cards = 38627
+note = "not redistributed as-is; no hash of the cache was taken at build time"
+
+[snapshot]
+repo = "brennercruvinel/mtg-urna-benchmark"
+revision = "998d3602390097775dd6ec7116b398efc5c1f888"
+files = "data/cards-*.parquet"
+rows = 38627
+profile = "stills.toml"
+corpus_input_hash = "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+images_tree_hash = "sha256:3858cb0f21369a4acd6f4d760cc59334f09f28f3a3a712251102e2a32756f06a"
+keys_hash = "sha256:9f40cd1eb2ace6bc0c5d6790649ff525b3f0d6163f8313fcb53080bdd76e9984"

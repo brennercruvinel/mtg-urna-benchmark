@@ -22,8 +22,11 @@ results.json contract:
       "unrecorded": "why a measured file has no hash"         required when files is empty
     }
   }
-a file under release/ must carry the file_hash its SHA256SUMS records; the content_hash
-alone never identifies a file, because the releases share it.
+every field is checked against what the repo records: a release file against its
+SHA256SUMS and CITATION_KEY, a candidate against release/v0.3/candidates.json, a
+model_hash against the release build locks, a corpus_input_hash against the release
+manifests, and every list path must exist. the content_hash alone never identifies a
+file, because the releases share it.
 column spec: {"key", "label", "fmt", "from", "num", "den"}; fmt is one of
   str (default), int, f1..f9, mb (bytes/1e6, 1 decimal), gb (bytes/1e9, 3 decimals),
   ratio (num/den, 2 decimals + x), pct_change ((num/den - 1) * 100, signed, 1 decimal).
@@ -159,40 +162,74 @@ def render_section(exp_dir: Path, doc: dict, with_context: bool) -> list[str]:
     return out
 
 
-def release_digest(path: str) -> str | None:
-    """sha256 of a release file as its SHA256SUMS records it; None when the path is not a release file."""
-    parts = Path(path).parts
-    if len(parts) != 4 or parts[0] != "release":
-        return None
-    sums = env.RELEASE / parts[1] / parts[2] / "SHA256SUMS"
-    if not sums.is_file():
-        return None
-    for line in sums.read_text().splitlines():
-        digest, name = line.split(maxsplit=1)
-        if name.strip() == parts[3]:
-            return "sha256:" + digest
-    return None
+def _records() -> dict:
+    """What the repo records about the published files, the models and the corpus."""
+    files, models, inputs = {}, {}, set()
+    for rel_dir in sorted(env.RELEASE.glob("*/*")):
+        sums, key = rel_dir / "SHA256SUMS", rel_dir / "CITATION_KEY"
+        if not sums.is_file():
+            continue
+        fields = (
+            dict(line.split(" = ", 1) for line in key.read_text().splitlines() if " = " in line)
+            if key.is_file()
+            else {}
+        )
+        for line in sums.read_text().splitlines():
+            digest, name = line.split(maxsplit=1)
+            if name.strip().endswith(".urna"):
+                files[(rel_dir / name.strip()).relative_to(env.REPO).as_posix()] = {
+                    "file_hash": "sha256:" + digest,
+                    "content_hash": fields.get("content_hash"),
+                }
+        lock = rel_dir / "build.lock.json"
+        if lock.is_file():
+            for preset, mh in json.loads(lock.read_text()).get("models", {}).items():
+                models.setdefault(preset, set()).add(mh)
+        manifest = rel_dir / "manifest.json"
+        if manifest.is_file():
+            inputs.add(json.loads(manifest.read_text()).get("corpus_input_hash"))
+    cand = env.RELEASE / "v0.3" / "candidates.json"
+    if cand.is_file():
+        for c in json.loads(cand.read_text())["candidates"]:
+            files[c["path"]] = {"file_hash": c["file_hash"], "content_hash": c["content_hash"]}
+    return {"files": files, "models": models, "corpus_input_hashes": inputs - {None}}
 
 
-def check_identity(rj: Path, ident) -> None:
-    """what was measured: source, queries, models and the files, each file by file_hash and content_hash."""
+def check_identity(rj: Path, ident, records: dict) -> None:
+    """what was measured, checked against what the repo records; a broken reference is refused."""
+    where = env.rel(rj)
     if not isinstance(ident, dict) or any(k not in ident for k in IDENTITY_KEYS):
-        env.die(f"{env.rel(rj)}: identity needs {', '.join(IDENTITY_KEYS)}")
+        env.die(f"{where}: identity needs {', '.join(IDENTITY_KEYS)}")
+    src = ident["source"]
+    for ref in (src.get("list"), (ident["queries"] or {}).get("list")):
+        if ref and not (env.REPO / ref).is_file():
+            env.die(f"{where}: {ref} does not exist")
+    cih = src.get("corpus_input_hash")
+    if cih is not None and cih not in records["corpus_input_hashes"]:
+        env.die(f"{where}: corpus_input_hash {cih} is not the one the release manifests record")
     for m in ident["models"]:
-        if m.get("model_hash") is not None and not HASH_RE.match(m["model_hash"]):
-            env.die(f"{env.rel(rj)}: model_hash of {m.get('preset')} is not sha256:<64 hex>")
+        mh = m.get("model_hash")
+        if mh is None:
+            continue
+        if not HASH_RE.match(mh):
+            env.die(f"{where}: model_hash of {m.get('preset')} is not sha256:<64 hex>")
+        if mh not in records["models"].get(m.get("preset"), set()):
+            env.die(f"{where}: model_hash of {m.get('preset')} is not in any release build lock")
     for f in ident["files"]:
         for key in ("path", "file_hash", "content_hash"):
             if not f.get(key):
-                env.die(f"{env.rel(rj)}: a measured file lacks {key}")
+                env.die(f"{where}: a measured file lacks {key}")
         for key in ("file_hash", "content_hash"):
             if not HASH_RE.match(f[key]):
-                env.die(f"{env.rel(rj)}: {key} of {f['path']} is not sha256:<64 hex>")
-        recorded = release_digest(f["path"])
-        if recorded is not None and recorded != f["file_hash"]:
-            env.die(f"{env.rel(rj)}: {f['path']} file_hash differs from its release SHA256SUMS")
+                env.die(f"{where}: {key} of {f['path']} is not sha256:<64 hex>")
+        rec = records["files"].get(f["path"])
+        if rec is None:
+            env.die(f"{where}: {f['path']} is neither a release file nor a recorded candidate")
+        for key in ("file_hash", "content_hash"):
+            if f[key] != rec[key]:
+                env.die(f"{where}: {key} of {f['path']} differs from the record ({rec[key]})")
     if not ident["files"] and not ident.get("unrecorded"):
-        env.die(f"{env.rel(rj)}: no measured file listed and no 'unrecorded' saying why")
+        env.die(f"{where}: no measured file listed and no 'unrecorded' saying why")
 
 
 def identity_line(ident: dict) -> str:
@@ -212,6 +249,7 @@ def identity_line(ident: dict) -> str:
 
 def experiments() -> list[tuple[Path, dict]]:
     found = []
+    records = _records()
     for d in sorted(env.EXPERIMENTS.iterdir()):
         rj = d / "results.json"
         if d.is_dir() and rj.is_file():
@@ -226,7 +264,7 @@ def experiments() -> list[tuple[Path, dict]]:
                     env.die(f"{env.rel(rj)}: provenance missing '{key}'")
             if doc["provenance"]["status"] not in ("measured", "transcribed"):
                 env.die(f"{env.rel(rj)}: provenance.status must be measured or transcribed")
-            check_identity(rj, doc.get("identity"))
+            check_identity(rj, doc.get("identity"), records)
             found.append((d, doc))
     found.sort(key=lambda t: int(SECTION_RE.match(t[0].name).group(1)) if SECTION_RE.match(t[0].name) else 999)
     return found

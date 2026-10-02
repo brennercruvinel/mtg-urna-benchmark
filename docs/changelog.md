@@ -6,7 +6,7 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ### added, 2026-10-02
 
-- every `results.json` carries an `identity` block: the source (corpus, id list, `corpus_input_hash`), the queries, the models with their model_hash, and each measured file by file_hash and content_hash. the content_hash alone does not identify a file, because the releases share it. files that were local or are gone are not given a hash after the fact: `unrecorded` says why. `render_report.py --check` validates the block, checks release files against their `SHA256SUMS`, and every section of `RESULTS.md` ends with an identity line.
+- every `results.json` carries an `identity` block: the source (corpus, id list, `corpus_input_hash`), the queries, the models with their model_hash, and each measured file by file_hash and content_hash. the content_hash alone does not identify a file, because the releases share it. files that were local or are gone are not given a hash after the fact: `unrecorded` says why. `render_report.py --check` validates the block against what the repo records (release `SHA256SUMS` and `CITATION_KEY`, `release/v0.3/candidates.json` for the five hub candidates, the build locks for model_hash, the manifests for corpus_input_hash, the list paths) and refuses a broken reference; `benchmark/tests/test_identity.py` covers the refusals. every section of `RESULTS.md` ends with an identity line.
 
 ### changed, 2026-09-17
 

@@ -26,7 +26,7 @@ create `benchmark/experiments/NN-slug/` with the next free number and a short sl
 }
 ```
 
-`identity` says what was measured. a measured file is named by its file_hash, never by its content_hash alone: the releases share one content_hash. a file under `release/` must carry the file_hash its `SHA256SUMS` records, and `render_report.py --check` refuses one that does not. when a measured file was local or is gone, `files` stays empty and `unrecorded` says why; a hash is never reconstructed after the fact.
+`identity` says what was measured. a measured file is named by its file_hash, never by its content_hash alone: the releases share one content_hash. every field is checked against what the repo records, and `render_report.py --check` refuses a broken reference: a file under `release/` against its `SHA256SUMS` and `CITATION_KEY`, a hub candidate against `release/v0.3/candidates.json` (path, file_hash, content_hash, measured from a download at a pinned revision), a model_hash against the release build locks, a corpus_input_hash against the release manifests, and every source or query list path must exist. when a measured file was local or is gone, `files` stays empty and `unrecorded` says why; a hash is never reconstructed after the fact.
 
 bytes are stored as integers; MB and GB exist only at render time (decimal, 1e6 and 1e9). a column is `{"key", "label", "fmt", "from", "num", "den"}` with fmt one of str, int, f1 to f9, mb, gb, ratio and pct_change. `measured` means the numbers were read from artifacts or sidecars on disk; `transcribed` means they were copied from a report whose artifacts are gone, and the provenance notes say which.
 

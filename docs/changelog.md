@@ -4,6 +4,11 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### fixed, 2026-10-02
+
+- `promote.py` wrote `built_with` from the urna cli that ran the promote, not the one that built the file. the sidecars do not record the building urna, so `built_with` is now kept from an existing `CITATION_KEY` or given with `--built-with`, and `read_with` records the cli version that read the file. the keys already under `release/v0.3/` stay as they are.
+- `promote.py` validates before it writes: `urna validate` on the candidate and the manifest's item count against the file's chunks; after writing it runs the new `check`, which verifies `SHA256SUMS` and the file_hash and content_hash in `CITATION_KEY` against the file. `check` also verifies a release downloaded from the hub.
+
 ### changed, 2026-09-17
 
 - the forge the specs need is a release now: urna v0.4.0 (the tag that carries #131 to #141). `profiles/*.toml` and the readme name the tag instead of a pull request; the hub card names it in the build section.

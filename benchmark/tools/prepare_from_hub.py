@@ -19,6 +19,10 @@ Checks, all of them fatal:
     the one in every release manifest: the rebuilt data feeds the forge the exact
     items the v0.3 files were built from
 
+MTG_DATA must be empty or absent: the tool refuses before its first write
+rather than overwrite a data root. prepared.json is written last, only when
+every check passed, so a data root without it is incomplete or wrong.
+
 usage (repo root):
   export MTG_DATA=/path/to/empty/dir
   python benchmark/tools/prepare_from_hub.py
@@ -104,12 +108,15 @@ def main() -> int:
     root = env.data_root()
     if root is None:
         env.die("MTG_DATA is not set; export MTG_DATA=/path/to/an/empty/dir")
+    # refuse before the first write: an existing data root is never overwritten
+    if root.exists() and (not root.is_dir() or any(root.iterdir())):
+        env.die(f"MTG_DATA={root} is not empty; point it at an empty or new directory")
+    root.mkdir(parents=True, exist_ok=True)
     pin = tomllib.loads(SOURCES.read_text())["snapshot"]
     template, label_tpl, chunker = profile_recipe(env.PROFILES / pin["profile"])
     images = root / "images" / "normal" / "front"
     images.mkdir(parents=True, exist_ok=True)
     db = root / "mtg.sqlite"
-    db.unlink(missing_ok=True)
     con = sqlite3.connect(db)
     con.execute(f"CREATE TABLE cards ({', '.join(TEXT_FIELDS)}, image_uri)")
     con.execute("CREATE TABLE names_localized (oracle_id, printed_name, lang, lang_rank)")
@@ -157,16 +164,16 @@ def main() -> int:
         "keys_hash": "sha256:" + keys_hash.hexdigest(),
         "images_tree_hash": images_tree,
         "corpus_input_hash": got,
-        "matches_release": got == pin["corpus_input_hash"],
     }
-    (root / "prepared.json").write_text(json.dumps(result, indent=1, sort_keys=True) + "\n")
     print(json.dumps({k: v for k, v in result.items() if k != "snapshot"}, indent=1))
-    if not result["matches_release"]:
+    if got != pin["corpus_input_hash"]:
         env.die(f"corpus_input_hash {got} differs from the release's {pin['corpus_input_hash']}")
     if pin.get("keys_hash") and result["keys_hash"] != pin["keys_hash"]:
         env.die(f"keys_hash {result['keys_hash']} differs from the pin {pin['keys_hash']}")
     if pin.get("images_tree_hash") and images_tree != pin["images_tree_hash"]:
         env.die(f"images_tree_hash {images_tree} differs from the pin {pin['images_tree_hash']}")
+    # written last: prepared.json exists only for a data root that passed every check
+    (root / "prepared.json").write_text(json.dumps(result | {"matches_release": True}, indent=1, sort_keys=True) + "\n")
     return 0
 
 

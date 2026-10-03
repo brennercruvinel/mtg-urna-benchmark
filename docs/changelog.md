@@ -8,7 +8,9 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 - `bench_full_corpus.py` reads a published release: `manifest.json` with its items in `items.jsonl.gz`, as `promote.py` writes them, besides a candidate's `<name>.manifest.json`. it looked only for the second, so it could not run on anything downloaded from the hub.
 - the evaluator checks the model before it embeds a query: the snapshot's model_hash must equal the manifest's record and the model_hash of every space it searches, and each space's dim must fit the model. a different snapshot used to produce numbers silently. the report now records the file_hash, content_hash and model_hash it measured.
+- before it embeds a query the evaluator also requires the file's own space to record model_hash and dim, and the manifest's items to be the file's chunks: one item per chunk, ordinals 0 to n-1, keys present and unique.
 - `benchmark/tests/test_release.py` covers both layouts and the refusals; with `MTG_RELEASE_DIR` set it reads a real release and checks its spaces.
+- `benchmark/tests/test_eval_integration.py` runs the evaluator end to end: siglip2, 20 queries, on the published `stills-5models` release, offline, and requires the file_hash, content_hash and model_hash the release records. the run recorded in `benchmark/tests/data/` was made with the network blocked and found that urna could not tokenize a siglip2 query offline by the model's hub name; it passed once urna read the tokenizer and weights from the pinned snapshot, with the model_hash unchanged. its hit@k is a 20-query proof, not a measurement: experiment 20 keeps the full-corpus numbers.
 
 ### changed, 2026-09-17
 

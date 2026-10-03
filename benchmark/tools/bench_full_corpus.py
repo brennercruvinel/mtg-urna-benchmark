@@ -29,7 +29,7 @@ from pathlib import Path
 import numpy as np
 
 import _bench_env as env
-from _release import check_model_identity, load_build_manifest
+from _release import check_items, check_model_identity, load_build_manifest
 
 env.add_urna_to_path()
 import urna  # noqa: E402
@@ -77,7 +77,9 @@ def main() -> None:
         args.preset, allow_remote_code=allowed, allow_heavy=True, usage=recipe, batch_size=args.batch
     )
     db = urna.open(str(args.index))
-    check_model_identity(args.preset, adapter.model_hash, adapter.dim, manifest, db.inspect().get("spaces") or [], spaces)
+    info = db.inspect()
+    check_items(items, info["n_chunks"], db.chunk_ids())
+    check_model_identity(args.preset, adapter.model_hash, adapter.dim, manifest, info.get("spaces") or [], spaces)
     texts = [args.template.format(label=labels[i]) for i in idx]
     t0 = time.perf_counter()
     chunks = []
@@ -90,8 +92,8 @@ def main() -> None:
     ks = sorted(args.k)
     report = {
         "index": env.rel(args.index),
-        "file_hash": db.inspect().get("file_hash"),
-        "content_hash": db.inspect().get("content_hash"),
+        "file_hash": info.get("file_hash"),
+        "content_hash": info.get("content_hash"),
         "model_hash": adapter.model_hash,
         "preset": args.preset,
         "template": args.template,

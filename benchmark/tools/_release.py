@@ -38,8 +38,9 @@ def load_build_manifest(index: Path) -> dict:
     return manifest
 
 
-def check_model_identity(preset: str, adapter_hash: str, adapter_dim: int, manifest: dict, file_spaces: list[dict],
-                         spaces: list[dict]) -> None:
+def check_model_identity(
+    preset: str, adapter_hash: str, adapter_dim: int, manifest: dict, file_spaces: list[dict], spaces: list[dict]
+) -> None:
     """Refuse a model that is not the one the file was built with.
 
     The adapter's model_hash (a fingerprint over the snapshot's files, so it also
@@ -57,10 +58,25 @@ def check_model_identity(preset: str, adapter_hash: str, adapter_dim: int, manif
         fs = stored.get(space["name"])
         if fs is None:
             env.die(f"space {space['name']} is in the manifest but not in the file")
-        if fs.get("model_hash") and fs["model_hash"] != want:
+        for field in ("model_hash", "dim"):
+            if not fs.get(field):
+                env.die(f"space {space['name']} in the file records no {field}; the model cannot be checked")
+        if fs["model_hash"] != want:
             env.die(f"space {space['name']} stores model_hash {fs['model_hash']}, the manifest says {want}")
         dim = space.get("dim") or adapter_dim
         if dim > adapter_dim:
             env.die(f"space {space['name']} has dim {dim}, more than the model's {adapter_dim}")
-        if fs.get("dim") and fs["dim"] != dim:
+        if fs["dim"] != dim:
             env.die(f"space {space['name']} stores dim {fs['dim']}, the manifest implies {dim}")
+
+
+def check_items(items: list[dict], n_chunks: int, chunk_ids: list[str]) -> None:
+    """The manifest's items must be the file's chunks: one item per chunk, ordinals 0..n-1."""
+    if len(items) != n_chunks or len(chunk_ids) != n_chunks:
+        env.die(f"the manifest lists {len(items)} items, the file holds {n_chunks} chunks ({len(chunk_ids)} ids)")
+    ordinals = [it.get("ordinal") for it in items]
+    if sorted(ordinals) != list(range(n_chunks)):
+        env.die("the manifest's item ordinals are not 0..n-1, one per chunk")
+    keys = [it.get("key") for it in items]
+    if None in keys or len(set(keys)) != len(keys):
+        env.die("the manifest's item keys are missing or repeated")

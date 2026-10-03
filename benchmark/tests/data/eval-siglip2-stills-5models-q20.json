@@ -1,0 +1,86 @@
+{
+ "what": "integration proof: bench_full_corpus.py end to end on the published release, 20 siglip2 queries, offline. not a measurement; experiment 20 keeps the full-corpus numbers.",
+ "date": "2026-10-02",
+ "release": {
+  "repo": "brennercruvinel/mtg-urna-benchmark",
+  "repo_type": "dataset",
+  "revision": "bb1c0c2d6d74cdce4eb142bd689be8e1ca2c8e82",
+  "path": "release/v0.3/stills-5models",
+  "sha256sums": "passed"
+ },
+ "network": "blocked: sandbox-exec -p '(version 1)(allow default)(deny network*)', plus HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 and no URNA_ALLOW_DOWNLOAD",
+ "hf_cache": "only snapshots/<revision> of timm/ViT-B-16-SigLIP2: no refs/main, no .no_exist markers",
+ "model_snapshot": {
+  "repo": "timm/ViT-B-16-SigLIP2",
+  "revision": "eee10eff6dd8cabae2d7f379d4e8cfcd352030aa",
+  "files_sha256": {
+   "open_clip_config.json": "d0b2ac6d4524cb95287138b9e5fa345211be7242e5da7eb55be894614be33987",
+   "open_clip_model.safetensors": "d0a51069d2fa6c95b371b3bffd2a2c765c1815004798ee99f075290dbca73041",
+   "special_tokens_map.json": "d4671afd8f9b1ccd170443bd5478c0cc40fdbddc9343034caf6984ffd388b2c4",
+   "tokenizer.json": "220c63d496e0c14e63eb656c91e0215e926202e4c74b1f089e09f1920d779b04",
+   "tokenizer_config.json": "513e778583a9ac0b74ae47784216f9d654d5132eee62d777597f5e842701323c"
+  }
+ },
+ "urna": {
+  "repo": "hoffresearch/urna",
+  "commit": "c321dc0b1a860009850a3a1a468b210a22aa3755",
+  "branch": "openclip-local-snapshot", "pull_request": "https://github.com/hoffresearch/urna/pull/271",
+  "note": "the loader that reads siglip2 weights and tokenizer from the pinned snapshot; on main (f022b467) the same run fails at the tokenizer"
+ },
+ "environment": {
+  "python": "3.12.14",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "torch": "2.13.0",
+  "open_clip": "3.3.0",
+  "transformers": "5.2.0",
+  "tokenizers": "0.22.2",
+  "huggingface_hub": "1.33.0",
+  "device": "mps"
+ },
+ "command": "python3 benchmark/tools/bench_full_corpus.py release/v0.3/stills-5models/mtgdataset.urna --preset siglip2 --queries 20 --seed 7 --out eval.json",
+ "result": {
+  "index": "release/v0.3/stills-5models/mtgdataset.urna",
+  "file_hash": "sha256:6b2bc21a2057bccea054fa331ee91c04f2b7ee80156f01144399c3065e7d4b3f",
+  "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+  "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c",
+  "preset": "siglip2",
+  "template": "artwork of the card {label}",
+  "queries": 20,
+  "text_embed_s": 1.3,
+  "text_queries_per_s": 15.4,
+  "spaces": {
+   "siglip2": {
+    "dim": null,
+    "search_s": 0.1,
+    "hit": {
+     "@1": {
+      "value": 0.65,
+      "se": 0.1067,
+      "ci95": [
+       0.45,
+       0.85
+      ]
+     },
+     "@5": {
+      "value": 0.7,
+      "se": 0.1025,
+      "ci95": [
+       0.5,
+       0.9
+      ]
+     },
+     "@10": {
+      "value": 0.75,
+      "se": 0.0968,
+      "ci95": [
+       0.55,
+       0.95
+      ]
+     }
+    },
+    "band_bytes": null,
+    "mrr_at_max_k": 0.6708
+   }
+  }
+ }
+}

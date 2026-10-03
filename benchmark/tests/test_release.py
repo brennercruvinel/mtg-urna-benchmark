@@ -17,7 +17,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from _release import check_model_identity, load_build_manifest  # noqa: E402
+from _release import check_items, check_model_identity, load_build_manifest  # noqa: E402
 
 ITEMS = [{"key": f"k{i}", "label": f"card {i}", "ordinal": i} for i in range(3)]
 MODELS = {"siglip2": {"model_hash": "sha256:aa"}}
@@ -84,7 +84,9 @@ class RealFile(unittest.TestCase):
             want = m["models"][s["preset"]]["model_hash"]
             dim = next(fs["dim"] for fs in info["spaces"] if fs["name"] == s["name"])
             check_model_identity(s["preset"], want, dim, m, info["spaces"], [s])
-            self.assertTrue(refuses(check_model_identity, s["preset"], "sha256:" + "0" * 64, dim, m, info["spaces"], [s]))
+            self.assertTrue(
+                refuses(check_model_identity, s["preset"], "sha256:" + "0" * 64, dim, m, info["spaces"], [s])
+            )
 
 
 class CheckModelIdentity(unittest.TestCase):
@@ -95,19 +97,62 @@ class CheckModelIdentity(unittest.TestCase):
         check_model_identity("siglip2", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(), SPACES)
 
     def test_another_snapshot_is_refused(self):
-        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:bb", 768, {"models": MODELS}, self.file_spaces(), SPACES))
+        self.assertTrue(
+            refuses(check_model_identity, "siglip2", "sha256:bb", 768, {"models": MODELS}, self.file_spaces(), SPACES)
+        )
 
     def test_a_space_built_with_another_model_is_refused(self):
-        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:aa", 768, {"models": MODELS}, self.file_spaces("sha256:cc"), SPACES))
+        self.assertTrue(
+            refuses(
+                check_model_identity,
+                "siglip2",
+                "sha256:aa",
+                768,
+                {"models": MODELS},
+                self.file_spaces("sha256:cc"),
+                SPACES,
+            )
+        )
 
     def test_dims_must_fit(self):
         sliced = [dict(SPACES[0], dim=256)]
         check_model_identity("siglip2", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(dim=256), sliced)
-        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:aa", 128, {"models": MODELS}, self.file_spaces(dim=256), sliced))
-        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(dim=512), sliced))
+        self.assertTrue(
+            refuses(
+                check_model_identity, "siglip2", "sha256:aa", 128, {"models": MODELS}, self.file_spaces(dim=256), sliced
+            )
+        )
+        self.assertTrue(
+            refuses(
+                check_model_identity, "siglip2", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(dim=512), sliced
+            )
+        )
+
+    def test_a_file_space_without_hash_or_dim_is_refused(self):
+        no_hash = [{"name": "siglip2", "dim": 768}]
+        no_dim = [{"name": "siglip2", "model_hash": "sha256:aa"}]
+        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:aa", 768, {"models": MODELS}, no_hash, SPACES))
+        self.assertTrue(refuses(check_model_identity, "siglip2", "sha256:aa", 768, {"models": MODELS}, no_dim, SPACES))
 
     def test_a_manifest_without_the_preset_is_refused(self):
-        self.assertTrue(refuses(check_model_identity, "wemm-2b", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(), SPACES))
+        self.assertTrue(
+            refuses(check_model_identity, "wemm-2b", "sha256:aa", 768, {"models": MODELS}, self.file_spaces(), SPACES)
+        )
+
+
+class CheckItems(unittest.TestCase):
+    def test_items_that_match_the_file_pass(self):
+        check_items(ITEMS, 3, ["a", "b", "c"])
+
+    def test_a_count_that_differs_is_refused(self):
+        self.assertTrue(refuses(check_items, ITEMS, 4, ["a", "b", "c", "d"]))
+        self.assertTrue(refuses(check_items, ITEMS, 3, ["a", "b"]))
+
+    def test_broken_ordinals_or_keys_are_refused(self):
+        gap = [dict(it, ordinal=it["ordinal"] * 2) for it in ITEMS]
+        dup = [dict(it, key="k0") for it in ITEMS]
+        self.assertTrue(refuses(check_items, gap, 3, ["a", "b", "c"]))
+        self.assertTrue(refuses(check_items, dup, 3, ["a", "b", "c"]))
 
 
 if __name__ == "__main__":

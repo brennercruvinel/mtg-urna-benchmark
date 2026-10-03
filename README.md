@@ -80,10 +80,6 @@ The `.urna` files are on Hugging Face: [brennercruvinel/mtg-urna-benchmark](http
 
 </details>
 
-## Citing
-
-`CITATION.cff`. The key of a specific file is its content_hash.
-
 ## License
 
 Code, specs and results: MIT (`LICENSE`). The `.urna` artifacts on Hugging Face: CC BY 4.0. The card images belong to Wizards of the Coast and are served by Scryfall under their terms; this repo tracks none of them, and the compressed media inside each `.urna` is a derived encoding of that data, not a redistribution of the originals.

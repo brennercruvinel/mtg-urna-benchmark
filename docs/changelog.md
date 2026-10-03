@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03
+
+- CI runs the unit tests: `uv sync --locked` installs the base dependencies from `uv.lock`, then `python -m unittest discover -s benchmark/tests` (39 tests; the integration and real-release cases skip without a downloaded release and urna). ruff now checks `benchmark/` (tools and tests) instead of `benchmark/tools` alone. `export --check` joins once the export has one.
+
 ### changed, 2026-10-02
 
 - the profiles name the forge a checkout of hoffresearch/urna at v0.5.0 or later. the v0.4.0 tag the 2026-09-17 entry names no longer exists in the urna repository (its tags are v0.3.0, v0.5.0, v0.5.1), so v0.5.0 is the first tag that carries the spec features; the `stills-5models` header still said `nest build`, now `urna build`. the files already built keep what they record: `built_with` in each `CITATION_KEY`, the `NEST` magic, `chunker_version` and titles.

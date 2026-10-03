@@ -4,10 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
-### fixed, 2026-10-02
+### changed, 2026-10-02
 
-- `promote.py` wrote `built_with` from the urna cli that ran the promote, not the one that built the file. the sidecars do not record the building urna, so `built_with` is now kept from an existing `CITATION_KEY` only when that key names the same file_hash, or given with `--built-with` (a disagreeing flag for the same file is refused), and `read_with` records the cli version that read the file. the keys already under `release/v0.3/` stay as they are.
-- `promote.py` validates before it writes: `urna validate` on the candidate and the manifest's item count against the file's chunks; after writing it runs the new `check`, which requires a complete release (the `.urna`, the three sidecars and `CITATION_KEY`, each listed in `SHA256SUMS` with a matching digest) and the file_hash and content_hash in `CITATION_KEY` equal to the file's. `benchmark/tests/test_promote.py` covers both. `check` also verifies a release downloaded from the hub.
+- the profiles name the forge a checkout of hoffresearch/urna at v0.5.0 or later. the v0.4.0 tag the 2026-09-17 entry names no longer exists in the urna repository (its tags are v0.3.0, v0.5.0, v0.5.1), so v0.5.0 is the first tag that carries the spec features; the `stills-5models` header still said `nest build`, now `urna build`. the files already built keep what they record: `built_with` in each `CITATION_KEY`, the `NEST` magic, `chunker_version` and titles.
+- `MTG_DATA` is the one data-root variable; the `SPELLBOOK_DATA` alias is gone from `_bench_env.py`. `sanitize_sidecars.py` still rewrites `${SPELLBOOK_DATA}` in old sidecars; none under `release/` carries it.
 
 ### changed, 2026-09-17
 

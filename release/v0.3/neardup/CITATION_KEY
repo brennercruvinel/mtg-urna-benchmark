@@ -3,5 +3,5 @@ file_hash = sha256:071233c549f45644a3ce9a3bc581e0fe564ed30f70a01b30f726efb3b5c50
 chunker_version = mtgdataset/1
 title = MTG card dataset (near-dup profile, self-contained)
 n_chunks = 38627
-built_with = urna 0.3.0
+built_with = nest 0.3.0
 read_with = urna inspect --json

@@ -39182,10 +39182,10 @@
  "n_unique_frames": 38627,
  "name": "mtgdataset",
  "outputs": {
-  "mtgdataset.urna": {
+  "mtgdataset.nest": {
    "build_s": 73.861,
    "bytes": 1374447548,
-   "file": "candidates/neardup/mtgdataset.urna",
+   "file": "candidates/neardup/mtgdataset.nest",
    "file_hash": "sha256:071233c549f45644a3ce9a3bc581e0fe564ed30f70a01b30f726efb3b5c50132"
   }
  },

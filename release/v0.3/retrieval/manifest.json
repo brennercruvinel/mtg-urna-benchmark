@@ -132,10 +132,10 @@
  "n_unique_frames": 38627,
  "name": "mtgdataset",
  "outputs": {
-  "mtgdataset.urna": {
+  "mtgdataset.nest": {
    "build_s": 84.014,
    "bytes": 532671548,
-   "file": "dat/mtg/benchmark/candidates/v03-retrieval-crf50/mtgdataset.urna",
+   "file": "dat/mtg/benchmark/candidates/v03-retrieval-crf50/mtgdataset.nest",
    "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3"
   }
  },

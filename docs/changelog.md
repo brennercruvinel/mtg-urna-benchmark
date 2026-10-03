@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03 (header link)
+
+- The header image of the README and of the dataset card links to the Urna documentation, https://docs.urna.dev/, as in Urna's own README and in fakenews-ptbr-urna-benchmark.
+
 ### changed, 2026-10-03 (readme structure)
 
 - The README and the dataset card now follow the same structure as fakenews-ptbr-urna-benchmark, its sister benchmark. Both open with the same link block: the dataset on Hugging Face (or the code on GitHub, on the card), Urna, the source and the sister benchmark. The README sections are Pick a build (the profile table, now with stills-5models), Results, Build one, Check a release from the hub, Query one, Cards and chunks, then License. The card sections are How to open, Pick a build, Query it, Cards and chunks, Queries and qrels, Columns (the Parquet schema, from the shards), Files, Build, Sources (the Spellbook cache and the pinned snapshot), Limits, License, Citation and Credits. Cards and chunks records that the v0.3 chunk ids were derived under `nest:chunk_id:v1`, before the rename, so a rebuild with today's Urna gets other ids.

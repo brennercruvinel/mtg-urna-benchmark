@@ -1,4 +1,4 @@
-![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/main/assets/images/urna-hoff-research-db-thumb.png)
+[![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/main/assets/images/urna-hoff-research-db-thumb.png)](https://docs.urna.dev/)
 
 38,627 Magic card scans and their text in one searchable `.urna` file, and what it cost to get there.
 

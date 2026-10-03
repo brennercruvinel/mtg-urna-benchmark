@@ -362,5 +362,51 @@
  "notes": [
   "for the retrieval-only gate this means a hit@k floor set from n=100 runs cannot separate crf35 from crf50, and even n=1000 only bounds the loss at about 0.026 absolute on a 0.09 ruler. a gate on this ruler needs either a much larger n, a stronger ruler (a model that reads the printed name, experiment 03: siglip2 0.850, wemm-2b 0.933 txt@1 on the 1500 sample), or operator queries with expected ids (the bench's --queries-file tier), before it can veto a crf step on utility.",
   "stills (av1 crf35 tune still, plain order), crf55 and crf60 were being built while this ran and are not in the table; they go in a later pass with the same command."
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 1000,
+   "seed": 7,
+   "rule": "artwork of the card {label}"
+  },
+  "models": [
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [
+   {
+    "path": "candidates/v03-retrieval/mtgdataset.urna",
+    "file_hash": "sha256:1fa37ef5717529f5b92e0e9445d8133f065990bf4cd744b21ac317cce08dd270",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
+    "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-retrieval-crf55/mtgdataset.urna",
+    "file_hash": "sha256:43451a4c631fb20d0fb1b1e28c197d1ba8cf7234537d5fbed3bb26c30577a9d3",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-retrieval-crf60/mtgdataset.urna",
+    "file_hash": "sha256:b08ab27da78ce2a13f0435969b77b8fbd263ae53c48bc872dfa235a033ebc4b1",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-avif-q48/mtgdataset.urna",
+    "file_hash": "sha256:dbc5734a622483b08c6a6b1acc90a831287b0e79e779e75e70285cde91019cce",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ],
+  "unrecorded": "the archive and neardup rows ran on candidates later promoted to release/v0.3; their hash at measurement time was not recorded"
+ }
 }

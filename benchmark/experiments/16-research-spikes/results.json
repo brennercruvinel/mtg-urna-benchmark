@@ -323,5 +323,28 @@
  ],
  "notes": [
   "av2 and cool-chic stay unmeasured: no encoder on this machine produces a stream the forge can decode today."
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full and reprints-2787",
+   "list": "benchmark/corpora/reprints-2787.json",
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 1000,
+   "rule": "image vectors of the corpus as queries"
+  },
+  "models": [
+   {
+    "preset": "siglip2",
+    "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c"
+   },
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [],
+  "unrecorded": "spike b read the forge embed cache of the five-model build, not a .urna file"
+ }
 }

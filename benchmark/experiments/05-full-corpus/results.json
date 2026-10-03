@@ -138,5 +138,41 @@
     "the rebuilt rows have no single wall time; stage timings from their manifests: neardup rows 27.7 s, media 1649.1 s, clip embed 281.1 s; archive media about 6 min, clip embed 872.7 s. the +128 and +38,720 bytes against the historical rows are the longer title, the chunker string and the media://mtgdataset-* uris; media bytes are identical."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": null,
+  "models": [
+   {
+    "preset": "potion",
+    "model_hash": "sha256:8f2eb91a754b4da59cdd8223d0ba196185fed1bb6f092fd2be0ff02b893b1c98"
+   },
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [
+   {
+    "path": "release/v0.3/neardup/mtgdataset.urna",
+    "file_hash": "sha256:071233c549f45644a3ce9a3bc581e0fe564ed30f70a01b30f726efb3b5c50132",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "release/v0.3/archive/mtgdataset.urna",
+    "file_hash": "sha256:882427094aa6035aa1ddf6abd26444f1598345fb9be3a66612f50b99be377eeb",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "release/v0.3/stills/mtgdataset.urna",
+    "file_hash": "sha256:6f12cadb79563a506ac8193befe7ef7fc3364297787cd3e73541e8e222578fd5",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ],
+  "unrecorded": "the historical 2026-09-03 rows and the v0.2 row: those files are gone"
+ }
 }

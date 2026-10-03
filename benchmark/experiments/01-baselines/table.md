@@ -13,3 +13,4 @@
 - 2048 files. generic archivers do not compress jpeg; every gain below comes from an image or video codec.
 
 provenance: measured; source: benchmark/experiments/02-av1-variants/measurements.json, key _baselines (measure_variants.py); date: 2026-08-31; notes: tar and tar --zstd (ZSTD_CLEVEL=19) over the same 2048 jpeg files the variants encode
+identity: source sample-2048; unrecorded: tar archives of the sample's JPEG files; measured and not kept

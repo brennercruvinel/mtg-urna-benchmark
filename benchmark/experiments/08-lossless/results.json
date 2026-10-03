@@ -138,5 +138,15 @@
     "the lossless video rows lose 3.3x to 3.8x against the source jpeg (3.7x to 4.3x against jxl-transcode e9); semantic ordering moves ffv1 by 137 kB."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048",
+   "list": "benchmark/corpora/sample-2048.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "the encoded generations were deleted after measurement"
+ }
 }

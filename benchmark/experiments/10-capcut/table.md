@@ -13,3 +13,4 @@
 - the experiment exposed a real bug: decode_frame assumed fps=1 on random frame access; fixed in the urna forge (fps flows from the manifest to the seek).
 
 provenance: transcribed; source: section 10 of the 2026-09-03 report; the exported mp4 was not kept and the exact ffmpeg recipe (60x setpts, 30 fps export, h.264 defaults) is recorded only in prose; date: 2026-08-31; notes: the input is the still-s6 shard of 02-av1-variants (70092669 bytes, exact, still embedded in benchmark/runs/selfcontained-still-s6/mtgdataset.urna); the output size is the report's 30.2 MB times 1e6.
+identity: source sample-2048; unrecorded: the input shard sits in a local benchmark/runs build; the exported mp4 was not kept

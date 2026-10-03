@@ -1,0 +1,43 @@
+{
+  "note": "candidates published on the hub but not promoted to release/; measured 2026-10-02 from a download at the revision below: file_hash is the sha256 of the downloaded file (equal to the hub's lfs sha256 and to urna inspect), content_hash and n_chunks come from urna inspect",
+  "repo": "brennercruvinel/mtg-urna-benchmark",
+  "repo_type": "dataset",
+  "revision": "bb1c0c2d6d74cdce4eb142bd689be8e1ca2c8e82",
+  "candidates": [
+    {
+      "path": "candidates/v03-retrieval/mtgdataset.urna",
+      "file_hash": "sha256:1fa37ef5717529f5b92e0e9445d8133f065990bf4cd744b21ac317cce08dd270",
+      "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+      "bytes": 980715452,
+      "n_chunks": 38627
+    },
+    {
+      "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
+      "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3",
+      "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+      "bytes": 532671548,
+      "n_chunks": 38627
+    },
+    {
+      "path": "candidates/v03-retrieval-crf55/mtgdataset.urna",
+      "file_hash": "sha256:43451a4c631fb20d0fb1b1e28c197d1ba8cf7234537d5fbed3bb26c30577a9d3",
+      "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+      "bytes": 370108284,
+      "n_chunks": 38627
+    },
+    {
+      "path": "candidates/v03-retrieval-crf60/mtgdataset.urna",
+      "file_hash": "sha256:b08ab27da78ce2a13f0435969b77b8fbd263ae53c48bc872dfa235a033ebc4b1",
+      "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+      "bytes": 229972284,
+      "n_chunks": 38627
+    },
+    {
+      "path": "candidates/v03-avif-q48/mtgdataset.urna",
+      "file_hash": "sha256:dbc5734a622483b08c6a6b1acc90a831287b0e79e779e75e70285cde91019cce",
+      "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
+      "bytes": 1195973116,
+      "n_chunks": 38627
+    }
+  ]
+}

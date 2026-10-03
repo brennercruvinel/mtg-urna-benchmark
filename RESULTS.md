@@ -32,6 +32,7 @@ verdict: refuted, 1.00x. tar adds 2.7% of headers, zstd-19 takes it back and not
 - 2048 files. generic archivers do not compress jpeg; every gain below comes from an image or video codec.
 
 provenance: measured; source: benchmark/experiments/02-av1-variants/measurements.json, key _baselines (measure_variants.py); date: 2026-08-31; notes: tar and tar --zstd (ZSTD_CLEVEL=19) over the same 2048 jpeg files the variants encode
+identity: source sample-2048; unrecorded: tar archives of the sample's JPEG files; measured and not kept
 
 ## 02 av1-variants: codec variants on the 2048-card sample
 
@@ -63,6 +64,7 @@ verdict: tune=still is the upgrade, +10.9 ssim2 p50 (51.8 to 62.7) for +10% byte
 - the jxl rows score ssim2 92.8 because PIL and djxl round the same jpeg differently; the transcode is bit-exact (2048/2048 sha256 round-trips in the build).
 
 provenance: measured; source: benchmark/experiments/02-av1-variants/measurements.json (measure_variants.py over benchmark/runs/<variant>); date: 2026-08-31; notes: media dirs were pruned after measurement; the .urna, manifest and build lock of every run remain under benchmark/runs/. quality on 96 frames (numpy default_rng(7).choice(2048, 96)): SSIMULACRA2 letterboxed source vs decoded frame, clip cosine drift source vs decoded. the 2048-card sample is evenly spaced (rows[int(i * 38627 / 2048)] over rows sorted by (img_id, oracle_id)); the seed flag has no effect. selfcontained-neardup here is the pre-fix probe build (inter chosen, quality degraded); the .urna now on disk is the post-fix rebuild (intra, 73127600 bytes). manifest_source_bytes for the avif rows is the letterboxed png intermediate (avif backend bug), the ratio column uses the jpeg source.
+identity: source sample-2048; unrecorded: the variant builds under benchmark/runs/ are local and were not published
 
 ## 03 image-models: five models on a 1500-card sample: identity, drift, text-to-image utility
 
@@ -85,6 +87,7 @@ verdict: confirmed. identity@1 is 1.000 for all four image models; drift p10 run
 - the full 38627-card five-model build was never run (wemm-2b estimated at 18 to 20 hours on this machine).
 
 provenance: transcribed; source: urna doc/CHANGELOG (unreleased, verification numbers of the mtgdataset 1500-card build) and the benchmark dossier of 2026-09-11; the 1500x5 verification .urna was lost when the temp dir was cleaned; date: 2026-08-31; notes: one 4.3 MB multi-space .urna plus 81 MB av1 media (crf auto refused the whole [30,45] ladder and fell back to 30), 60 seeded queries, ruler = 'artwork of the card {name}' against each model's own image space (weak ground truth, declared). tiers are never aggregated: T1 identity@1 is pipeline stability, T2 drift p10 is codec cost, T3 txt@k is utility. embed cost is items per second on apple silicon mps fp16.
+identity: source sample-1500; queries n=60; models clip-vit-b32, siglip2, jina-v5-omni-nano, wemm-2b; unrecorded: the 1500-card verification file was lost; model hashes of that build were not recorded
 
 ## 05 full-corpus: the full corpus, 38627 cards, one self-contained .urna per row
 
@@ -110,6 +113,7 @@ verdict: confirmed on ratios and overhead, with two surprises recorded in the ma
 - the rebuilt rows have no single wall time; stage timings from their manifests: neardup rows 27.7 s, media 1649.1 s, clip embed 281.1 s; archive media about 6 min, clip embed 872.7 s. the +128 and +38,720 bytes against the historical rows are the longer title, the chunker string and the media://mtgdataset-* uris; media bytes are identical.
 
 provenance: measured; source: release/v0.3/{neardup,archive}/mtgdataset.urna sizes and their build manifests (the historical rows from the 2026-09-03 builds, the rebuilt rows from the 2026-09-12 builds); the still row from the spellbook-v03 build sidecars kept outside this repo (that file was dropped from the release set); the legacy v0.2 row is transcribed, no artifact survives; date: 2026-09-12; notes: the historical rows were measured on builds that shared content_hash sha256:c993ceda5b42749487ebd20df7f9dc10e321f3f6099dc73e8008f6524b98a582 and chunker_version spellbook/1 inside the file while their sidecars said mtgdataset/1 (renamed after the build). on 2026-09-12 both releases were rebuilt from profiles/ under the mtgdataset name: the rebuilt files carry content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b and chunker_version mtgdataset/1 (read with urna inspect), the same identity as the three candidates of experiment 13, and their media blobs are byte-identical to the old ones; the old c993ceda twins were replaced and no longer exist. ratio_urna divides the source by the whole file, ratio_media by the embedded media blob; the 2026-09-03 report mixed the two bases (3.02x vs 2.93x for the same still file). the stills profile got its own release on 2026-09-12 (single av1 stream, no clustering): 14 kB less media than neardup, same content_hash; its clip space came from the shared embed cache, so the build was the media stage alone.
+identity: source full; models potion, clip-vit-b32; files release/v0.3/neardup/mtgdataset.urna (071233c5), release/v0.3/archive/mtgdataset.urna (88242709), release/v0.3/stills/mtgdataset.urna (6f12cadb); unrecorded: the historical 2026-09-03 rows and the v0.2 row: those files are gone
 
 ## 06 raw-data: the raw spellbook cache the corpus is built from
 
@@ -147,6 +151,7 @@ verdict: confirmed. 82,905 jpegs, 7.201 GB; normal/front holds 38,630 files for 
 - md5 duplicates in the raw cache (38 groups in the old report) were not re-verified; no hash list survives.
 
 provenance: measured; source: os.walk over ${MTG_DATA}/images (st_size sum, dotfiles excluded) and read-only queries on ${MTG_DATA}/mtg.sqlite; date: 2026-09-12; notes: bytes are the sum of file sizes; du reports allocated blocks (7199764 KiB = 7.373 GB for images/), which is why the 2026-09-03 report and its correction disagree with each other and with this table. the old report's '6.9 GB' and '3.0 GB' were GiB. the '~2800 orphan images per class' claim was wrong: those are the back faces, referenced by cards.image_uri_back.
+identity: source raw cache; unrecorded: the cache was never published or hashed
 
 ## 08 lossless: lossless battery over the same 2048 source jpegs
 
@@ -174,6 +179,7 @@ verdict: refuted. the ceiling for jpeg sources is the byte-reversible transcode,
 - the lossless video rows lose 3.3x to 3.8x against the source jpeg (3.7x to 4.3x against jxl-transcode e9); semantic ordering moves ffv1 by 137 kB.
 
 provenance: measured; source: benchmark/experiments/08-lossless/battery.json (lossless_battery.py, 2026-08-31) plus the jxl-transcode row of 02-av1-variants/measurements.json; date: 2026-08-31; notes: the encoded generations (jxl-e9/, jpegtran-*/, webp-lossless/, video-*.mkv, jxl-plus-zstd.tar.zst) were deleted after measurement; only the record survives. the 2026-09-03 report attributed 1.124x to e7; e7 is 1.115x and 1.124x is e9.
+identity: source sample-2048; unrecorded: the encoded generations were deleted after measurement
 
 ## 09 inter-ordering: inter prediction and frame ordering: the similarity lever
 
@@ -207,6 +213,7 @@ verdict: confirmed on bytes and quantified: inter gop 16 grouped is -29% against
 - product fallout: gop=inter emits keyint=16 with scene-cut detection off (INTER_KEYINT in the urna forge); the gop probe became quality-aware.
 
 provenance: transcribed; source: section 9 of the 2026-09-03 report (docs/archive/results-2026-09-03-pt.md); encoded artifacts not retained, no script survives; date: 2026-08-31; notes: bytes are the MB figures of the report times 1e6 (0.1 MB precision). all rows crf35 speed6 yuv420, bytes at fixed crf: this matrix is NOT quality matched; the forge probe later measured inter at crf35 losing about 16 ssim2 points on unique cards. corpus A = the 2048-card sample (benchmark/corpora/sample-2048.json); corpus B = 2787 printings of the same artwork in 1359 illustration_id groups (benchmark/corpora/reprints-2787.json), source 245.7 MB.
+identity: source sample-2048 and reprints-2787; unrecorded: transcribed; no artifact or script survives
 
 ## 10 capcut: the capcut experiment reproduced: speed-up plus 30 fps export
 
@@ -225,6 +232,7 @@ verdict: refuted as a compression path. the output is 30.2 MB with 1055 frames, 
 - the experiment exposed a real bug: decode_frame assumed fps=1 on random frame access; fixed in the urna forge (fps flows from the manifest to the seek).
 
 provenance: transcribed; source: section 10 of the 2026-09-03 report; the exported mp4 was not kept and the exact ffmpeg recipe (60x setpts, 30 fps export, h.264 defaults) is recorded only in prose; date: 2026-08-31; notes: the input is the still-s6 shard of 02-av1-variants (70092669 bytes, exact, still embedded in benchmark/runs/selfcontained-still-s6/mtgdataset.urna); the output size is the report's 30.2 MB times 1e6.
+identity: source sample-2048; unrecorded: the input shard sits in a local benchmark/runs build; the exported mp4 was not kept
 
 ## 11 intra-codecs: all-intra codec battery at matched quality (ssim2 mean 61.96 +-2)
 
@@ -264,6 +272,7 @@ verdict: confirmed on both axes. most compact at matched quality is avif from li
 - the svt-p6-crf35 row reproduces the av1-still-s6-crf35 variant of 02-av1-variants byte for byte (70092669 bytes).
 
 provenance: measured; source: benchmark/experiments/11-intra-codecs/battery.json (19 experiments + _meta) and one encoded sample per experiment under samples/; the battery script itself was not kept; date: 2026-08-31; notes: all encoders consume the same decoded pixels (PIL decode + letterbox to 488x680, the forge baseline pipeline); quality = SSIMULACRA2 on the fixed 96-item sample of measure_variants.py (numpy default_rng(7).choice(2048, 96)), decoded frame vs source PNG; calibration target = ssim2 mean 61.96 +-2 (svt-av1 preset 6 crf 35 tune=still, the av1-still-s6-crf35 baseline of measurements.json, reproduced byte-identically here: 70092669 bytes, p50 62.69) machine: macOS arm64 Apple Silicon, 10 logical cores; ffmpeg 9 (libsvtav1 4.2.0, x265, x264), avifenc 1.4.2 (aom 3.14.1), cjxl 0.12.0, cwebp 1.6.0, vvencapp 1.14.0. threads: wall clock, threads as recorded per entry: video codecs encode one stream (svt ladder pinned to lp=2 like the forge baseline; lp=8 bonus rows unlock threads), per-image codecs run 10 parallel single-threaded workers
+identity: source frames-96 of sample-2048; unrecorded: encoder outputs; one sample per encoder is tracked under samples/
 
 ## 13 retrieval-crf: retrieval-only candidates: crf goes up, search does not fall
 
@@ -312,6 +321,7 @@ verdict: the first half is confirmed and the second refuted. no ladder step pass
 - the bench matches hits by chunk_id (identity N3), not by ordinal, after the ordinal match zeroed neardup and archive.
 
 provenance: measured; source: candidates/{v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.urna sizes and manifests (media.output_bytes, media.crf_auto); the txt@k / drift table is transcribed from sections 13 and 14 of the 2026-09-03 report, no urna_model_bench output was saved; date: 2026-09-12; notes: sizes measured 2026-09-12 on the 2026-09-03 builds. the three candidates share content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b (chunker mtgdataset/1); the release twins carried c993ceda (spellbook/1) until the 2026-09-12 rebuild, since then they carry cb8fdf8f as well (experiment 05). the avif manifest recorded source_bytes 21450566470 and compression_ratio 18.61 because the avif backend summed its letterboxed png inputs instead of the jpeg sources (urna forge bug); the true source is 3975063106 bytes, giving 3.45x on media and 3.32x on the .urna. the 2026-09-03 report labelled MiB as GB for these three files (0.935, 0.508, 1.101); the exact bytes here replace them. the candidate manifest (local and the hugging face copy) was patched by hand on 2026-09-12 after the upstream fix (urna pr 132): media.source_bytes 3975063106, compression_ratio 3.45, letterboxed_input_bytes 21450566470; the manifest_source_bytes column keeps the historical value. crf55 and crf60 were built on 2026-09-12 to close the ladder; their utility numbers are in experiment 14.
+identity: source full; queries n=100 seed 7; models clip-vit-b32; files candidates/v03-retrieval/mtgdataset.urna (1fa37ef5), candidates/v03-retrieval-crf50/mtgdataset.urna (73f814b7), candidates/v03-avif-q48/mtgdataset.urna (dbc5734a); unrecorded: the txt@k columns are transcribed from the 2026-09-03 report
 
 ## 14 utility-ladder: text-to-image utility at n=1000 on the five full-corpus files: lossless to crf50 inside one standard error
 
@@ -355,6 +365,7 @@ verdict: confirmed for everything down to crf50, and the ladder does have a floo
 - stills (av1 crf35 tune still, plain order), crf55 and crf60 were being built while this ran and are not in the table; they go in a later pass with the same command.
 
 provenance: measured; source: urna_model_bench.py (urna forge checkout at commit cbc326de, 2026-09-12) with --queries 1000 --seed 7 -k 1 5 10 --text-query-template 'artwork of the card {label}' on candidates/{archive,neardup,v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.urna with their full candidate manifests; raw bench output kept under bench/<name>.json; urna_bytes from the files on disk; the n=100 column is copied from experiment 13; date: 2026-09-12; notes: same 1000 items in every run (default_rng(7) over the 38627 items, identical ordinals across files because all five manifests share the item order); clip-vit-b32 is the only image space in these files; hits matched by chunk_id. the archive and neardup files are the 2026-09-12 rebuilds, byte-identical to release/v0.3/{archive,neardup}/mtgdataset.urna (sha256 88242709... and 071233c5... match the release SHA256SUMS), media identical to the 2026-09-03 builds that experiment 13 measured at n=100. wall time is the whole bench process on apple silicon mps (clip load, 1000 source-image embeds, 1000 text embeds, 2000 searches) while a forge build chain ran on the same machine. the release-shaped manifest.json without the items list was not needed: every candidate dir carries the full mtgdataset.manifest.json sidecar and the bench read it directly. txt@k se is the binomial standard error sqrt(p(1-p)/n); z is (txt@1 - lossless txt@1) over the pooled se of the two rows. stills, crf55 and crf60 rows are left for a later pass, their builds were still running. crf55 and crf60 were built and measured later the same day with the same command (05:10 to 05:15 local); their rows sit at the end of the table.
+identity: source full; queries n=1000 seed 7; models clip-vit-b32; files candidates/v03-retrieval/mtgdataset.urna (1fa37ef5), candidates/v03-retrieval-crf50/mtgdataset.urna (73f814b7), candidates/v03-retrieval-crf55/mtgdataset.urna (43451a4c), candidates/v03-retrieval-crf60/mtgdataset.urna (b08ab27d), candidates/v03-avif-q48/mtgdataset.urna (dbc5734a); unrecorded: the archive and neardup rows ran on candidates later promoted to release/v0.3; their hash at measurement time was not recorded
 
 ## 15 models-over-crf: four image models over three media levels: who loses retrieval utility at crf50
 
@@ -396,6 +407,7 @@ verdict: refuted. none of the four models loses txt@1 at crf50 beyond noise: cli
 - z = delta / sqrt(p_lossy(1-p_lossy)/200 + p_lossless(1-p_lossless)/200), the pooled binomial se of the difference; |z| below 2 is inside noise.
 
 provenance: measured; source: benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (urna_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id); date: 2026-09-12; notes: one evenly spaced --sample 512 of the mtgdataset corpus (512 items, chunker mtgdataset/1), the same cards in the three builds; potion text default plus four image spaces per build; embedding.image_input = decoded_media, so drift is source-embed vs the stored vector of the decoded frame; jina and wemm sliced to their validated mrl dim 256; mps fp16 for every torch model. the 200 query items are drawn by default_rng(7) over the 512, so identical across models and media levels. with n=200 one hit is 0.005 of txt@k; a delta needs to clear roughly 0.03 to 0.04 to be more than noise at this size.
+identity: source sample-512; queries n=200 seed 7; models clip-vit-b32, siglip2, jina-v5-omni-nano, wemm-2b; unrecorded: the three 512-card builds under benchmark/runs/ are local and were not published
 
 ## 16 research-spikes: three research notes measured: phash prefilter, binary index with int8 rescoring, golden frame per cluster
 
@@ -458,6 +470,7 @@ verdict: (a) refuted. the same-illustration pairs sit at a median hamming of 28 
 - av2 and cool-chic stay unmeasured: no encoder on this machine produces a stream the forge can decode today.
 
 provenance: measured; source: benchmark/experiments/16-research-spikes/data/phash-reprints-2787.json (benchmark/tools/phash_prefilter.py), binary-siglip2-38k.json and binary-clip-38k.json (benchmark/tools/binary_rescoring.py over the forge embed cache of the 38627-card five-model build, siglip2 19eb720f and clip 1d4b9d5c), golden-reprints-2787.json (benchmark/tools/golden_frame.py); date: 2026-09-13; notes: phash: 64-bit dct hash of the whole card (32x32 grayscale, top-left 8x8, median split), all 3,882,291 pairs of the 2787 reprint printings, ground truth = same illustration_id in the printings table (1563 pairs in 1359 groups). binary: 1000 query rows drawn with default_rng(7) from the 38627 image vectors, truth = exact f32 cosine top-10 with the query excluded, int8 = per-row absmax/127 (the urna encoding-3 scheme), binary = sign bits; recall@10 against the f32 truth. golden: the neardup inter recipe (keyint 16, scd off, crf 35, preset 6) over the same 2787 frames in three orders. cpu only; the five-model build held the gpu throughout, so the encode seconds are not a speed measurement.
+identity: source full and reprints-2787; queries n=1000; models siglip2, clip-vit-b32; unrecorded: spike b read the forge embed cache of the five-model build, not a .urna file
 
 ## 17 random-access: random access: what one card costs to read back, per media backend
 
@@ -501,6 +514,7 @@ verdict: refuted. on the quiet machine the av1 stream was the cheapest read of t
 - a quiet-machine rerun of the after-#138 numbers is pending the end of the five-model build; the before/after pair above was taken under the same load, minutes apart.
 
 provenance: measured; source: benchmark/experiments/17-random-access/data/latency-2026-09-12.json (quiet machine, the scratch script that became measure_latency.py), latency-2026-09-13.json and latency-2026-09-13-fixed.json (benchmark/tools/measure_latency.py, before and after urna pr #138, while the five-model 38k build held the gpu and 15.5 of 16 GB of swap), spawn-floor-2026-09-13.json (50 spawns of each decoder binary with --version); date: 2026-09-13; notes: 200 item ordinals, numpy.random.default_rng(7).choice(38627, 200), the same ordinals for every file. every number is end to end through the forge read path as it exists: blob lookup in the mmap, a child process (ffmpeg, avifdec, djxl), the decode, and the array back in python. the av1 rows pay one export of the whole stream blob to a temp file first (export_once_ms), because ffmpeg needs a path; that is a one-time cost per open, not per card. apple m4, ffmpeg 9.0.1 with svt-av1, libavif 1.4.2 (dav1d 1.5.4), cjxl/djxl 0.12.0.
+identity: source full; queries n=200 seed 7; unrecorded: the four candidate files on disk were not hashed when measured
 
 ## 18 encoder-determinism: encoder determinism: do the bytes depend on the worker count
 
@@ -549,6 +563,7 @@ verdict: refuted for avif, confirmed for the other two. svt-av1 gives one hash a
 - cross-version and cross-platform determinism are not measured here: one machine, one toolchain. the manifest's toolchain record (encoder version and params) remains the only guard for those, and a release's file_hash is reproducible only under that record.
 
 provenance: measured; source: benchmark/experiments/18-encoder-determinism/data/determinism-2026-09-13.json (benchmark/tools/encoder_determinism.py --n 256) and avif-jobs-2026-09-13.json (the extra avifenc -j sweep, same 256 letterboxed pngs); date: 2026-09-13; notes: 256 cards, every eighth id of sample-2048. one toolchain: apple m4, macos 26.6, ffmpeg 9.0.1 with svt-av1, libavif 1.4.2 (aom 3.15.0), cjxl 0.12.0. the forge's own parameters per backend (encode_av1 with lp as the knob; avifenc and cjxl called directly with the backend's flags plus the thread flag). sha256 over the mp4 for av1, over the concatenated per-image outputs for avif and jxl. wall seconds were taken while the five-model build held the gpu; they are not a speed benchmark.
+identity: source every eighth id of sample-2048; unrecorded: encoder outputs; the hash of each run is in data/
 
 ## 19 matched-quality: the quality knob for a target ssimulacra2: the four forge recipes at the same fidelity
 
@@ -617,6 +632,7 @@ verdict: half refuted. the still tune holds and then some: svt's default tune ne
 | avif-s8 | 90 | 88.42 |
 
 provenance: measured; source: benchmark/experiments/19-matched-quality/data/target-61.96-2026-09-13.json (benchmark/tools/crf_for_target.py --target 61.96), avif-s8-q48-2026-09-13.json (the production avif recipe on the same sample); experiment 11's battery.json for the 2026-08-31 rows; date: 2026-09-13; notes: quality = mean ssimulacra2 over frames-96 (the 96 ordinals of sample-2048 that measure_variants.py draws with default_rng(7)), decoded frame against the letterboxed source png, the forge's own encoders and letterbox (488x680, yuv420). bytes = the full sample-2048 encoded at the two knobs that bracket the target, and linear interpolation between them at the target. the target 61.96 is experiment 11's calibration point. apple m4, ffmpeg 9.0.1 with svt-av1 4.2.0, libavif 1.4.2 with aom 3.15.0 (experiment 11 ran aom 3.14.1). encode seconds were taken while the five-model build held the gpu and are not a speed measurement.
+identity: source frames-96 of sample-2048; unrecorded: encoder outputs, measured and not kept
 
 ## 20 full-corpus-utility: text-to-image hit@k with every card as a query, four models on the 38627-card file
 
@@ -668,3 +684,4 @@ verdict: refuted on the level, confirmed on the order. siglip2 0.750 and wemm-2b
 - the filtered column drops 'name // name' rows from the top-20 before taking the first; it is what a corpus without the art series would score. the art-series queries themselves are excluded from both columns.
 
 provenance: measured; source: benchmark/experiments/20-full-corpus-utility/data/full.<preset>.json (benchmark/tools/bench_full_corpus.py over release/v0.3/stills-5models/mtgdataset.urna, file_hash 6b2bc21a); build timings from candidates/stills-5models/mtgdataset.manifest.json; date: 2026-09-14; notes: one query per card, 'artwork of the card {name}' through each model's text tower, searched in that model's image space inside the file (int8 rows, the space the file serves); a hit is the card's own chunk_id in the top k. 38627 queries, so the standard error on hit@1 is 0.0015 to 0.0024 and the 95% interval is a 1000-draw bootstrap. the 512-card column is experiment 15's lossless row (200 queries, se 0.02 to 0.03). media is the stills recipe (av1 all-intra crf35 tune still), the same as the stills release. apple m4 mps fp16; the text embed rate is the bench's, the image rate is the forge's from the build manifest.
+identity: source full; queries n=38627; models potion, clip-vit-b32, siglip2, jina-v5-omni-nano, wemm-2b; files release/v0.3/stills-5models/mtgdataset.urna (6b2bc21a)

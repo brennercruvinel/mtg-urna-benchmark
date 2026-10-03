@@ -32,3 +32,4 @@
 - md5 duplicates in the raw cache (38 groups in the old report) were not re-verified; no hash list survives.
 
 provenance: measured; source: os.walk over ${MTG_DATA}/images (st_size sum, dotfiles excluded) and read-only queries on ${MTG_DATA}/mtg.sqlite; date: 2026-09-12; notes: bytes are the sum of file sizes; du reports allocated blocks (7199764 KiB = 7.373 GB for images/), which is why the 2026-09-03 report and its correction disagree with each other and with this table. the old report's '6.9 GB' and '3.0 GB' were GiB. the '~2800 orphan images per class' claim was wrong: those are the back faces, referenced by cards.image_uri_back.
+identity: source raw cache; unrecorded: the cache was never published or hashed

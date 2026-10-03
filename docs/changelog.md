@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03 (readme structure)
+
+- The README and the dataset card now follow the same structure as fakenews-ptbr-urna-benchmark, its sister benchmark. Both open with the same link block: the dataset on Hugging Face (or the code on GitHub, on the card), Urna, the source and the sister benchmark. The README sections are Pick a build (the profile table, now with stills-5models), Results, Build one, Check a release from the hub, Query one, Cards and chunks, then License. The card sections are How to open, Pick a build, Query it, Cards and chunks, Queries and qrels, Columns (the Parquet schema, from the shards), Files, Build, Sources (the Spellbook cache and the pinned snapshot), Limits, License, Citation and Credits. Cards and chunks records that the v0.3 chunk ids were derived under `nest:chunk_id:v1`, before the rename, so a rebuild with today's Urna gets other ids.
+
 ### fixed, 2026-10-03 (license and citation)
 
 - The license declaration said the `.urna` files on Hugging Face are CC BY 4.0 and that their media is "not a redistribution of the originals". Both were wrong: the Parquet under `data/` carries the original JPEGs, the archive release restores them bit for bit, and the card images and text are Wizards of the Coast's, which this project cannot license. The README now names the terms per material: MIT for the code and results, CC BY 4.0 only for what the project wrote on the hub, and the Fan Content Policy and Scryfall's guidelines for the card images and text, with the statement the policy asks for. `CITATION.cff` drops `license: MIT` (it described the dataset as MIT) and lists Urna and Scryfall under `references`.

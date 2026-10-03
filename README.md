@@ -6,7 +6,12 @@ The source is about 4 GB of JPEG from Scryfall. The [Urna](https://github.com/ho
 
 One file. No loose media dir, no sidecar index.
 
-## Profiles
+- Dataset: [brennercruvinel/mtg-urna-benchmark](https://huggingface.co/datasets/brennercruvinel/mtg-urna-benchmark) on Hugging Face: the ten `.urna` files with their sidecars, the cards as Parquet, and the `queries` and `qrels` tables
+- Engine: [Urna](https://github.com/hoffresearch/urna), the single-file vector database that builds and reads the `.urna` files
+- Source: Scryfall bulk data as cached by the Spellbook app; the Parquet snapshot pinned in `sources/sources.toml` rebuilds it
+- Sister benchmark, text: [brennercruvinel/fakenews-ptbr-urna-benchmark](https://github.com/brennercruvinel/fakenews-ptbr-urna-benchmark) ([dataset](https://huggingface.co/datasets/brennercruvinel/fakenews-ptbr-urna-benchmark))
+
+## Pick a build
 
 | Profile   | Media                                        | File    | When                                        |
 |-----------|----------------------------------------------|---------|---------------------------------------------|
@@ -14,10 +19,11 @@ One file. No loose media dir, no sidecar index.
 | neardup   | AV1, clustered order, per-segment gop probe  | 1.4 GB  | Corpora with reprints of the same art        |
 | stills    | AV1 all-intra, tune still                    | 1.4 GB  | Unique images, the default                   |
 | retrieval | AV1 all-intra, crf 50                        | 533 MB  | Search only, never display                   |
+| stills-5models | stills, plus siglip2, jina and wemm image spaces | 1.4 GB | Finding a card's image by its name           |
 
-All four share one content_hash: same text, same vectors, four media encodings. A `urna://` citation resolves in any of them.
+All five share one content_hash: the same text and the same text vectors, with four media encodings and, in stills-5models, four more image models. A `urna://` citation resolves in any of them. stills-5models is the file to search: siglip2 finds a card from its name at rank 1 three times in four, where clip, the only image model of the other four, finds it once in ten.
 
-## What we found
+## Results
 
 Lossless tops out at 1.12x. JPEG is already entropy coded: tar plus zstd gives 1.00x and the byte-reversible repack of JPEG XL gives the 12%. The path we invented (lossless video over a semantic ordering) lost by more than three to one.
 
@@ -69,9 +75,9 @@ hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "re
 uv run python benchmark/tools/promote.py check release/v0.3/stills-5models    # urna CLI on PATH, or URNA_BIN
 ```
 
-`check` wants the `.urna` and every sidecar listed in `SHA256SUMS` with a matching digest, and a `CITATION_KEY` equal to what `urna inspect --json` reads from the file. The candidates under `candidates/` pass the same check under the forge's `mtgdataset.*` names.
+`check` wants the `.urna` and every sidecar listed in `SHA256SUMS` with a matching digest, and a `CITATION_KEY` equal to what `urna inspect --json` reads from the file. The candidates under `candidates/` pass the same check under the forge's `mtgdataset.*` names. Run from the repo root, the download lands on the tracked sidecars, so `git status` also says whether the hub copy differs from the one tracked here.
 
-## Search it
+## Query one
 
 Two different searches. A text query against the card text runs offline on the potion space and needs only the `urna` CLI and its setup:
 
@@ -94,6 +100,14 @@ The Urna checkout needs the pinned-snapshot loader, on `main` since hoffresearch
 
 The queries and their single relevant card are on the hub as the `queries` and `qrels` configs, written by `export_queries.py` from the lists under `benchmark/corpora/`.
 
+## Cards and chunks
+
+One chunk per card, 38,627 in every file: the card name, the Portuguese printed name where Scryfall has one, the mana cost, the type line, rarity, set code and oracle text, rendered by the template in `profiles/*.toml`. The card's image is the chunk's media span in the same file. A card's key is `img_id|oracle_id`, and `ordinal` is its place in the card order every release shares (the `keys_hash` in `sources/sources.toml`).
+
+`file_hash` names a file: the sha256 of its bytes, listed in each release's `SHA256SUMS`. `content_hash` names the content: every full-corpus file shares `sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b`, because it covers the text and the default text vectors and not the media or the extra image spaces. A `urna://<content_hash>/<chunk_id>` citation therefore resolves in any of them.
+
+A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgdataset/<key>`), the span (`ordinal`, `ordinal + 1`) and the chunker version. The v0.3 files were written before the rename from nest, under the domain `nest:chunk_id:v1`. Urna now derives ids under `urna:chunk_id:v1`, so a rebuild of the same cards gets other chunk ids, and a citation from one does not resolve in the other.
+
 <details>
 <summary>Layout</summary>
 
@@ -109,13 +123,6 @@ docs/                    methodology, hypotheses, references, roadmap, glossary,
 ```
 
 `.urna` files, media and caches are gitignored. CI runs ruff, the unit tests, `export_corpora.py --check` (the lists against the pinned card order), `promote.py check-tracked` (the tracked sidecars against their `SHA256SUMS`) and `render_report.py --check`.
-
-</details>
-
-<details>
-<summary>Artifacts</summary>
-
-The `.urna` files are on Hugging Face: [brennercruvinel/mtg-urna-benchmark](https://huggingface.co/datasets/brennercruvinel/mtg-urna-benchmark). `release/v0.3/<profile>/SHA256SUMS` pins the bytes, `CITATION_KEY` pins the identity read from inside the file with `urna inspect --json`.
 
 </details>
 

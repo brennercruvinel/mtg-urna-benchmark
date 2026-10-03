@@ -27,7 +27,7 @@ cd urna && cargo build --release -p urna-python --features pyo3/extension-module
 uv sync --extra forge
 ```
 
-v0.5.0 is the first tag with the spec features the profiles use; v0.5.1 is the one these instructions name for builds. A siglip2 query offline needs more: the pinned-snapshot loader of hoffresearch/urna #271 with the fix in #273, on `main` until the next tag. The v0.3 files were built with the forge of that period, before the rename (`built_with` in each `CITATION_KEY`).
+v0.5.0 is the first tag with the spec features the profiles use; v0.5.1 is the one these instructions name for builds. A siglip2 query offline needs more: the pinned-snapshot loader, on `main` since hoffresearch/urna #271 and #273 (`7ef2b725`) and not yet in a tag. The v0.3 files were built with the forge of that period, before the rename (`built_with` in each `CITATION_KEY`).
 
 ## Models
 
@@ -43,7 +43,7 @@ The build locks record each model's `model_hash`, the fingerprint Urna checks at
 
 The full hashes are in `release/v0.3/stills-5models/build.lock.json`.
 
-siglip2 is the one preset Urna pins to a hub revision: it loads the weights and the tokenizer from `snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa` of the HF cache, never through `refs/main` or the hub name, so the five files `hf download timm/ViT-B-16-SigLIP2 open_clip_model.safetensors open_clip_config.json tokenizer.json tokenizer_config.json special_tokens_map.json --revision eee10eff6dd8cabae2d7f379d4e8cfcd352030aa` fetches are all a query needs, offline. Its tokenizer imports `transformers` (in the `forge` extra). A missing file is an error naming it and that command. `benchmark/tests/data/eval-siglip2-stills-5models-q20.json` records a 20-query run with the network blocked and only that snapshot in the cache. clip still loads by tag through open_clip, which resolves `refs/main`: fetch it once without `--revision` before going offline. jina and wemm run remote code: the spec lists them in `output.allow_remote_code`, Urna checks every code file against its pinned SHA-256, and a query needs `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`.
+siglip2 is the one preset Urna pins to a hub revision: it loads the weights and the tokenizer from `snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa` of the HF cache, never through `refs/main` or the hub name, so the five files `hf download timm/ViT-B-16-SigLIP2 open_clip_model.safetensors open_clip_config.json tokenizer.json tokenizer_config.json special_tokens_map.json --revision eee10eff6dd8cabae2d7f379d4e8cfcd352030aa` fetches are all a query needs, offline. Its tokenizer imports `transformers` (in the `forge` extra). A missing file is an error naming it and that command. `benchmark/tests/data/eval-siglip2-stills-5models-q20.json` records a 20-query run against urna `main` at `7ef2b725` with the network blocked and only that snapshot in the cache, before and after. clip still loads by tag through open_clip, which resolves `refs/main`: fetch it once without `--revision` before going offline. jina and wemm run remote code: the spec lists them in `output.allow_remote_code`, Urna checks every code file against its pinned SHA-256, and a query needs `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`.
 
 ## Codecs
 

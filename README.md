@@ -90,7 +90,7 @@ HF_HUB_OFFLINE=1 URNA_REPO=/path/to/urna uv run --extra forge python benchmark/t
   release/v0.3/stills-5models/mtgdataset.urna --preset siglip2 --queries 20 --seed 7 --out siglip2-q20.json
 ```
 
-The Urna checkout needs the pinned-snapshot loader (hoffresearch/urna #271, with the fix in #273): it reads the weights and the tokenizer from `snapshots/<revision>` of the HF cache, never from `refs/main` or the hub name, so the run works with the network off. The evaluator refuses a model whose `model_hash` is not the one in the file. jina and wemm run their repo's code and also need `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`; clip and siglip2 do not. `docs/environment.md` has every model, its source and its hash.
+The Urna checkout needs the pinned-snapshot loader, on `main` since hoffresearch/urna #271 and #273: it reads the weights and the tokenizer from `snapshots/<revision>` of the HF cache, never from `refs/main` or the hub name, so the run works with the network off. The evaluator refuses a model whose `model_hash` is not the one in the file. jina and wemm run their repo's code and also need `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`; clip and siglip2 do not. `docs/environment.md` has every model, its source and its hash.
 
 The queries and their single relevant card are on the hub as the `queries` and `qrels` configs, written by `export_queries.py` from the lists under `benchmark/corpora/`.
 

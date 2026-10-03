@@ -4,7 +4,8 @@
 # via the 0x17 blob section. the best quality-per-byte point of the av1 ladder
 # on the 2048-card sample (benchmark/experiments/02-av1-variants).
 #
-# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs a checkout of hoffresearch/urna at v0.5.0 or later: the first tagged release with the spec
+# features these recipes use (they first shipped as nest v0.4.0, a tag that no longer exists). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
 #   urna build --spec profiles/stills.toml

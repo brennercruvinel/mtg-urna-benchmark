@@ -1,17 +1,17 @@
 cff-version: 1.2.0
-message: "if you use this benchmark or its artifacts, cite it as below. the citation key of a specific .nest file is its content_hash, read with nest inspect --json."
+message: "if you use this benchmark or its artifacts, cite it as below. the citation key of a specific .urna file is its content_hash, read with urna inspect --json."
 type: dataset
-title: "mtg-nest-benchmark"
+title: "mtg-urna-benchmark"
 version: 0.3.2
 date-released: 2026-09-12
-repository-code: "https://github.com/brennercruvinel/mtg-nest-benchmark"
+repository-code: "https://github.com/brennercruvinel/mtg-urna-benchmark"
 license: MIT
 authors:
   - family-names: Cruvinel
     given-names: Brenner
     affiliation: Hoff Research
     email: brenner@hoffresearch.com
-abstract: "compression and retrieval benchmark of the 38,627-card magic: the gathering image corpus packed into single-file .nest containers with the nest engine: av1, avif and jpeg xl media variants, lossless batteries, inter-frame ordering over same-artwork reprints, an all-intra codec battery at matched ssimulacra2, and retrieval-only profiles measured on identity, embedding drift and text-to-image hit@k against a 3.975 GB jpeg source."
+abstract: "compression and retrieval benchmark of the 38,627-card magic: the gathering image corpus packed into single-file .urna containers with the urna engine: av1, avif and jpeg xl media variants, lossless batteries, inter-frame ordering over same-artwork reprints, an all-intra codec battery at matched ssimulacra2, and retrieval-only profiles measured on identity, embedding drift and text-to-image hit@k against a 3.975 GB jpeg source."
 keywords:
   - image compression
   - set redundancy

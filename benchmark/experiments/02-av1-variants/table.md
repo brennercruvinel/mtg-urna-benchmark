@@ -4,7 +4,7 @@
 
 ### variants
 
-| variant | media bytes | media MB | ratio | files | nest bytes | encode s | crf | ssim2 p50 | p10 | min | clip drift p10 | lossless |
+| variant | media bytes | media MB | ratio | files | urna bytes | encode s | crf | ssim2 p50 | p10 | min | clip drift p10 | lossless |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
 | control | 1138810355 | 1138.8 | 0.19x | 2048 | 2233776 | 33.9 | - | 100.00 | 100.00 | 100.00 | 1.0000 | bytes |
 | jxl-transcode | 189231744 | 189.2 | 1.12x | 2048 | 2233776 | 74.7 | - | 92.81 | 91.28 | 88.23 | 0.9969 | bytes |
@@ -25,4 +25,5 @@
 - lossless column: bytes = original jpeg bytes reconstructible (verified in build), pixels = decoded pixels preserved by the codec's own decoder, no = lossy.
 - the jxl rows score ssim2 92.8 because PIL and djxl round the same jpeg differently; the transcode is bit-exact (2048/2048 sha256 round-trips in the build).
 
-provenance: measured; source: benchmark/experiments/02-av1-variants/measurements.json (measure_variants.py over benchmark/runs/<variant>); date: 2026-08-31; notes: media dirs were pruned after measurement; the .nest, manifest and build lock of every run remain under benchmark/runs/. quality on 96 frames (numpy default_rng(7).choice(2048, 96)): SSIMULACRA2 letterboxed source vs decoded frame, clip cosine drift source vs decoded. the 2048-card sample is evenly spaced (rows[int(i * 38627 / 2048)] over rows sorted by (img_id, oracle_id)); the seed flag has no effect. selfcontained-neardup here is the pre-fix probe build (inter chosen, quality degraded); the .nest now on disk is the post-fix rebuild (intra, 73127600 bytes). manifest_source_bytes for the avif rows is the letterboxed png intermediate (avif backend bug), the ratio column uses the jpeg source.
+provenance: measured; source: benchmark/experiments/02-av1-variants/measurements.json (measure_variants.py over benchmark/runs/<variant>); date: 2026-08-31; notes: media dirs were pruned after measurement; the .urna, manifest and build lock of every run remain under benchmark/runs/. quality on 96 frames (numpy default_rng(7).choice(2048, 96)): SSIMULACRA2 letterboxed source vs decoded frame, clip cosine drift source vs decoded. the 2048-card sample is evenly spaced (rows[int(i * 38627 / 2048)] over rows sorted by (img_id, oracle_id)); the seed flag has no effect. selfcontained-neardup here is the pre-fix probe build (inter chosen, quality degraded); the .urna now on disk is the post-fix rebuild (intra, 73127600 bytes). manifest_source_bytes for the avif rows is the letterboxed png intermediate (avif backend bug), the ratio column uses the jpeg source.
+identity: source sample-2048; unrecorded: the variant builds under benchmark/runs/ are local and were not published

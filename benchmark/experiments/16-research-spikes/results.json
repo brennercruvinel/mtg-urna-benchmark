@@ -5,7 +5,7 @@
   "status": "measured",
   "source": "benchmark/experiments/16-research-spikes/data/phash-reprints-2787.json (benchmark/tools/phash_prefilter.py), binary-siglip2-38k.json and binary-clip-38k.json (benchmark/tools/binary_rescoring.py over the forge embed cache of the 38627-card five-model build, siglip2 19eb720f and clip 1d4b9d5c), golden-reprints-2787.json (benchmark/tools/golden_frame.py)",
   "date": "2026-09-13",
-  "notes": "phash: 64-bit dct hash of the whole card (32x32 grayscale, top-left 8x8, median split), all 3,882,291 pairs of the 2787 reprint printings, ground truth = same illustration_id in the printings table (1563 pairs in 1359 groups). binary: 1000 query rows drawn with default_rng(7) from the 38627 image vectors, truth = exact f32 cosine top-10 with the query excluded, int8 = per-row absmax/127 (the nest encoding-3 scheme), binary = sign bits; recall@10 against the f32 truth. golden: the neardup inter recipe (keyint 16, scd off, crf 35, preset 6) over the same 2787 frames in three orders. cpu only; the five-model build held the gpu throughout, so the encode seconds are not a speed measurement."
+  "notes": "phash: 64-bit dct hash of the whole card (32x32 grayscale, top-left 8x8, median split), all 3,882,291 pairs of the 2787 reprint printings, ground truth = same illustration_id in the printings table (1563 pairs in 1359 groups). binary: 1000 query rows drawn with default_rng(7) from the 38627 image vectors, truth = exact f32 cosine top-10 with the query excluded, int8 = per-row absmax/127 (the urna encoding-3 scheme), binary = sign bits; recall@10 against the f32 truth. golden: the neardup inter recipe (keyint 16, scd off, crf 35, preset 6) over the same 2787 frames in three orders. cpu only; the five-model build held the gpu throughout, so the encode seconds are not a speed measurement."
  },
  "tables": [
   {
@@ -150,7 +150,7 @@
     },
     {
      "space": "siglip2 (768d)",
-     "index": "int8 exact (the nest ladder)",
+     "index": "int8 exact (the urna ladder)",
      "bytes_per_row": 768,
      "candidates": 38627,
      "recall": 0.9738
@@ -213,7 +213,7 @@
     },
     {
      "space": "clip-vit-b32 (512d)",
-     "index": "int8 exact (the nest ladder)",
+     "index": "int8 exact (the urna ladder)",
      "bytes_per_row": 512,
      "candidates": 38627,
      "recall": 0.9233
@@ -269,7 +269,7 @@
     }
    ],
    "notes": [
-    "int8 exact is what a nest built with dtype = int8 searches; the loss against f32 is the quantization alone, no index. the binary rows add a 1-bit index in front of it.",
+    "int8 exact is what a urna built with dtype = int8 searches; the loss against f32 is the quantization alone, no index. the binary rows add a 1-bit index in front of it.",
     "numpy timings are in the raw json and are not comparable to the rust runtime; the candidate count is the number that transfers."
    ]
   },
@@ -323,5 +323,28 @@
  ],
  "notes": [
   "av2 and cool-chic stay unmeasured: no encoder on this machine produces a stream the forge can decode today."
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full and reprints-2787",
+   "list": "benchmark/corpora/reprints-2787.json",
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 1000,
+   "rule": "image vectors of the corpus as queries"
+  },
+  "models": [
+   {
+    "preset": "siglip2",
+    "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c"
+   },
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [],
+  "unrecorded": "spike b read the forge embed cache of the five-model build, not a .urna file"
+ }
 }

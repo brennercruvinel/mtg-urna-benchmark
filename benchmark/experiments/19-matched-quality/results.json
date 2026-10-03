@@ -97,7 +97,7 @@
      "encode_s": 139.6
     },
     {
-     "backend": "avif, libaom speed 8 (the nest #137 stills profile)",
+     "backend": "avif, libaom speed 8 (the urna #137 stills profile)",
      "knob_above": 50,
      "ssim2_above": 62.23,
      "bytes_above": 69096173,
@@ -157,7 +157,7 @@
      "quality_delta": 0.0
     },
     {
-     "recipe": "avif q48 speed 8 (v03-avif-q48 candidate, nest #137 stills profile)",
+     "recipe": "avif q48 speed 8 (v03-avif-q48 candidate, urna #137 stills profile)",
      "ssim2": 58.63,
      "bytes": 61335914,
      "at_target_bytes": 68483647,
@@ -179,7 +179,7 @@
     }
    ],
    "notes": [
-    "the 13% of nest #137 compares the third row (58.63) against the first (63.22): 4.6 ssimulacra2 points apart. on the same ruler avif speed 8 needs 68.5 MB and the av1 still stream 67.8 MB.",
+    "the 13% of urna #137 compares the third row (58.63) against the first (63.22): 4.6 ssimulacra2 points apart. on the same ruler avif speed 8 needs 68.5 MB and the av1 still stream 67.8 MB.",
     "experiment 11's baseline was tune 4 (the silent fallback the battery itself found); the fixed forge encodes tune 3, byte-identical to the battery's svt-p6-crf35-tune3 row (71048645 bytes), two weeks apart on the same svt-av1 4.2.0.",
     "aom 3.14.1 to 3.15.0 at the same knob: 61434107 to 60529995 bytes and 60.72 to 60.20 ssim2. a minor version moved the bytes by 1.5%."
    ]
@@ -355,5 +355,15 @@
     }
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "frames-96 of sample-2048",
+   "list": "benchmark/corpora/frames-96.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "encoder outputs, measured and not kept"
+ }
 }

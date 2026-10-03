@@ -6,7 +6,7 @@ what the benchmark leans on, grouped by the question each group answers. the lis
 
 the compression lever of experiment 09 has a name and a lineage, and the lossless ceiling of experiment 08 has a published challenger.
 
-karadimitriou, k. "set redundancy, the enhanced compression model, and methods for compressing sets of similar images". phd thesis, louisiana state university, 1996. the term set redundancy comes from here: the information shared across a collection that a single-image codec cannot exploit. the nest forge's `order=cluster` plus `gop=inter` is one way to spend it.
+karadimitriou, k. "set redundancy, the enhanced compression model, and methods for compressing sets of similar images". phd thesis, louisiana state university, 1996. the term set redundancy comes from here: the information shared across a collection that a single-image codec cannot exploit. the urna forge's `order=cluster` plus `gop=inter` is one way to spend it.
 
 wu, h., sun, x., yang, j., zeng, w., wu, f. "lossless compression of jpeg coded photo collections". ieee transactions on image processing, 2016. https://www.microsoft.com/en-us/research/?p=265095
 
@@ -48,7 +48,7 @@ image and video coding for machines (icm and vcm) is the standards name for comp
 
 ## containers
 
-lance. https://github.com/lancedb/lance. the closest relative of the `.nest`: blob semantics, vectors, full text search. a lance dataset is a directory of fragments; a `.nest` is one file.
+lance. https://github.com/lancedb/lance. the closest relative of the `.urna`: blob semantics, vectors, full text search. a lance dataset is a directory of fragments; a `.urna` is one file.
 
 webdataset. https://github.com/webdataset/webdataset. tar shards for training pipelines, no search.
 
@@ -56,7 +56,7 @@ ffcv. https://github.com/libffcv/ffcv. training-oriented dataset format, no sear
 
 sqlite-vec. https://github.com/asg017/sqlite-vec. single-file vectors inside sqlite, brute force, no media.
 
-usearch. https://github.com/unum-cloud/usearch and hnswlib https://github.com/nmslib/hnswlib. the ann engines the nest runtime is benchmarked against elsewhere; here they matter as the reference for what an hnsw section is.
+usearch. https://github.com/unum-cloud/usearch and hnswlib https://github.com/nmslib/hnswlib. the ann engines the urna runtime is benchmarked against elsewhere; here they matter as the reference for what an hnsw section is.
 
 ## dedup
 

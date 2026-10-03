@@ -4,7 +4,7 @@
 # as the two lossy siblings so that every model x media-level cell is measured
 # on the same cards. run from the repo root:
 #
-#   python python/tools/nest_forge.py --spec benchmark/experiments/15-models-over-crf/specs/15-lossless.toml --sample 512
+#   python python/tools/urna_forge.py --spec benchmark/experiments/15-models-over-crf/specs/15-lossless.toml --sample 512
 #
 # wemm-2b and jina-v5-omni-nano execute model-repo code (pinned by sha256 in
 # the registry) and download from the hub when the cache is empty.

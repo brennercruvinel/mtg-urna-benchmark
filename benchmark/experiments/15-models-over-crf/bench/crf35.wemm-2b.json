@@ -1,6 +1,6 @@
 {
  "bench_schema_version": 1,
- "index": "benchmark/runs/15-crf35/mtgdataset.nest",
+ "index": "benchmark/runs/15-crf35/mtgdataset.urna",
  "n_query_items": 200,
  "ks": [
   1,

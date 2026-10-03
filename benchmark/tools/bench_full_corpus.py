@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """text-to-image hit@k with the whole corpus as queries, one image space at a time.
 
-nest_model_bench.py draws a few hundred query items and re-embeds their
+urna_model_bench.py draws a few hundred query items and re-embeds their
 source images for its stability tiers, which is what makes it expensive.
 this tool asks only the utility question and asks it of every item: embed
 one text query per card with the model's text tower, search the space the
-.nest already stores, and count the hits by chunk_id. 38627 queries give a
+.urna already stores, and count the hits by chunk_id. 38627 queries give a
 standard error of about 0.0015 on hit@1 instead of the 0.02 to 0.03 of a
 200-query run, and a bootstrap interval comes with the point.
 
-usage (repo root, NEST_REPO set, NEST_ALLOW_REMOTE_CODE for jina and wemm):
-  python3 benchmark/tools/bench_full_corpus.py candidates/stills-5models/mtgdataset.nest \\
+Reads the manifest of a candidate (<name>.manifest.json) or of a release
+(manifest.json + items.jsonl.gz), and refuses a model whose model_hash or dim
+does not match the file before it embeds a single query.
+
+usage (repo root, URNA_REPO set, URNA_ALLOW_REMOTE_CODE for jina and wemm):
+  python3 benchmark/tools/bench_full_corpus.py release/v0.3/stills-5models/mtgdataset.urna \\
       --preset siglip2 --template "artwork of the card {label}" --out data/full.siglip2.json
 """
 
@@ -25,18 +29,12 @@ from pathlib import Path
 import numpy as np
 
 import _bench_env as env
+from _release import check_items, check_model_identity, load_build_manifest
 
-env.add_nest_to_path()
-import nest  # noqa: E402
+env.add_urna_to_path()
+import urna  # noqa: E402
 
 from forge import model_registry  # noqa: E402
-
-
-def load_manifest(index: Path) -> dict:
-    mf = index.with_name(index.stem + ".manifest.json")
-    if not mf.is_file():
-        env.die(f"no manifest beside {index}: {mf}")
-    return json.loads(mf.read_text())
 
 
 def bootstrap_ci(hits: np.ndarray, n: int = 1000, seed: int = 7) -> tuple[float, float]:
@@ -57,7 +55,7 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
-    manifest = load_manifest(args.index)
+    manifest = load_build_manifest(args.index)
     items = manifest["items"]
     labels = [it.get("label") for it in items]
     if not all(labels):
@@ -73,11 +71,15 @@ def main() -> None:
         rng = np.random.default_rng(args.seed)
         idx = sorted(rng.choice(len(items), min(args.queries, len(items)), replace=False).tolist())
 
-    allowed = frozenset(p.strip() for p in os.environ.get("NEST_ALLOW_REMOTE_CODE", "").split(",") if p.strip())
+    allowed = frozenset(p.strip() for p in os.environ.get("URNA_ALLOW_REMOTE_CODE", "").split(",") if p.strip())
     recipe = manifest["models"][args.preset].get("recipe", {})
     adapter = model_registry.create_embedder(
         args.preset, allow_remote_code=allowed, allow_heavy=True, usage=recipe, batch_size=args.batch
     )
+    db = urna.open(str(args.index))
+    info = db.inspect()
+    check_items(items, info["n_chunks"], db.chunk_ids())
+    check_model_identity(args.preset, adapter.model_hash, adapter.dim, manifest, info.get("spaces") or [], spaces)
     texts = [args.template.format(label=labels[i]) for i in idx]
     t0 = time.perf_counter()
     chunks = []
@@ -86,11 +88,13 @@ def main() -> None:
     tq_full = np.concatenate(chunks)
     embed_s = time.perf_counter() - t0
 
-    db = nest.open(str(args.index))
     chunk_ids = db.chunk_ids()
     ks = sorted(args.k)
     report = {
         "index": env.rel(args.index),
+        "file_hash": info.get("file_hash"),
+        "content_hash": info.get("content_hash"),
+        "model_hash": adapter.model_hash,
         "preset": args.preset,
         "template": args.template,
         "queries": len(idx),

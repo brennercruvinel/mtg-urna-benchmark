@@ -3,7 +3,7 @@
  "title": "four image models over three media levels: who loses retrieval utility at crf50",
  "provenance": {
   "status": "measured",
-  "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (nest_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
+  "source": "benchmark/runs/15-{lossless,crf35,crf50}/mtgdataset.manifest.json (media.output_bytes, models.<preset>.items_per_s, timings.embed.<preset>) and benchmark/experiments/15-models-over-crf/bench/<variant>.<preset>.json (urna_model_bench.py, 200 queries, default_rng(7), ruler 'artwork of the card {label}', hits matched by chunk_id)",
   "date": "2026-09-12",
   "notes": "one evenly spaced --sample 512 of the mtgdataset corpus (512 items, chunker mtgdataset/1), the same cards in the three builds; potion text default plus four image spaces per build; embedding.image_input = decoded_media, so drift is source-embed vs the stored vector of the decoded frame; jina and wemm sliced to their validated mrl dim 256; mps fp16 for every torch model. the 200 query items are drawn by default_rng(7) over the 512, so identical across models and media levels. with n=200 one hit is 0.005 of txt@k; a delta needs to clear roughly 0.03 to 0.04 to be more than noise at this size."
  },
@@ -347,5 +347,36 @@
     "z = delta / sqrt(p_lossy(1-p_lossy)/200 + p_lossless(1-p_lossless)/200), the pooled binomial se of the difference; |z| below 2 is inside noise."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-512",
+   "rule": "evenly spaced --sample 512"
+  },
+  "queries": {
+   "n": 200,
+   "seed": 7,
+   "rule": "artwork of the card {label}"
+  },
+  "models": [
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   },
+   {
+    "preset": "siglip2",
+    "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c"
+   },
+   {
+    "preset": "jina-v5-omni-nano",
+    "model_hash": "sha256:59a01c7cfdafae618aec41dd815854d2714950d92b1aa8f8dae03628e9dfbf67"
+   },
+   {
+    "preset": "wemm-2b",
+    "model_hash": "sha256:6b428bc1759f60c791c93ae71874872ee208b756d5ce4f1ee65ce005e2b6efe6"
+   }
+  ],
+  "files": [],
+  "unrecorded": "the three 512-card builds under benchmark/runs/ are local and were not published"
+ }
 }

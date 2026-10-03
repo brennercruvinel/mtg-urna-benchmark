@@ -3,7 +3,7 @@
  "title": "random access: what one card costs to read back, per media backend",
  "provenance": {
   "status": "measured",
-  "source": "benchmark/experiments/17-random-access/data/latency-2026-09-12.json (quiet machine, the scratch script that became measure_latency.py), latency-2026-09-13.json and latency-2026-09-13-fixed.json (benchmark/tools/measure_latency.py, before and after nest pr #138, while the five-model 38k build held the gpu and 15.5 of 16 GB of swap), spawn-floor-2026-09-13.json (50 spawns of each decoder binary with --version)",
+  "source": "benchmark/experiments/17-random-access/data/latency-2026-09-12.json (quiet machine, the scratch script that became measure_latency.py), latency-2026-09-13.json and latency-2026-09-13-fixed.json (benchmark/tools/measure_latency.py, before and after urna pr #138, while the five-model 38k build held the gpu and 15.5 of 16 GB of swap), spawn-floor-2026-09-13.json (50 spawns of each decoder binary with --version)",
   "date": "2026-09-13",
   "notes": "200 item ordinals, numpy.random.default_rng(7).choice(38627, 200), the same ordinals for every file. every number is end to end through the forge read path as it exists: blob lookup in the mmap, a child process (ffmpeg, avifdec, djxl), the decode, and the array back in python. the av1 rows pay one export of the whole stream blob to a temp file first (export_once_ms), because ffmpeg needs a path; that is a one-time cost per open, not per card. apple m4, ffmpeg 9.0.1 with svt-av1, libavif 1.4.2 (dav1d 1.5.4), cjxl/djxl 0.12.0."
  },
@@ -12,7 +12,7 @@
  },
  "tables": [
   {
-   "title": "one card, quiet machine (2026-09-12, before nest #138)",
+   "title": "one card, quiet machine (2026-09-12, before urna #138)",
    "columns": [
     {
      "key": "backend",
@@ -92,7 +92,7 @@
    ]
   },
   {
-   "title": "one card under load (2026-09-13, wemm build running), before and after nest #138",
+   "title": "one card under load (2026-09-13, wemm build running), before and after urna #138",
    "columns": [
     {
      "key": "backend",
@@ -218,5 +218,20 @@
  ],
  "notes": [
   "a quiet-machine rerun of the after-#138 numbers is pending the end of the five-model build; the before/after pair above was taken under the same load, minutes apart."
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 200,
+   "seed": 7,
+   "rule": "item ordinals"
+  },
+  "models": [],
+  "files": [],
+  "unrecorded": "the four candidate files on disk were not hashed when measured"
+ }
 }

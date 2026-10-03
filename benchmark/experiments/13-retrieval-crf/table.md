@@ -4,7 +4,7 @@
 
 ### candidate sizes
 
-| candidate | nest bytes | nest GB | ratio_nest | media bytes | ratio_media | recipe | manifest source_bytes |
+| candidate | urna bytes | urna GB | ratio_urna | media bytes | ratio_media | recipe | manifest source_bytes |
 | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: |
 | retrieval av1 crf40 (gate fallback) | 980715452 | 0.981 | 4.05x | 941331425 | 4.22x | av1 crf auto over [40..60], visual floors dropped, drift floor 0.98; no step passed, fell back to 40; tune still, speed 6, intra, single segment | 3975063106 |
 | retrieval av1 crf50 (fixed) | 532671548 | 0.533 | 7.46x | 493287539 | 8.06x | av1 crf50 fixed, no gate; tune still, speed 6, intra, single segment | 3975063106 |
@@ -12,8 +12,8 @@
 | retrieval crf55 | 370108284 | 0.370 | 10.74x | 330724385 | 12.02x | svt-av1 crf 55 tune still preset 6, gop intra, one mp4 blob (built 2026-09-12) | 3975063106 |
 | retrieval crf60 | 229972284 | 0.230 | 17.28x | 190588356 | 20.86x | svt-av1 crf 60 tune still preset 6, gop intra, one mp4 blob (built 2026-09-12) | 3975063106 |
 
-- against the neardup release (1374447420 bytes) the avif candidate is -13.0% on the .nest and -13.6% media vs media; the i-frame battery predicted -12.4% at matched quality, so the prediction held, it did not come out larger as the old report claimed.
-- crf50 vs the still build (1356369020 bytes): -60.7% on the .nest; crf40 vs still: -27.7%.
+- against the neardup release (1374447420 bytes) the avif candidate is -13.0% on the .urna and -13.6% media vs media; the i-frame battery predicted -12.4% at matched quality, so the prediction held, it did not come out larger as the old report claimed.
+- crf50 vs the still build (1356369020 bytes): -60.7% on the .urna; crf40 vs still: -27.7%.
 
 ### crf auto ladder on the crf40 candidate (48-item stratified sample, 4 buckets x 12)
 
@@ -30,7 +30,7 @@
 
 ### utility on the five full-corpus files (100 queries, seed 7, 'artwork of the card {name}', clip space)
 
-| corpus | nest bytes | ratio_nest | identity@1 | drift p10 | txt@1 | txt@5 |
+| corpus | urna bytes | ratio_urna | identity@1 | drift p10 | txt@1 | txt@5 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | archive (lossless) | 3606304124 | 1.10x | 1.000 | 0.9974 | 0.050 | 0.130 |
 | neardup (crf35 class) | 1374447420 | 2.89x | 1.000 | 0.9706 | 0.070 | 0.140 |
@@ -42,4 +42,5 @@
 - visual quality at crf50 is genuinely bad (ssim2 p10 per bucket 9 to 34 in the ladder above); this file serves search, never display.
 - the bench matches hits by chunk_id (identity N3), not by ordinal, after the ordinal match zeroed neardup and archive.
 
-provenance: measured; source: candidates/{v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.nest sizes and manifests (media.output_bytes, media.crf_auto); the txt@k / drift table is transcribed from sections 13 and 14 of the 2026-09-03 report, no nest_model_bench output was saved; date: 2026-09-12; notes: sizes measured 2026-09-12 on the 2026-09-03 builds. the three candidates share content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b (chunker mtgdataset/1); the release twins carried c993ceda (spellbook/1) until the 2026-09-12 rebuild, since then they carry cb8fdf8f as well (experiment 05). the avif manifest recorded source_bytes 21450566470 and compression_ratio 18.61 because the avif backend summed its letterboxed png inputs instead of the jpeg sources (nest forge bug); the true source is 3975063106 bytes, giving 3.45x on media and 3.32x on the .nest. the 2026-09-03 report labelled MiB as GB for these three files (0.935, 0.508, 1.101); the exact bytes here replace them. the candidate manifest (local and the hugging face copy) was patched by hand on 2026-09-12 after the upstream fix (nest pr 132): media.source_bytes 3975063106, compression_ratio 3.45, letterboxed_input_bytes 21450566470; the manifest_source_bytes column keeps the historical value. crf55 and crf60 were built on 2026-09-12 to close the ladder; their utility numbers are in experiment 14.
+provenance: measured; source: candidates/{v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.urna sizes and manifests (media.output_bytes, media.crf_auto); the txt@k / drift table is transcribed from sections 13 and 14 of the 2026-09-03 report, no urna_model_bench output was saved; date: 2026-09-12; notes: sizes measured 2026-09-12 on the 2026-09-03 builds. the three candidates share content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b (chunker mtgdataset/1); the release twins carried c993ceda (spellbook/1) until the 2026-09-12 rebuild, since then they carry cb8fdf8f as well (experiment 05). the avif manifest recorded source_bytes 21450566470 and compression_ratio 18.61 because the avif backend summed its letterboxed png inputs instead of the jpeg sources (urna forge bug); the true source is 3975063106 bytes, giving 3.45x on media and 3.32x on the .urna. the 2026-09-03 report labelled MiB as GB for these three files (0.935, 0.508, 1.101); the exact bytes here replace them. the candidate manifest (local and the hugging face copy) was patched by hand on 2026-09-12 after the upstream fix (urna pr 132): media.source_bytes 3975063106, compression_ratio 3.45, letterboxed_input_bytes 21450566470; the manifest_source_bytes column keeps the historical value. crf55 and crf60 were built on 2026-09-12 to close the ladder; their utility numbers are in experiment 14.
+identity: source full; queries n=100 seed 7; models clip-vit-b32; files candidates/v03-retrieval/mtgdataset.urna (1fa37ef5), candidates/v03-retrieval-crf50/mtgdataset.urna (73f814b7), candidates/v03-avif-q48/mtgdataset.urna (dbc5734a); unrecorded: the txt@k columns are transcribed from the 2026-09-03 report

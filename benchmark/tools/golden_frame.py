@@ -12,7 +12,7 @@ preset 6, the neardup recipe without the probe):
   golden    groups contiguous, the most central member first (smallest mean
             phash hamming to the rest of its group), then the others
 
-usage (repo root, MTG_DATA and NEST_REPO set):
+usage (repo root, MTG_DATA and URNA_REPO set):
   python3 benchmark/tools/golden_frame.py --out data/golden.json
 """
 
@@ -29,7 +29,7 @@ from phash_prefilter import hamming_matrix, load_corpus, phash64
 
 import _bench_env as env
 
-env.add_nest_to_path()
+env.add_urna_to_path()
 from forge.image_encode import encode_av1  # noqa: E402
 
 CANVAS = (488, 680)

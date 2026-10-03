@@ -6,7 +6,7 @@
 # candidates/v03-retrieval-crf55; the same recipe is profiles/retrieval.toml.
 # not for serving display-quality images.
 #
-#   nest build --spec benchmark/experiments/13-retrieval-crf/specs/retrieval-crf50.toml
+#   urna build --spec benchmark/experiments/13-retrieval-crf/specs/retrieval-crf50.toml
 
 [corpus]
 name = "mtgdataset"

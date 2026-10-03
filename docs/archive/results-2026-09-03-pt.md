@@ -9,18 +9,18 @@
 > unit and provenance errors found in the 2026-09-11 audit and corrected in the generated report:
 >
 > - sec 8: "jxl-transcode -e 7 | 1.124x" is 1.115x (211018809 / 189231744); 1.124x belongs to -e 9. the prose "-11.1%" is e9 (-11.0%), e7 is -10.3%. "perde por 3.3-3.8x" is against the source jpeg; against jxl e9 the lossless video rows lose 3.7x to 4.3x.
-> - sec 13: "retrieval-only (crf40) | 0.935 GB" is MiB labelled GB; the file is 980715452 bytes = 0.981 GB. "4.22x" is the media-only ratio (3975063106 / 941331425); on the .nest it is 4.05x, while the other rows of the same table use .nest bytes. "-31% vs o still" is -27.7% with correct bytes; "-74% vs a fonte (4.22x)" is inconsistent with itself (4.22x means -76.3%; correct .nest ratio gives -75.3%; -74% is against the archive, not the source).
-> - sec 14: "crf50 | 0.508 GB | 7.82x" and "crf50: 508 MB" are MiB; the file is 532671548 bytes = 0.533 GB, 7.46x on the .nest (8.06x media only). "avif q48 | 1.101 GB | 3.61x": the .nest is 1195973116 bytes = 1.196 GB (3.32x; 3.45x media only); 1.101 is most likely the media blob in MiB. "-20% de bytes (1.101 vs 1.374 GB)" is -13.0% on .nest bytes (-13.6% media vs media), so the claim that the i-frame prediction (-12.4%) "materialized larger" does not hold; it came out about equal.
+> - sec 13: "retrieval-only (crf40) | 0.935 GB" is MiB labelled GB; the file is 980715452 bytes = 0.981 GB. "4.22x" is the media-only ratio (3975063106 / 941331425); on the .urna it is 4.05x, while the other rows of the same table use .urna bytes. "-31% vs o still" is -27.7% with correct bytes; "-74% vs a fonte (4.22x)" is inconsistent with itself (4.22x means -76.3%; correct .urna ratio gives -75.3%; -74% is against the archive, not the source).
+> - sec 14: "crf50 | 0.508 GB | 7.82x" and "crf50: 508 MB" are MiB; the file is 532671548 bytes = 0.533 GB, 7.46x on the .urna (8.06x media only). "avif q48 | 1.101 GB | 3.61x": the .urna is 1195973116 bytes = 1.196 GB (3.32x; 3.45x media only); 1.101 is most likely the media blob in MiB. "-20% de bytes (1.101 vs 1.374 GB)" is -13.0% on .urna bytes (-13.6% media vs media), so the claim that the i-frame prediction (-12.4%) "materialized larger" does not hold; it came out about equal.
 > - sec 6: "6.9 GB" and "3.0 GB" are GiB from du (allocated blocks); the sum of file sizes is 7201468217 bytes for images/ and 3107627150 for art_crop/. "~2.800 imagens orfas por classe" is wrong: those are the back faces, referenced by cards.image_uri_back (2824 rows); the true front orphans are 3 (38630 stems vs 38627 cards). the jsonl.gz files no longer exist.
 > - sec 9: "difere pouco no g unico (1.8pt)" is 1.8 MB (96.8 - 95.0); in percentage points vs intra it is 1.5 pp. the matrix compares bytes at fixed crf and is not quality matched.
-> - sec 5 vs sec 12: the same still file is quoted at 3.02x (media bytes) and 2.93x (nest bytes); the generated report always shows both ratios. sec 12 names the file mtgdataset.nest but it was built as spellbook.nest (chunker_version spellbook/1 inside).
+> - sec 5 vs sec 12: the same still file is quoted at 3.02x (media bytes) and 2.93x (urna bytes); the generated report always shows both ratios. sec 12 names the file mtgdataset.urna but it was built as spellbook.urna (chunker_version spellbook/1 inside).
 > - sec 2 and header: "seed 42" is a provenance error; the 2048-card sample is evenly spaced (rows[int(i * 38627 / 2048)] over rows sorted by (img_id, oracle_id)) and seed independent. the table omits three measured variants (selfcontained-neardup, selfcontained-jxl-transcode, selfcontained-avif) that the generated report carries.
-> - measurements.json and the avif candidate manifest: avif source_bytes (1138810355 on the sample, 21450566470 on the full corpus, ratio 18.61) are the letterboxed png intermediates, an avif backend bug in the nest forge; the ratios in the tables always use the jpeg source.
+> - measurements.json and the avif candidate manifest: avif source_bytes (1138810355 on the sample, 21450566470 on the full corpus, ratio 18.61) are the letterboxed png intermediates, an avif backend bug in the urna forge; the ratios in the tables always use the jpeg source.
 > - sec 8 also points at `benchmark/sample-2048/lossless/jxl-e9/`, which was deleted after measurement; only the results record survived (now `benchmark/experiments/08-lossless/battery.json`).
 
 # MTG dataset compression benchmark
 
-Data: 2026-08-31. Pipeline: `nest build --spec`, um TOML por variante em `benchmark/sample-2048/specs/`, saidas em `benchmark/sample-2048/runs/<variante>/`. Amostra: 2048 cartas, seed 42, deterministica e identica em todas as variantes.
+Data: 2026-08-31. Pipeline: `urna build --spec`, um TOML por variante em `benchmark/sample-2048/specs/`, saidas em `benchmark/sample-2048/runs/<variante>/`. Amostra: 2048 cartas, seed 42, deterministica e identica em todas as variantes.
 
 Metodologia de qualidade: 96 frames amostrados (seed 7), medidos uniformemente em duas dimensoes — SSIMULACRA2 (fonte letterboxed vs frame decodificado) e deriva de cosseno CLIP (embedding da fonte vs embedding do decodificado). Sao as mesmas duas metricas do gate `crf=auto`. Medidor: `benchmark/sample-2048/measure_variants.py`; dados brutos: `benchmark/sample-2048/measurements.json`; tabela regeneravel por `benchmark/sample-2048/render_report.py`.
 
@@ -65,7 +65,7 @@ Descricao das variantes:
 - av1-cluster-crf35: ordenacao semantica por CLIP (order=cluster) + probe de gop por segmento.
 - av1-auto-dualgate: crf escolhido pelo gate duplo; caiu em crf=30.
 - avif-crf35: baseline por-imagem via avifenc.
-- selfcontained-still-s6: mesmas configuracoes do still-s6, com a midia embutida no proprio .nest (`embed_media = true`, secao 0x17). Arquivo unico de 72.2 MB (midia 70.1 + 2.1 de indices/vetores/texto).
+- selfcontained-still-s6: mesmas configuracoes do still-s6, com a midia embutida no proprio .urna (`embed_media = true`, secao 0x17). Arquivo unico de 72.2 MB (midia 70.1 + 2.1 de indices/vetores/texto).
 
 [1] O ssim2 92.8 do jxl e artefato de medicao, nao perda do codec: PIL e djxl decodificam o mesmo JPEG com arredondamentos diferentes. A reversibilidade do transcode e bit-exata, verificada por sha256 no build (2048/2048).
 
@@ -78,7 +78,7 @@ Descricao das variantes:
 5. inter e cluster nao pagam neste corpus: inter custa +18% de bytes com qualidade inferior (cartas distintas equivalem a scene-cut por frame); a ordenacao semantica foi aplicada (permutacao registrada no manifest) mas o probe de gop escolheu intra, ganho ~0 — como o RFC-2 previa para corpus 1-por-oracle. A alavanca permanece para datasets com quase-duplicatas (scans, frames de video, catalogos de produto).
 6. avif-crf35 nao e comparavel ponto-a-ponto: a escala de qualidade do avifenc nao corresponde ao crf do SVT-AV1; 5.48x com p10=34.1 e outro ponto da curva, nao um vencedor.
 7. crf=auto caiu no menor crf da ladder: os floors (visual_floor_p10=85, visual_floor_min=72) sao inatingiveis para cartas 488x680 yuv420. Pendencia: recalibrar floors por classe de corpus, ou estender a ladder abaixo de 30.
-8. O custo do single-file e +3.0% sobre a midia: 2048 cartas em um unico .nest de 72.2 MB com busca offline; `nest media --export` reconstroi o mp4 com verificacao de hash.
+8. O custo do single-file e +3.0% sobre a midia: 2048 cartas em um unico .urna de 72.2 MB com busca offline; `urna media --export` reconstroi o mp4 com verificacao de hash.
 
 ## 4. Default recomendado
 
@@ -92,13 +92,13 @@ Receita recomendada (`mtgdataset-v03.toml`). Build: 18 min (encode 723 s, clip 2
 
 | metrica                    | v0.2 (legacy-v02/)                                            | v0.3 self-contained                                  |
 |----------------------------|---------------------------------------------------------------|------------------------------------------------------|
-| arquivos servidos          | .nest 58 MB + 38 mp4 (1.7 GB, art+normal) + manifest 12 MB + cache 176 MB | 1 arquivo: mtgdataset.nest, 1.356 GB     |
+| arquivos servidos          | .urna 58 MB + 38 mp4 (1.7 GB, art+normal) + manifest 12 MB + cache 176 MB | 1 arquivo: mtgdataset.urna, 1.356 GB     |
 | midia                      | 1.19 GB (classe normal), crf35/speed8/tune default            | 1.317 GB embutida (0x17), crf35/speed6/tune still    |
 | ssim2 p50 (amostra)        | ~52                                                           | ~63                                                  |
 | ratio vs fonte (3.98 GB)   | 3.34x                                                         | 3.02x                                                |
 | busca                      | ask/retrieve/search-space com sidecar obrigatorio             | identica, em arquivo unico                           |
 | indices no arquivo         | potion int8 + 2 espacos clip                                  | potion int8 + clip int8 + HNSW + BM25 + grafo        |
-| integridade                | —                                                             | `nest validate` prova o blob por sha256; `nest media --export` reconstroi o mp4 |
+| integridade                | —                                                             | `urna validate` prova o blob por sha256; `urna media --export` reconstroi o mp4 |
 
 Overhead do single-file: 39 MB de indices/texto/vetores sobre 1.317 GB de midia (+3.0%). O diretorio `mtgdataset-v03/mtgdataset.media/` (1.2 GB) e cache de build para `--rebuild-only`/`--resume`; deletavel.
 
@@ -113,7 +113,7 @@ Overhead do single-file: 39 MB de indices/texto/vetores sobre 1.317 GB de midia 
 
 - Formatos: Lance/LanceDB e o vizinho mais proximo (blob semantics, vetores, FTS), mas um dataset Lance e um diretorio, nao um arquivo. sqlite-vec+FTS5 e single-file, sem ANN nem midia. FFCV/WebDataset/TFRecord nao tem busca. Nenhum formato entrega midia codec-comprimida + HNSW + BM25 + grafo num unico arquivo mmap-avel.
 - Codecs: JXL destravou em 2026 (Chrome 145, Firefox 157). AV2 1.0 saiu em mai/2026, ~30% sobre AV1; encoder de referencia ainda impraticavel — o campo `codec` versionado do container cobre a migracao futura. WebP2 descontinuado. Codecs neurais (Cool-Chic v5, MLIC++) seguem research-grade; Cool-Chic e o unico com decoder C em CPU, candidato a spike.
-- Literatura de colecao-como-video: MST/album coding (2004-2015) mostra que o ganho relevante vem de predicao inter sobre quase-duplicatas ordenadas; nao ha ferramenta OSS moderna que faca isso. O par order=cluster + gop probe do nest implementa exatamente essa alavanca.
+- Literatura de colecao-como-video: MST/album coding (2004-2015) mostra que o ganho relevante vem de predicao inter sobre quase-duplicatas ordenadas; nao ha ferramenta OSS moderna que faca isso. O par order=cluster + gop probe do urna implementa exatamente essa alavanca.
 - Tecnicas anotadas para proximas rodadas: template-frame por cluster (golden frame AV1), travessia HNSW binaria com rescoring int8 (reducao de 32x no indice), dedup em cascata pHash -> CNN (imagededup/fastdup), busca de crf por alvo de metrica (estilo ab-av1).
 ## 8. Bateria lossless profunda (mesmos 2048 JPEGs, 211.0 MB)
 
@@ -169,7 +169,7 @@ Leituras:
    ordenacao semantica, inter empata com tune=still no corpus de cartas unicas e
    ganha -29% no corpus similar.
 3. gop LIMITADO (16) vence keyframe unico (85.0 vs 95.0 MB) e mantem o acesso
-   aleatorio decodificavel em <=16 frames — o requisito do nest.
+   aleatorio decodificavel em <=16 frames — o requisito do urna.
 4. tune=still (IQ) e inter nao empilham: o SVT so aceita IQ em all-intra/low-delay,
    e low-delay destroi a eficiencia (+21%).
 5. Embaralhado vs agrupado difere pouco no g unico (1.8pt): parte do ganho inter vem
@@ -242,7 +242,7 @@ perfil (confirmado acima); WebP2 foi abandonado (2024); JPEG AI neural reivindic
 
 ## 12. Tabela final — corpus completo, 38.627 cartas, um arquivo por linha
 
-Fonte: 3.975 GB de JPEG (normal/front). Cada linha e UM .nest auto-contido
+Fonte: 3.975 GB de JPEG (normal/front). Cada linha e UM .urna auto-contido
 (midia embutida 0x17 + potion + CLIP int8 + HNSW + BM25 + grafo), validado
 blob a blob por sha256. Os tres compartilham o MESMO content_hash
 (c993ceda...): citacoes estaveis entre os gemeos por construcao (N3).
@@ -267,7 +267,7 @@ spec cada; chave explicita sempre vence.
 
 ## 13. Candidato retrieval-only: crf sobe, a busca nao cai (2026-09-03)
 
-Hipotese: o gate duplo trava no floor VISUAL; se o .nest serve retrieval (nao
+Hipotese: o gate duplo trava no floor VISUAL; se o .urna serve retrieval (nao
 exibicao), o crf pode subir ate o sinal vetorial reclamar. Spec
 `specs/retrieval.toml`: floors visuais derrubados (-1e9), ladder [40..60],
 unico floor = drift clip p10 >= 0.98.
@@ -298,7 +298,7 @@ por bucket 40-56): este perfil nao serve imagem bonita, por contrato.
 Correcao de medicao que esta secao exigiu: o bench casava hit por
 `ordinal == offset_start`, que so vale em corpus de video single-shard sem
 reordenacao — neardup (cluster) e archive (per-image) zeravam. Agora casa
-por `chunk_id` (identidade N3, exposta em `NestFile.chunk_ids()`), e paths
+por `chunk_id` (identidade N3, exposta em `UrnaFile.chunk_ids()`), e paths
 `${SPELLBOOK_DATA}` dos manifests sanitizados sao expandidos por env var.
 Candidato validado blob a blob; content_hash novo (cb8fdf8f...) porque o
 rename mtgdataset mudou o chunker_version — rebuilds sob o nome novo nao

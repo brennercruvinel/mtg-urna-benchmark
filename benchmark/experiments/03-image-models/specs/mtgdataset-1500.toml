@@ -3,7 +3,7 @@
 # the dual quality gate, dedup, every capability in one file. run on the
 # evenly spaced 1500-card sample (benchmark/corpora/sample-1500.json):
 #
-#   nest build --spec benchmark/experiments/03-image-models/specs/mtgdataset-1500.toml --sample 1500
+#   urna build --spec benchmark/experiments/03-image-models/specs/mtgdataset-1500.toml --sample 1500
 #
 # wemm-2b needs its weights on disk; set model_path to your local copy.
 

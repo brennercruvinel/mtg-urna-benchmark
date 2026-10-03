@@ -38,8 +38,9 @@
 | 4 | 7552460 | bed0339b4887e8d5 | 0 | 23.1 |
 | 16 | 7552460 | bed0339b4887e8d5 | 0 | 21.1 |
 
-- avifenc's default is -j all. the forge did not pass -j before nest #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file).
+- avifenc's default is -j all. the forge did not pass -j before urna #139, so the stills profile's bytes depended on the core count of the build machine (one core: a different file).
 
 - cross-version and cross-platform determinism are not measured here: one machine, one toolchain. the manifest's toolchain record (encoder version and params) remains the only guard for those, and a release's file_hash is reproducible only under that record.
 
 provenance: measured; source: benchmark/experiments/18-encoder-determinism/data/determinism-2026-09-13.json (benchmark/tools/encoder_determinism.py --n 256) and avif-jobs-2026-09-13.json (the extra avifenc -j sweep, same 256 letterboxed pngs); date: 2026-09-13; notes: 256 cards, every eighth id of sample-2048. one toolchain: apple m4, macos 26.6, ffmpeg 9.0.1 with svt-av1, libavif 1.4.2 (aom 3.15.0), cjxl 0.12.0. the forge's own parameters per backend (encode_av1 with lp as the knob; avifenc and cjxl called directly with the backend's flags plus the thread flag). sha256 over the mp4 for av1, over the concatenated per-image outputs for avif and jxl. wall seconds were taken while the five-model build held the gpu; they are not a speed benchmark.
+identity: source every eighth id of sample-2048; unrecorded: encoder outputs; the hash of each run is in data/

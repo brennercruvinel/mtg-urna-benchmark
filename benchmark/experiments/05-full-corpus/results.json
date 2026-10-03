@@ -1,11 +1,11 @@
 {
  "experiment": "05-full-corpus",
- "title": "the full corpus, 38627 cards, one self-contained .nest per row",
+ "title": "the full corpus, 38627 cards, one self-contained .urna per row",
  "provenance": {
   "status": "measured",
-  "source": "release/v0.3/{neardup,archive}/mtgdataset.nest sizes and their build manifests (the historical rows from the 2026-09-03 builds, the rebuilt rows from the 2026-09-12 builds); the still row from the spellbook-v03 build sidecars kept outside this repo (that file was dropped from the release set); the legacy v0.2 row is transcribed, no artifact survives",
+  "source": "release/v0.3/{neardup,archive}/mtgdataset.urna sizes and their build manifests (the historical rows from the 2026-09-03 builds, the rebuilt rows from the 2026-09-12 builds); the still row from the spellbook-v03 build sidecars kept outside this repo (that file was dropped from the release set); the legacy v0.2 row is transcribed, no artifact survives",
   "date": "2026-09-12",
-  "notes": "the historical rows were measured on builds that shared content_hash sha256:c993ceda5b42749487ebd20df7f9dc10e321f3f6099dc73e8008f6524b98a582 and chunker_version spellbook/1 inside the file while their sidecars said mtgdataset/1 (renamed after the build). on 2026-09-12 both releases were rebuilt from profiles/ under the mtgdataset name: the rebuilt files carry content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b and chunker_version mtgdataset/1 (read with nest inspect), the same identity as the three candidates of experiment 13, and their media blobs are byte-identical to the old ones; the old c993ceda twins were replaced and no longer exist. ratio_nest divides the source by the whole file, ratio_media by the embedded media blob; the 2026-09-03 report mixed the two bases (3.02x vs 2.93x for the same still file). the stills profile got its own release on 2026-09-12 (single av1 stream, no clustering): 14 kB less media than neardup, same content_hash; its clip space came from the shared embed cache, so the build was the media stage alone."
+  "notes": "the historical rows were measured on builds that shared content_hash sha256:c993ceda5b42749487ebd20df7f9dc10e321f3f6099dc73e8008f6524b98a582 and chunker_version spellbook/1 inside the file while their sidecars said mtgdataset/1 (renamed after the build). on 2026-09-12 both releases were rebuilt from profiles/ under the mtgdataset name: the rebuilt files carry content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b and chunker_version mtgdataset/1 (read with urna inspect), the same identity as the three candidates of experiment 13, and their media blobs are byte-identical to the old ones; the old c993ceda twins were replaced and no longer exist. ratio_urna divides the source by the whole file, ratio_media by the embedded media blob; the 2026-09-03 report mixed the two bases (3.02x vs 2.93x for the same still file). the stills profile got its own release on 2026-09-12 (single av1 stream, no clustering): 14 kB less media than neardup, same content_hash; its clip space came from the shared embed cache, so the build was the media stage alone."
  },
  "constants": {
   "source_bytes": 3975063106
@@ -19,22 +19,22 @@
      "label": "build"
     },
     {
-     "key": "nest_bytes",
-     "label": "nest bytes",
+     "key": "urna_bytes",
+     "label": "urna bytes",
      "fmt": "int"
     },
     {
-     "key": "nest_gb",
-     "label": "nest GB",
+     "key": "urna_gb",
+     "label": "urna GB",
      "fmt": "gb",
-     "from": "nest_bytes"
+     "from": "urna_bytes"
     },
     {
-     "key": "ratio_nest",
-     "label": "ratio_nest",
+     "key": "ratio_urna",
+     "label": "ratio_urna",
      "fmt": "ratio",
      "num": "source_bytes",
-     "den": "nest_bytes"
+     "den": "urna_bytes"
     },
     {
      "key": "media_bytes",
@@ -69,7 +69,7 @@
    "rows": [
     {
      "build": "neardup",
-     "nest_bytes": 1374447420,
+     "urna_bytes": 1374447420,
      "media_bytes": 1335061967,
      "recipe": "av1 crf35 speed6 tune still, order cluster, gop auto per segment (19 segments, 0 chose intra), embed_media",
      "tune_resolved": null,
@@ -78,7 +78,7 @@
     },
     {
      "build": "still (v03)",
-     "nest_bytes": 1356369020,
+     "urna_bytes": 1356369020,
      "media_bytes": 1316985239,
      "recipe": "av1 crf35 speed6 tune still, gop intra, single segment, embed_media",
      "tune_resolved": null,
@@ -87,7 +87,7 @@
     },
     {
      "build": "archive",
-     "nest_bytes": 3606304124,
+     "urna_bytes": 3606304124,
      "media_bytes": 3563328079,
      "recipe": "jxl-transcode (cjxl --lossless_jpeg=1), 38627/38627 round-trips verified, embed_media",
      "tune_resolved": null,
@@ -96,16 +96,16 @@
     },
     {
      "build": "legacy v0.2",
-     "nest_bytes": null,
+     "urna_bytes": null,
      "media_bytes": null,
      "recipe": "av1 crf35 speed8 tune default, 38 loose mp4 sidecars (normal + art classes)",
      "tune_resolved": null,
      "build_wall_s": null,
-     "state": "transcribed: 58 MB .nest + 1.7 GB mp4 + 12 MB manifest + 176 MB cache; normal-class media 1.19 GB (3.34x); no artifact survives"
+     "state": "transcribed: 58 MB .urna + 1.7 GB mp4 + 12 MB manifest + 176 MB cache; normal-class media 1.19 GB (3.34x); no artifact survives"
     },
     {
      "build": "neardup (rebuilt)",
-     "nest_bytes": 1374447548,
+     "urna_bytes": 1374447548,
      "media_bytes": 1335061967,
      "recipe": "av1 crf35 speed6 tune still, order cluster, gop auto per segment (19 segments, inter vetoed on all), embed_media, chunker mtgdataset/1",
      "tune_resolved": 3,
@@ -114,7 +114,7 @@
     },
     {
      "build": "archive (rebuilt)",
-     "nest_bytes": 3606342844,
+     "urna_bytes": 3606342844,
      "media_bytes": 3563328079,
      "recipe": "jxl-transcode (cjxl --lossless_jpeg=1), 38627/38627 round-trips verified, embed_media, chunker mtgdataset/1",
      "tune_resolved": null,
@@ -123,7 +123,7 @@
     },
     {
      "build": "stills (rebuilt)",
-     "nest_bytes": 1374431484,
+     "urna_bytes": 1374431484,
      "media_bytes": 1335047579,
      "recipe": "av1 crf35 speed6 tune still, gop intra, single stream, embed_media; clip vectors from the shared cache",
      "tune_resolved": null,
@@ -138,5 +138,41 @@
     "the rebuilt rows have no single wall time; stage timings from their manifests: neardup rows 27.7 s, media 1649.1 s, clip embed 281.1 s; archive media about 6 min, clip embed 872.7 s. the +128 and +38,720 bytes against the historical rows are the longer title, the chunker string and the media://mtgdataset-* uris; media bytes are identical."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": null,
+  "models": [
+   {
+    "preset": "potion",
+    "model_hash": "sha256:8f2eb91a754b4da59cdd8223d0ba196185fed1bb6f092fd2be0ff02b893b1c98"
+   },
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [
+   {
+    "path": "release/v0.3/neardup/mtgdataset.urna",
+    "file_hash": "sha256:071233c549f45644a3ce9a3bc581e0fe564ed30f70a01b30f726efb3b5c50132",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "release/v0.3/archive/mtgdataset.urna",
+    "file_hash": "sha256:882427094aa6035aa1ddf6abd26444f1598345fb9be3a66612f50b99be377eeb",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "release/v0.3/stills/mtgdataset.urna",
+    "file_hash": "sha256:6f12cadb79563a506ac8193befe7ef7fc3364297787cd3e73541e8e222578fd5",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ],
+  "unrecorded": "the historical 2026-09-03 rows and the v0.2 row: those files are gone"
+ }
 }

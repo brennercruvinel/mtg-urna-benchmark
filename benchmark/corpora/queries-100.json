@@ -2,7 +2,7 @@
  "name": "queries-100",
  "n": 100,
  "seed": 7,
- "rule": "sorted(numpy.random.default_rng(7).choice(38627, size=100, replace=False)) as ordinals of the full corpus, mapped to keys (nest python/tools/nest_model_bench.py pick_items with --queries 100 --seed 7; items filtered to those with image_path, which is all of them)",
+ "rule": "sorted(numpy.random.default_rng(7).choice(38627, size=100, replace=False)) as ordinals of the full corpus, mapped to keys (urna python/tools/urna_model_bench.py pick_items with --queries 100 --seed 7; items filtered to those with image_path, which is all of them)",
  "derived_from": "${MTG_DATA}/mtg.sqlite, cards WHERE image_uri IS NOT NULL, sorted by (img_id, oracle_id)",
  "ordinals": [
   144,

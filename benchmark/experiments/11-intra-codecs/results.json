@@ -332,5 +332,15 @@
     "the svt-p6-crf35 row reproduces the av1-still-s6-crf35 variant of 02-av1-variants byte for byte (70092669 bytes)."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "frames-96 of sample-2048",
+   "list": "benchmark/corpora/frames-96.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "encoder outputs; one sample per encoder is tracked under samples/"
+ }
 }

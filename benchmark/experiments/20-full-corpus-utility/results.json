@@ -3,7 +3,7 @@
  "title": "text-to-image hit@k with every card as a query, four models on the 38627-card file",
  "provenance": {
   "status": "measured",
-  "source": "benchmark/experiments/20-full-corpus-utility/data/full.<preset>.json (benchmark/tools/bench_full_corpus.py over release/v0.3/stills-5models/mtgdataset.nest, file_hash 6b2bc21a); build timings from candidates/stills-5models/mtgdataset.manifest.json",
+  "source": "benchmark/experiments/20-full-corpus-utility/data/full.<preset>.json (benchmark/tools/bench_full_corpus.py over release/v0.3/stills-5models/mtgdataset.urna, file_hash 6b2bc21a); build timings from candidates/stills-5models/mtgdataset.manifest.json",
   "date": "2026-09-14",
   "notes": "one query per card, 'artwork of the card {name}' through each model's text tower, searched in that model's image space inside the file (int8 rows, the space the file serves); a hit is the card's own chunk_id in the top k. 38627 queries, so the standard error on hit@1 is 0.0015 to 0.0024 and the 95% interval is a 1000-draw bootstrap. the 512-card column is experiment 15's lossless row (200 queries, se 0.02 to 0.03). media is the stills recipe (av1 all-intra crf35 tune still), the same as the stills release. apple m4 mps fp16; the text embed rate is the bench's, the image rate is the forge's from the build manifest."
  },
@@ -289,5 +289,45 @@
     "the filtered column drops 'name // name' rows from the top-20 before taking the first; it is what a corpus without the art series would score. the art-series queries themselves are excluded from both columns."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 38627,
+   "rule": "artwork of the card {name}, one per card"
+  },
+  "models": [
+   {
+    "preset": "potion",
+    "model_hash": "sha256:8f2eb91a754b4da59cdd8223d0ba196185fed1bb6f092fd2be0ff02b893b1c98"
+   },
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   },
+   {
+    "preset": "siglip2",
+    "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c"
+   },
+   {
+    "preset": "jina-v5-omni-nano",
+    "model_hash": "sha256:59a01c7cfdafae618aec41dd815854d2714950d92b1aa8f8dae03628e9dfbf67"
+   },
+   {
+    "preset": "wemm-2b",
+    "model_hash": "sha256:6b428bc1759f60c791c93ae71874872ee208b756d5ce4f1ee65ce005e2b6efe6"
+   }
+  ],
+  "files": [
+   {
+    "path": "release/v0.3/stills-5models/mtgdataset.urna",
+    "file_hash": "sha256:6b2bc21a2057bccea054fa331ee91c04f2b7ee80156f01144399c3065e7d4b3f",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ]
+ }
 }

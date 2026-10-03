@@ -22,3 +22,4 @@
 - the lossless video rows lose 3.3x to 3.8x against the source jpeg (3.7x to 4.3x against jxl-transcode e9); semantic ordering moves ffv1 by 137 kB.
 
 provenance: measured; source: benchmark/experiments/08-lossless/battery.json (lossless_battery.py, 2026-08-31) plus the jxl-transcode row of 02-av1-variants/measurements.json; date: 2026-08-31; notes: the encoded generations (jxl-e9/, jpegtran-*/, webp-lossless/, video-*.mkv, jxl-plus-zstd.tar.zst) were deleted after measurement; only the record survives. the 2026-09-03 report attributed 1.124x to e7; e7 is 1.115x and 1.124x is e9.
+identity: source sample-2048; unrecorded: the encoded generations were deleted after measurement

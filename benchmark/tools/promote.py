@@ -2,24 +2,32 @@
 """promote a validated candidate build to release/<version>/<profile>/.
 
 what a release dir holds:
-  mtgdataset.nest    the artifact itself (gitignored, hosted on hugging face)
+  mtgdataset.urna    the artifact itself (gitignored, hosted on hugging face)
   build.lock.json    the forge build lock (packages, tools, models, resolved spec)
   manifest.json      the forge manifest with items[] stripped
   items.jsonl.gz     the stripped items[], one json object per line (gitignored)
-  SHA256SUMS         sha256 of the .nest and of every sidecar above
-  CITATION_KEY       identity of the file, read from the .nest with `nest inspect --json`
+  SHA256SUMS         sha256 of the .urna and of every sidecar above
+  CITATION_KEY       identity of the file, read from the .urna with `urna inspect --json`;
+                     built_with is the urna that built the file: kept from an existing key
+                     only when that key names the same file_hash, else given with
+                     --built-with (the sidecars do not record it); read_with the urna that read it
 
 subcommands:
-  promote  <candidate-dir> <version> <profile> [--dry-run] [--force]
-           copies the .nest, strips the manifest, writes the sums and the key.
-           refuses to overwrite an existing release dir unless --force.
+  promote  <candidate-dir> <version> <profile> [--built-with "urna X.Y.Z"] [--dry-run] [--force]
+           validates the candidate (urna validate, the manifest's item count against the
+           file's chunks), copies the .urna, strips the manifest, writes the sums and the
+           key, then checks the result. refuses to overwrite a release dir unless --force.
+  check    <release-dir> [...]         a complete release: the .urna, the three sidecars and
+                                       CITATION_KEY present, each listed in SHA256SUMS with a
+                                       matching digest, and CITATION_KEY's file_hash and
+                                       content_hash equal to the file's.
   strip    <manifest.json> <out-dir>   only the manifest split (used to convert
            legacy release sidecars in place).
-  key      <file.nest> [out]           only CITATION_KEY (stdout when out is omitted).
+  key      <file.urna> [out] [--built-with ...]  only CITATION_KEY (stdout when out is omitted).
   sums     <release-dir>               rewrite SHA256SUMS for an existing release dir.
 
-the candidate dir is what the forge wrote: <name>.nest, <name>.manifest.json,
-<name>.build.lock.json. `nest` must be on PATH (or NEST_BIN set).
+the candidate dir is what the forge wrote: <name>.urna, <name>.manifest.json,
+<name>.build.lock.json. `urna` must be on PATH (or URNA_BIN set).
 
 usage (repo root):
   python3 benchmark/tools/promote.py promote candidates/v03-retrieval-crf50 v0.3 retrieval --dry-run
@@ -40,7 +48,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bench_env as env  # noqa: E402
 
-NEST_NAME = "mtgdataset.nest"
+URNA_NAME = "mtgdataset.urna"
 SIDECARS = ("build.lock.json", "manifest.json", "items.jsonl.gz")
 KEY_FIELDS = ("content_hash", "file_hash", "chunker_version", "title", "n_chunks")
 
@@ -53,27 +61,54 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def nest_bin() -> str:
-    b = os.environ.get("NEST_BIN") or shutil.which("nest")
+def urna_bin() -> str:
+    b = os.environ.get("URNA_BIN") or shutil.which("urna")
     if not b:
-        env.die("nest cli not found; put it on PATH or export NEST_BIN=/path/to/nest")
+        env.die("urna cli not found; put it on PATH or export URNA_BIN=/path/to/urna")
     return b
 
 
-def inspect(nest: Path) -> dict:
-    r = subprocess.run([nest_bin(), "inspect", "--json", str(nest)], capture_output=True, text=True)
+def inspect(urna: Path) -> dict:
+    r = subprocess.run([urna_bin(), "inspect", "--json", str(urna)], capture_output=True, text=True)
     if r.returncode != 0:
-        env.die(f"nest inspect failed on {env.rel(nest)}: {r.stderr.strip()[:300]}")
+        env.die(f"urna inspect failed on {env.rel(urna)}: {r.stderr.strip()[:300]}")
     return json.loads(r.stdout)
 
 
-def nest_version() -> str:
-    r = subprocess.run([nest_bin(), "--version"], capture_output=True, text=True)
+def urna_version() -> str:
+    r = subprocess.run([urna_bin(), "--version"], capture_output=True, text=True)
     return r.stdout.strip() or "unknown"
 
 
-def citation_key(nest: Path) -> str:
-    info = inspect(nest)
+def validate(urna: Path) -> None:
+    r = subprocess.run([urna_bin(), "validate", str(urna)], capture_output=True, text=True)
+    if r.returncode != 0:
+        env.die(f"urna validate failed on {env.rel(urna)}: {(r.stdout + r.stderr).strip()[-300:]}")
+
+
+def key_fields(key_path: Path) -> dict[str, str]:
+    if not key_path.is_file():
+        return {}
+    return dict(line.split(" = ", 1) for line in key_path.read_text().splitlines() if " = " in line)
+
+
+def resolve_built_with(key_path: Path, file_hash: str, given: str | None) -> str:
+    """built_with is kept from an existing key only when that key names the same file."""
+    old = key_fields(key_path)
+    same_file = old.get("file_hash") == file_hash and old.get("built_with")
+    if same_file and given and given != old["built_with"]:
+        env.die(f"the existing CITATION_KEY says {old['built_with']} for this file; --built-with {given} disagrees")
+    if same_file:
+        return old["built_with"]
+    if given:
+        return given
+    if old:
+        env.die('the existing CITATION_KEY names another file; pass --built-with "urna X.Y.Z" for this one')
+    env.die('pass --built-with "urna X.Y.Z": the sidecars do not record the urna that built the file')
+
+
+def citation_key(urna: Path, built_with: str) -> str:
+    info = inspect(urna)
     man = info.get("manifest", {})
     values = {
         "content_hash": info.get("content_hash"),
@@ -84,11 +119,52 @@ def citation_key(nest: Path) -> str:
     }
     missing = [k for k in KEY_FIELDS if values[k] in (None, "")]
     if missing:
-        env.die(f"nest inspect did not report {missing} for {env.rel(nest)}")
+        env.die(f"urna inspect did not report {missing} for {env.rel(urna)}")
     lines = [f"{k} = {values[k]}" for k in KEY_FIELDS]
-    lines.append(f"built_with = {nest_version()}")
-    lines.append("read_with = nest inspect --json")
+    lines.append(f"built_with = {built_with}")
+    lines.append(f"read_with = {urna_version()} inspect --json")
     return "\n".join(lines) + "\n"
+
+
+def check(release_dir: Path) -> bool:
+    """A complete release: the .urna and every sidecar present and listed in SHA256SUMS, every
+    listed digest matching, and CITATION_KEY naming the file's file_hash and content_hash."""
+    ok = True
+    required = (URNA_NAME, *SIDECARS)
+    for name in (*required, "SHA256SUMS", "CITATION_KEY"):
+        if not (release_dir / name).is_file():
+            print(f"  missing {name}")
+            ok = False
+    sums = release_dir / "SHA256SUMS"
+    if not sums.is_file():
+        print(f"{env.rel(release_dir)}: MISMATCH")
+        return False
+    listed = {line.split(maxsplit=1)[1].strip() for line in sums.read_text().splitlines() if line.strip()}
+    for name in required:
+        if name not in listed:
+            print(f"  SHA256SUMS has no entry for {name}")
+            ok = False
+    for line in sums.read_text().splitlines():
+        if not line.strip():
+            continue
+        digest, name = line.split(maxsplit=1)
+        p = release_dir / name.strip()
+        if not p.is_file():
+            print(f"  missing {name}")
+            ok = False
+        elif sha256(p) != digest:
+            print(f"  {name}: sha256 differs from SHA256SUMS")
+            ok = False
+    urna = release_dir / URNA_NAME
+    key = (release_dir / "CITATION_KEY").read_text() if (release_dir / "CITATION_KEY").is_file() else ""
+    if urna.is_file() and key:
+        info = inspect(urna)
+        for field in ("file_hash", "content_hash"):
+            if f"{field} = {info.get(field)}" not in key:
+                print(f"  CITATION_KEY {field} differs from the file ({info.get(field)})")
+                ok = False
+    print(f"{env.rel(release_dir)}: {'ok' if ok else 'MISMATCH'}")
+    return ok
 
 
 def strip_manifest(src: Path, out_dir: Path, dry_run: bool = False) -> tuple[int, int]:
@@ -112,7 +188,7 @@ def strip_manifest(src: Path, out_dir: Path, dry_run: bool = False) -> tuple[int
 
 def write_sums(release_dir: Path) -> str:
     lines = []
-    for name in (NEST_NAME, *SIDECARS):
+    for name in (URNA_NAME, *SIDECARS):
         p = release_dir / name
         if p.is_file():
             lines.append(f"{sha256(p)}  {name}")
@@ -122,48 +198,53 @@ def write_sums(release_dir: Path) -> str:
 
 
 def candidate_files(cand: Path) -> tuple[Path, Path, Path]:
-    nests = sorted(cand.glob("*.nest"))
-    if len(nests) != 1:
-        env.die(f"{env.rel(cand)}: expected exactly one .nest, found {len(nests)}")
-    nest = nests[0]
-    stem = nest.stem
+    urnas = sorted(cand.glob("*.urna"))
+    if len(urnas) != 1:
+        env.die(f"{env.rel(cand)}: expected exactly one .urna, found {len(urnas)}")
+    urna = urnas[0]
+    stem = urna.stem
     manifest = cand / f"{stem}.manifest.json"
     lock = cand / f"{stem}.build.lock.json"
     for p in (manifest, lock):
         if not p.is_file():
             env.die(f"{env.rel(cand)}: missing {p.name}")
-    return nest, manifest, lock
+    return urna, manifest, lock
 
 
 def cmd_promote(args) -> int:
     cand = Path(args.candidate)
-    nest, manifest, lock = candidate_files(cand)
+    urna, manifest, lock = candidate_files(cand)
     dest = env.RELEASE / args.version / args.profile
     if dest.exists() and any(dest.iterdir()) and not args.force:
         env.die(f"{env.rel(dest)} exists and is not empty; pass --force to overwrite")
-    info = inspect(nest)
+    validate(urna)
+    info = inspect(urna)
+    n_chunks = info.get("n_chunks")
+    n_items, _ = strip_manifest(manifest, dest, dry_run=True)
+    if n_chunks is not None and n_items != n_chunks:
+        env.die(f"{manifest.name} lists {n_items} items, the file holds {n_chunks} chunks")
+    built_with = resolve_built_with(dest / "CITATION_KEY", "sha256:" + sha256(urna), args.built_with)
     print(f"candidate: {env.rel(cand)}")
-    print(f"  nest: {nest.name} {nest.stat().st_size} bytes, content_hash {info.get('content_hash')}")
+    print(f"  urna: {urna.name} {urna.stat().st_size} bytes, content_hash {info.get('content_hash')}")
     print(
         f"  title: {info.get('manifest', {}).get('title')}; chunker {info.get('manifest', {}).get('chunker_version')}"
     )
-    n_items, _ = strip_manifest(manifest, dest, dry_run=True)
     print(f"  manifest: {manifest.name} ({manifest.stat().st_size} bytes, {n_items} items to strip)")
     print(f"destination: {env.rel(dest)}")
-    print("  files: " + ", ".join((NEST_NAME, *SIDECARS, "SHA256SUMS", "CITATION_KEY")))
+    print("  files: " + ", ".join((URNA_NAME, *SIDECARS, "SHA256SUMS", "CITATION_KEY")))
     if args.dry_run:
         print("dry run: nothing written")
         print("CITATION_KEY would read:")
-        print(citation_key(nest), end="")
+        print(citation_key(urna, built_with), end="")
         return 0
     dest.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(nest, dest / NEST_NAME)
+    shutil.copy2(urna, dest / URNA_NAME)
     shutil.copy2(lock, dest / "build.lock.json")
     strip_manifest(manifest, dest)
-    (dest / "CITATION_KEY").write_text(citation_key(dest / NEST_NAME))
+    (dest / "CITATION_KEY").write_text(citation_key(dest / URNA_NAME, built_with))
     write_sums(dest)
     print(f"promoted to {env.rel(dest)}")
-    return 0
+    return 0 if check(dest) else 1
 
 
 def main() -> int:
@@ -175,12 +256,16 @@ def main() -> int:
     p.add_argument("profile")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--force", action="store_true")
+    p.add_argument("--built-with", help='the urna that built the file, e.g. "urna 0.5.1"; kept from an existing key')
+    c = sub.add_parser("check", help="verify release dirs against SHA256SUMS and CITATION_KEY")
+    c.add_argument("release_dirs", nargs="+")
     s = sub.add_parser("strip", help="split a manifest into manifest.json + items.jsonl.gz")
     s.add_argument("manifest")
     s.add_argument("out_dir")
-    k = sub.add_parser("key", help="print or write CITATION_KEY for a .nest")
-    k.add_argument("nest")
+    k = sub.add_parser("key", help="print or write CITATION_KEY for a .urna")
+    k.add_argument("urna")
     k.add_argument("out", nargs="?")
+    k.add_argument("--built-with", help="the urna that built the file; kept from an existing key at out")
     m = sub.add_parser("sums", help="rewrite SHA256SUMS of a release dir")
     m.add_argument("release_dir")
     args = ap.parse_args()
@@ -190,8 +275,12 @@ def main() -> int:
         n, size = strip_manifest(Path(args.manifest), Path(args.out_dir))
         print(f"stripped {n} items into {env.rel(Path(args.out_dir) / 'items.jsonl.gz')} ({size} bytes)")
         return 0
+    if args.cmd == "check":
+        return 0 if all([check(Path(d)) for d in args.release_dirs]) else 1
     if args.cmd == "key":
-        text = citation_key(Path(args.nest))
+        key_path = Path(args.out) if args.out else Path("/nonexistent/CITATION_KEY")
+        built_with = resolve_built_with(key_path, "sha256:" + sha256(Path(args.urna)), args.built_with)
+        text = citation_key(Path(args.urna), built_with)
         if args.out:
             Path(args.out).write_text(text)
             print(f"written: {env.rel(Path(args.out))}")

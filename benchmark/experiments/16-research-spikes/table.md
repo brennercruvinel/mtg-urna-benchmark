@@ -23,7 +23,7 @@
 | space | index | bytes per row | rows scored | recall@10 |
 | --- | --- | ---: | ---: | ---: |
 | siglip2 (768d) | f32 exact (truth) | 3072 | 38627 | 1.000 |
-| siglip2 (768d) | int8 exact (the nest ladder) | 768 | 38627 | 0.974 |
+| siglip2 (768d) | int8 exact (the urna ladder) | 768 | 38627 | 0.974 |
 | siglip2 (768d) | binary alone, hamming top-10 | 96 | 10 | 0.496 |
 | siglip2 (768d) | binary top-20, int8 rescoring | 864 | 20 | 0.654 |
 | siglip2 (768d) | binary top-50, int8 rescoring | 864 | 50 | 0.811 |
@@ -32,7 +32,7 @@
 | siglip2 (768d) | binary top-400, int8 rescoring | 864 | 400 | 0.957 |
 | siglip2 (768d) | binary top-800, int8 rescoring | 864 | 800 | 0.967 |
 | clip-vit-b32 (512d) | f32 exact (truth) | 2048 | 38627 | 1.000 |
-| clip-vit-b32 (512d) | int8 exact (the nest ladder) | 512 | 38627 | 0.923 |
+| clip-vit-b32 (512d) | int8 exact (the urna ladder) | 512 | 38627 | 0.923 |
 | clip-vit-b32 (512d) | binary alone, hamming top-10 | 64 | 10 | 0.319 |
 | clip-vit-b32 (512d) | binary top-20, int8 rescoring | 576 | 20 | 0.441 |
 | clip-vit-b32 (512d) | binary top-50, int8 rescoring | 576 | 50 | 0.613 |
@@ -41,7 +41,7 @@
 | clip-vit-b32 (512d) | binary top-400, int8 rescoring | 576 | 400 | 0.874 |
 | clip-vit-b32 (512d) | binary top-800, int8 rescoring | 576 | 800 | 0.902 |
 
-- int8 exact is what a nest built with dtype = int8 searches; the loss against f32 is the quantization alone, no index. the binary rows add a 1-bit index in front of it.
+- int8 exact is what a urna built with dtype = int8 searches; the loss against f32 is the quantization alone, no index. the binary rows add a 1-bit index in front of it.
 - numpy timings are in the raw json and are not comparable to the rust runtime; the candidate count is the number that transfers.
 
 ### spike c: frame order inside reprint groups, inter recipe (reprints-2787)
@@ -56,4 +56,5 @@
 
 - av2 and cool-chic stay unmeasured: no encoder on this machine produces a stream the forge can decode today.
 
-provenance: measured; source: benchmark/experiments/16-research-spikes/data/phash-reprints-2787.json (benchmark/tools/phash_prefilter.py), binary-siglip2-38k.json and binary-clip-38k.json (benchmark/tools/binary_rescoring.py over the forge embed cache of the 38627-card five-model build, siglip2 19eb720f and clip 1d4b9d5c), golden-reprints-2787.json (benchmark/tools/golden_frame.py); date: 2026-09-13; notes: phash: 64-bit dct hash of the whole card (32x32 grayscale, top-left 8x8, median split), all 3,882,291 pairs of the 2787 reprint printings, ground truth = same illustration_id in the printings table (1563 pairs in 1359 groups). binary: 1000 query rows drawn with default_rng(7) from the 38627 image vectors, truth = exact f32 cosine top-10 with the query excluded, int8 = per-row absmax/127 (the nest encoding-3 scheme), binary = sign bits; recall@10 against the f32 truth. golden: the neardup inter recipe (keyint 16, scd off, crf 35, preset 6) over the same 2787 frames in three orders. cpu only; the five-model build held the gpu throughout, so the encode seconds are not a speed measurement.
+provenance: measured; source: benchmark/experiments/16-research-spikes/data/phash-reprints-2787.json (benchmark/tools/phash_prefilter.py), binary-siglip2-38k.json and binary-clip-38k.json (benchmark/tools/binary_rescoring.py over the forge embed cache of the 38627-card five-model build, siglip2 19eb720f and clip 1d4b9d5c), golden-reprints-2787.json (benchmark/tools/golden_frame.py); date: 2026-09-13; notes: phash: 64-bit dct hash of the whole card (32x32 grayscale, top-left 8x8, median split), all 3,882,291 pairs of the 2787 reprint printings, ground truth = same illustration_id in the printings table (1563 pairs in 1359 groups). binary: 1000 query rows drawn with default_rng(7) from the 38627 image vectors, truth = exact f32 cosine top-10 with the query excluded, int8 = per-row absmax/127 (the urna encoding-3 scheme), binary = sign bits; recall@10 against the f32 truth. golden: the neardup inter recipe (keyint 16, scd off, crf 35, preset 6) over the same 2787 frames in three orders. cpu only; the five-model build held the gpu throughout, so the encode seconds are not a speed measurement.
+identity: source full and reprints-2787; queries n=1000; models siglip2, clip-vit-b32; unrecorded: spike b read the forge embed cache of the five-model build, not a .urna file

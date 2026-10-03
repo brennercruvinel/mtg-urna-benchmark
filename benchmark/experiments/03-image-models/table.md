@@ -13,7 +13,8 @@
 | wemm-2b@256 | image + text space, mrl slice to 256 of 2048 | 256 | 1.000 | 0.990 | 0.933 | 0.950 | 0.6 |
 
 - the models that read the printed card name find the exact card by name; clip sees only the art. wemm keeps 93% hit@1 sliced to 256 of 2048 dims.
-- the potion row is the text space every .nest carries as space 0; it has no image tier by construction.
+- the potion row is the text space every .urna carries as space 0; it has no image tier by construction.
 - the full 38627-card five-model build was never run (wemm-2b estimated at 18 to 20 hours on this machine).
 
-provenance: transcribed; source: nest doc/CHANGELOG (unreleased, verification numbers of the mtgdataset 1500-card build) and the benchmark dossier of 2026-09-11; the 1500x5 verification .nest was lost when the temp dir was cleaned; date: 2026-08-31; notes: one 4.3 MB multi-space .nest plus 81 MB av1 media (crf auto refused the whole [30,45] ladder and fell back to 30), 60 seeded queries, ruler = 'artwork of the card {name}' against each model's own image space (weak ground truth, declared). tiers are never aggregated: T1 identity@1 is pipeline stability, T2 drift p10 is codec cost, T3 txt@k is utility. embed cost is items per second on apple silicon mps fp16.
+provenance: transcribed; source: urna doc/CHANGELOG (unreleased, verification numbers of the mtgdataset 1500-card build) and the benchmark dossier of 2026-09-11; the 1500x5 verification .urna was lost when the temp dir was cleaned; date: 2026-08-31; notes: one 4.3 MB multi-space .urna plus 81 MB av1 media (crf auto refused the whole [30,45] ladder and fell back to 30), 60 seeded queries, ruler = 'artwork of the card {name}' against each model's own image space (weak ground truth, declared). tiers are never aggregated: T1 identity@1 is pipeline stability, T2 drift p10 is codec cost, T3 txt@k is utility. embed cost is items per second on apple silicon mps fp16.
+identity: source sample-1500; queries n=60; models clip-vit-b32, siglip2, jina-v5-omni-nano, wemm-2b; unrecorded: the 1500-card verification file was lost; model hashes of that build were not recorded

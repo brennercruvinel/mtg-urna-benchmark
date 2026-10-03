@@ -2,7 +2,7 @@
  "name": "sample-1500",
  "n": 1500,
  "seed": null,
- "rule": "rows[int(i * 38627 / 1500)] for i in range(1500) over rows sorted by (img_id, oracle_id); this is nest build --sample 1500 (the five-model verification build of 03-image-models)",
+ "rule": "rows[int(i * 38627 / 1500)] for i in range(1500) over rows sorted by (img_id, oracle_id); this is urna build --sample 1500 (the five-model verification build of 03-image-models)",
  "derived_from": "${MTG_DATA}/mtg.sqlite, cards WHERE image_uri IS NOT NULL, sorted by (img_id, oracle_id)",
  "ids": [
   "00006596-1166-4a79-8443-ca9f82e6db4e|8ae3562f-28b7-4462-96ed-be0cf7052ccc",

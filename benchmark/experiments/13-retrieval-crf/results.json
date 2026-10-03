@@ -3,9 +3,9 @@
  "title": "retrieval-only candidates: crf goes up, search does not fall",
  "provenance": {
   "status": "measured",
-  "source": "candidates/{v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.nest sizes and manifests (media.output_bytes, media.crf_auto); the txt@k / drift table is transcribed from sections 13 and 14 of the 2026-09-03 report, no nest_model_bench output was saved",
+  "source": "candidates/{v03-retrieval,v03-retrieval-crf50,v03-avif-q48}/mtgdataset.urna sizes and manifests (media.output_bytes, media.crf_auto); the txt@k / drift table is transcribed from sections 13 and 14 of the 2026-09-03 report, no urna_model_bench output was saved",
   "date": "2026-09-12",
-  "notes": "sizes measured 2026-09-12 on the 2026-09-03 builds. the three candidates share content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b (chunker mtgdataset/1); the release twins carried c993ceda (spellbook/1) until the 2026-09-12 rebuild, since then they carry cb8fdf8f as well (experiment 05). the avif manifest recorded source_bytes 21450566470 and compression_ratio 18.61 because the avif backend summed its letterboxed png inputs instead of the jpeg sources (nest forge bug); the true source is 3975063106 bytes, giving 3.45x on media and 3.32x on the .nest. the 2026-09-03 report labelled MiB as GB for these three files (0.935, 0.508, 1.101); the exact bytes here replace them. the candidate manifest (local and the hugging face copy) was patched by hand on 2026-09-12 after the upstream fix (nest pr 132): media.source_bytes 3975063106, compression_ratio 3.45, letterboxed_input_bytes 21450566470; the manifest_source_bytes column keeps the historical value. crf55 and crf60 were built on 2026-09-12 to close the ladder; their utility numbers are in experiment 14."
+  "notes": "sizes measured 2026-09-12 on the 2026-09-03 builds. the three candidates share content_hash sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b (chunker mtgdataset/1); the release twins carried c993ceda (spellbook/1) until the 2026-09-12 rebuild, since then they carry cb8fdf8f as well (experiment 05). the avif manifest recorded source_bytes 21450566470 and compression_ratio 18.61 because the avif backend summed its letterboxed png inputs instead of the jpeg sources (urna forge bug); the true source is 3975063106 bytes, giving 3.45x on media and 3.32x on the .urna. the 2026-09-03 report labelled MiB as GB for these three files (0.935, 0.508, 1.101); the exact bytes here replace them. the candidate manifest (local and the hugging face copy) was patched by hand on 2026-09-12 after the upstream fix (urna pr 132): media.source_bytes 3975063106, compression_ratio 3.45, letterboxed_input_bytes 21450566470; the manifest_source_bytes column keeps the historical value. crf55 and crf60 were built on 2026-09-12 to close the ladder; their utility numbers are in experiment 14."
  },
  "constants": {
   "source_bytes": 3975063106
@@ -19,22 +19,22 @@
      "label": "candidate"
     },
     {
-     "key": "nest_bytes",
-     "label": "nest bytes",
+     "key": "urna_bytes",
+     "label": "urna bytes",
      "fmt": "int"
     },
     {
-     "key": "nest_gb",
-     "label": "nest GB",
+     "key": "urna_gb",
+     "label": "urna GB",
      "fmt": "gb",
-     "from": "nest_bytes"
+     "from": "urna_bytes"
     },
     {
-     "key": "ratio_nest",
-     "label": "ratio_nest",
+     "key": "ratio_urna",
+     "label": "ratio_urna",
      "fmt": "ratio",
      "num": "source_bytes",
-     "den": "nest_bytes"
+     "den": "urna_bytes"
     },
     {
      "key": "media_bytes",
@@ -61,43 +61,43 @@
    "rows": [
     {
      "candidate": "retrieval av1 crf40 (gate fallback)",
-     "nest_bytes": 980715452,
+     "urna_bytes": 980715452,
      "media_bytes": 941331425,
      "recipe": "av1 crf auto over [40..60], visual floors dropped, drift floor 0.98; no step passed, fell back to 40; tune still, speed 6, intra, single segment",
      "manifest_source_bytes": 3975063106
     },
     {
      "candidate": "retrieval av1 crf50 (fixed)",
-     "nest_bytes": 532671548,
+     "urna_bytes": 532671548,
      "media_bytes": 493287539,
      "recipe": "av1 crf50 fixed, no gate; tune still, speed 6, intra, single segment",
      "manifest_source_bytes": 3975063106
     },
     {
      "candidate": "avif q48",
-     "nest_bytes": 1195973116,
+     "urna_bytes": 1195973116,
      "media_bytes": 1152881029,
      "recipe": "avifenc quality 48 speed 8 yuv420, one .avif per card (38627 blobs)",
      "manifest_source_bytes": 21450566470
     },
     {
      "candidate": "retrieval crf55",
-     "nest_bytes": 370108284,
+     "urna_bytes": 370108284,
      "media_bytes": 330724385,
      "recipe": "svt-av1 crf 55 tune still preset 6, gop intra, one mp4 blob (built 2026-09-12)",
      "manifest_source_bytes": 3975063106
     },
     {
      "candidate": "retrieval crf60",
-     "nest_bytes": 229972284,
+     "urna_bytes": 229972284,
      "media_bytes": 190588356,
      "recipe": "svt-av1 crf 60 tune still preset 6, gop intra, one mp4 blob (built 2026-09-12)",
      "manifest_source_bytes": 3975063106
     }
    ],
    "notes": [
-    "against the neardup release (1374447420 bytes) the avif candidate is -13.0% on the .nest and -13.6% media vs media; the i-frame battery predicted -12.4% at matched quality, so the prediction held, it did not come out larger as the old report claimed.",
-    "crf50 vs the still build (1356369020 bytes): -60.7% on the .nest; crf40 vs still: -27.7%."
+    "against the neardup release (1374447420 bytes) the avif candidate is -13.0% on the .urna and -13.6% media vs media; the i-frame battery predicted -12.4% at matched quality, so the prediction held, it did not come out larger as the old report claimed.",
+    "crf50 vs the still build (1356369020 bytes): -60.7% on the .urna; crf40 vs still: -27.7%."
    ]
   },
   {
@@ -208,16 +208,16 @@
      "label": "corpus"
     },
     {
-     "key": "nest_bytes",
-     "label": "nest bytes",
+     "key": "urna_bytes",
+     "label": "urna bytes",
      "fmt": "int"
     },
     {
-     "key": "ratio_nest",
-     "label": "ratio_nest",
+     "key": "ratio_urna",
+     "label": "ratio_urna",
      "fmt": "ratio",
      "num": "source_bytes",
-     "den": "nest_bytes"
+     "den": "urna_bytes"
     },
     {
      "key": "identity_at_1",
@@ -243,7 +243,7 @@
    "rows": [
     {
      "corpus": "archive (lossless)",
-     "nest_bytes": 3606304124,
+     "urna_bytes": 3606304124,
      "identity_at_1": 1.0,
      "drift_p10": 0.9974,
      "txt_at_1": 0.05,
@@ -251,7 +251,7 @@
     },
     {
      "corpus": "neardup (crf35 class)",
-     "nest_bytes": 1374447420,
+     "urna_bytes": 1374447420,
      "identity_at_1": 1.0,
      "drift_p10": 0.9706,
      "txt_at_1": 0.07,
@@ -259,7 +259,7 @@
     },
     {
      "corpus": "avif q48",
-     "nest_bytes": 1195973116,
+     "urna_bytes": 1195973116,
      "identity_at_1": 1.0,
      "drift_p10": 0.9719,
      "txt_at_1": 0.09,
@@ -267,7 +267,7 @@
     },
     {
      "corpus": "retrieval av1 crf40",
-     "nest_bytes": 980715452,
+     "urna_bytes": 980715452,
      "identity_at_1": 1.0,
      "drift_p10": 0.9618,
      "txt_at_1": 0.08,
@@ -275,7 +275,7 @@
     },
     {
      "corpus": "retrieval av1 crf50",
-     "nest_bytes": 532671548,
+     "urna_bytes": 532671548,
      "identity_at_1": 1.0,
      "drift_p10": 0.942,
      "txt_at_1": 0.08,
@@ -288,5 +288,41 @@
     "the bench matches hits by chunk_id (identity N3), not by ordinal, after the ordinal match zeroed neardup and archive."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "full",
+   "rows": 38627,
+   "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74"
+  },
+  "queries": {
+   "n": 100,
+   "seed": 7,
+   "list": "benchmark/corpora/queries-100.json"
+  },
+  "models": [
+   {
+    "preset": "clip-vit-b32",
+    "model_hash": "sha256:76269ff6bb18be70a910506ccd31d52216b05a4bede0772ac17c0100ee75ca8f"
+   }
+  ],
+  "files": [
+   {
+    "path": "candidates/v03-retrieval/mtgdataset.urna",
+    "file_hash": "sha256:1fa37ef5717529f5b92e0e9445d8133f065990bf4cd744b21ac317cce08dd270",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
+    "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   },
+   {
+    "path": "candidates/v03-avif-q48/mtgdataset.urna",
+    "file_hash": "sha256:dbc5734a622483b08c6a6b1acc90a831287b0e79e779e75e70285cde91019cce",
+    "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b"
+   }
+  ],
+  "unrecorded": "the txt@k columns are transcribed from the 2026-09-03 report"
+ }
 }

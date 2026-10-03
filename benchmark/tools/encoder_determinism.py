@@ -12,7 +12,7 @@ three backends, the forge's own parameters:
   avif  avifenc -q 48 --speed 6 --yuv 420, -j 1 8 all and all twice
   jxl   cjxl --lossless_jpeg=1, --num_threads 1 8 and default twice
 
-usage (repo root, MTG_DATA and NEST_REPO set):
+usage (repo root, MTG_DATA and URNA_REPO set):
   python3 benchmark/tools/encoder_determinism.py --n 256 --out data/determinism.json
 """
 
@@ -29,7 +29,7 @@ from pathlib import Path
 
 import _bench_env as env
 
-env.add_nest_to_path()
+env.add_urna_to_path()
 from forge.image_encode import encode_av1  # noqa: E402
 from forge.image_media import letterbox  # noqa: E402
 

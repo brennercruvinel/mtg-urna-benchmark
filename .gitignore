@@ -1,9 +1,15 @@
 # heavy artifacts: never tracked, hosted on hugging face
-*.nest
+*.urna
 *.mp4
 *.avif
 *.jxl
-!benchmark/experiments/11-intra-codecs/samples/*
+# the encoded samples of experiment 11, by format; hidden files (partial copies) stay ignored
+!benchmark/experiments/11-intra-codecs/samples/*.266
+!benchmark/experiments/11-intra-codecs/samples/*.avif
+!benchmark/experiments/11-intra-codecs/samples/*.jxl
+!benchmark/experiments/11-intra-codecs/samples/*.mp4
+!benchmark/experiments/11-intra-codecs/samples/*.webp
+benchmark/experiments/11-intra-codecs/samples/.*
 *.npz
 
 # forge build state and caches

@@ -34,7 +34,7 @@ the precedent is the cloudinary codec comparisons by jon sneyers, which use ssim
 
 the word lossless covers three things that must never be conflated, and experiment 08 keeps them in separate rows.
 
-byte-reversible: the original jpeg bytes are recoverable. jxl-transcode (`cjxl --lossless_jpeg=1`) is the only entry in this class that also saves bytes: 1.115x at effort 7, 1.124x at effort 9, verified by sha256 round-trip on every file at build time and again by `nest validate`.
+byte-reversible: the original jpeg bytes are recoverable. jxl-transcode (`cjxl --lossless_jpeg=1`) is the only entry in this class that also saves bytes: 1.115x at effort 7, 1.124x at effort 9, verified by sha256 round-trip on every file at build time and again by `urna validate`.
 
 pixel-exact: a re-save that yields the same decoded pixels from different bytes. jpegtran and jpegoptim are this class; on scryfall's already optimized jpegs they save under 1%.
 
@@ -58,7 +58,7 @@ corpus B (2787 reprints in 1359 groups) is every printing with a local normal/fr
 
 bytes are stored exact in every `results.json`. MB is bytes / 1e6 and GB is bytes / 1e9, decimal, never MiB or GiB. `du` reports allocated blocks in binary units, which is how the old report ended up with 0.935 GB for a 980,715,452-byte file (that is 935 MiB); the corrections are listed in `docs/changelog.md`.
 
-full-corpus rows carry two ratios against the 3,975,063,106-byte source, both shown: ratio_nest divides by the whole self-contained file and ratio_media by the embedded media blob alone. the two differ by the single-file overhead (3%), and quoting one where the other is expected is how the same still build got reported at 3.02x and 2.93x in two sections of the same document.
+full-corpus rows carry two ratios against the 3,975,063,106-byte source, both shown: ratio_urna divides by the whole self-contained file and ratio_media by the embedded media blob alone. the two differ by the single-file overhead (3%), and quoting one where the other is expected is how the same still build got reported at 3.02x and 2.93x in two sections of the same document.
 
 ## known weaknesses
 
@@ -66,8 +66,8 @@ n=100 does not prove equality. "no detectable utility loss at crf50" means the t
 
 the corpus B matrix of experiment 09 is bytes at a fixed crf, not quality matched. the forge probe later measured inter at crf35 losing about 16 ssimulacra2 points on unique cards, so the 29% has a quality cost that the matrix does not show. the encoded artifacts of that matrix were not kept and no script survives; the numbers are transcribed from the 2026-09-03 report.
 
-the txt@k and drift table of experiment 13 is also transcribed: `nest_model_bench.py` output was not saved. the sizes and the gate ladder in the same section were read from the files and manifests on disk on 2026-09-12.
+the txt@k and drift table of experiment 13 is also transcribed: `urna_model_bench.py` output was not saved. the sizes and the gate ladder in the same section were read from the files and manifests on disk on 2026-09-12.
 
 the jxl rows of experiment 02 score ssimulacra2 92.8 on a byte-exact transcode because pil and djxl round the same jpeg differently. the number is a measurement artifact, the reversibility is verified by hash.
 
-the avif manifests record source_bytes as the letterboxed png intermediates (21,450,566,470 on the full corpus, ratio 18.61), a bug in the avif backend of the nest forge. every ratio in this repository uses the jpeg source instead.
+the avif manifests record source_bytes as the letterboxed png intermediates (21,450,566,470 on the full corpus, ratio 18.61), a bug in the avif backend of the urna forge. every ratio in this repository uses the jpeg source instead.

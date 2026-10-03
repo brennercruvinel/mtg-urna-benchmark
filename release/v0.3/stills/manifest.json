@@ -120,10 +120,10 @@
  "n_unique_frames": 38627,
  "name": "mtgdataset",
  "outputs": {
-  "mtgdataset.nest": {
+  "mtgdataset.urna": {
    "build_s": 139.083,
    "bytes": 1374431484,
-   "file": "candidates/stills/mtgdataset.nest",
+   "file": "candidates/stills/mtgdataset.urna",
    "file_hash": "sha256:6f12cadb79563a506ac8193befe7ef7fc3364297787cd3e73541e8e222578fd5"
   }
  },

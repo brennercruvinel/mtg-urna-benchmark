@@ -229,7 +229,7 @@
     "mean": 249.21,
     "batches": 20
    },
-   "path": "candidates/v03-retrieval-crf50/mtgdataset.nest",
+   "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
    "wall_s": 62.8
   },
   "stills-crf35": {
@@ -249,7 +249,7 @@
     "mean": 349.74,
     "batches": 20
    },
-   "path": "candidates/stills/mtgdataset.nest",
+   "path": "candidates/stills/mtgdataset.urna",
    "wall_s": 172.1
   },
   "avif-q48": {
@@ -270,7 +270,7 @@
     "mean": 98.98,
     "n": 200
    },
-   "path": "candidates/v03-avif-q48/mtgdataset.nest",
+   "path": "candidates/v03-avif-q48/mtgdataset.urna",
    "wall_s": 33.7
   },
   "archive": {
@@ -291,7 +291,7 @@
     "mean": 46.44,
     "n": 200
    },
-   "path": "candidates/archive/mtgdataset.nest",
+   "path": "candidates/archive/mtgdataset.urna",
    "wall_s": 47.6
   }
  }

@@ -127,8 +127,18 @@
    ],
    "notes": [
     "gop 16 beats a single keyframe (85.0 vs 95.0 MB) and keeps random access within 16 decoded frames. grouped vs shuffled differs by 1.8 MB (1.5 percentage points vs intra): part of the inter gain is the chrome every card shares (frame, text box), not the repeated art.",
-    "product fallout: gop=inter emits keyint=16 with scene-cut detection off (INTER_KEYINT in the nest forge); the gop probe became quality-aware."
+    "product fallout: gop=inter emits keyint=16 with scene-cut detection off (INTER_KEYINT in the urna forge); the gop probe became quality-aware."
    ]
   }
- ]
+ ],
+ "identity": {
+  "source": {
+   "corpus": "sample-2048 and reprints-2787",
+   "list": "benchmark/corpora/reprints-2787.json"
+  },
+  "queries": null,
+  "models": [],
+  "files": [],
+  "unrecorded": "transcribed; no artifact or script survives"
+ }
 }

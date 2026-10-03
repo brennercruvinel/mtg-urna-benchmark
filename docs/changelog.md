@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03 (urna 0.5.3)
+
+- The instructions name Urna v0.5.3, the first release with the pinned-snapshot loader a siglip2 query needs offline (hoffresearch/urna #271 and #273), instead of urna `main`: the README's search section, `docs/environment.md` (the checkout to build and evaluate with) and the default `URNA_REF` of `clean_install_proof.sh`. The recorded runs keep the commit they ran at (`7ef2b725`); its forge, query embedders, runtime and format code are identical to v0.5.3's. 0.5.2 reached PyPI only.
+
 ### added, 2026-10-03 (clean install)
 
 - `benchmark/tools/clean_install_proof.sh` runs the benchmark from nothing in 24 steps, stopping at the first failure and writing `record.json`:

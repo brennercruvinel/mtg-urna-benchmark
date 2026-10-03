@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03 (readme and card)
+
+- the README has the commands to rebuild the source data from the pinned snapshot (`uv sync`, `prepare_from_hub.py`), to check a release from the hub (`hf download --repo-type dataset`, `shasum -c SHA256SUMS`, `promote.py check`) and to search it, with the two searches kept apart: a text query on the potion space (`urna retrieve`) and text-to-image through a model's text tower (`bench_full_corpus.py --preset siglip2`, offline, from the snapshot pinned to `timm/ViT-B-16-SigLIP2@eee10eff`, with the urna loader of #271 and #273, no `refs/main`). `docs/environment.md` names that revision, the five files, the `transformers` dependency, and that clip still resolves `refs/main`. The dataset card gets the same commands (its `hf download` lacked `--repo-type dataset`), the `queries` and `qrels` configs, the candidate sidecars and the siglip2 weights' source; it said any urna after 0.4.0 reads the files, a version with no tag, now 0.5.0 and later.
+
 ### added, 2026-10-03 (queries)
 
 - the query lists of experiments 14 and 15 are tracked: `queries-1000` (14), `sample-512` and `queries-200` (15), derived by `export_corpora.py` with the card order's keys_hash and covered by `--check`; the identity blocks of 14 and 15 point at them. no run saved its per-query list, so these, like `queries-100`, are the draw of the rule `urna_model_bench.py` applies.

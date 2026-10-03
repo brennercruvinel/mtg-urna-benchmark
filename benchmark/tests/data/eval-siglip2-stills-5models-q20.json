@@ -1,6 +1,6 @@
 {
  "what": "integration proof: bench_full_corpus.py end to end on the published release, 20 siglip2 queries, offline. not a measurement; experiment 20 keeps the full-corpus numbers.",
- "date": "2026-10-02",
+ "date": "2026-10-03",
  "release": {
   "repo": "brennercruvinel/mtg-urna-benchmark",
   "repo_type": "dataset",
@@ -9,7 +9,7 @@
   "sha256sums": "passed"
  },
  "network": "blocked: sandbox-exec -p '(version 1)(allow default)(deny network*)', plus HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 and no URNA_ALLOW_DOWNLOAD",
- "hf_cache": "only snapshots/<revision> of timm/ViT-B-16-SigLIP2: no refs/main, no .no_exist markers",
+ "hf_cache": "only snapshots/<revision> of timm/ViT-B-16-SigLIP2: no refs/main, no .no_exist markers, before and after the run",
  "model_snapshot": {
   "repo": "timm/ViT-B-16-SigLIP2",
   "revision": "eee10eff6dd8cabae2d7f379d4e8cfcd352030aa",
@@ -23,9 +23,13 @@
  },
  "urna": {
   "repo": "hoffresearch/urna",
-  "commit": "c321dc0b1a860009850a3a1a468b210a22aa3755",
-  "branch": "openclip-local-snapshot", "pull_request": "https://github.com/hoffresearch/urna/pull/271",
-  "note": "the loader that reads siglip2 weights and tokenizer from the pinned snapshot; on main (f022b467) the same run fails at the tokenizer"
+  "commit": "7ef2b7251f4ec2be3bf2b0b94178c7a00894db5d",
+  "branch": "main",
+  "pull_requests": [
+   "https://github.com/hoffresearch/urna/pull/271",
+   "https://github.com/hoffresearch/urna/pull/273"
+  ],
+  "note": "main with the pinned-snapshot loader; the first run (2026-10-02) used the #271 branch at c321dc0b, same tree for the loader, same model_hash and hits"
  },
  "environment": {
   "python": "3.12.14",
@@ -46,12 +50,12 @@
   "preset": "siglip2",
   "template": "artwork of the card {label}",
   "queries": 20,
-  "text_embed_s": 1.3,
-  "text_queries_per_s": 15.4,
+  "text_embed_s": 3.6,
+  "text_queries_per_s": 5.5,
   "spaces": {
    "siglip2": {
     "dim": null,
-    "search_s": 0.1,
+    "search_s": 0.2,
     "hit": {
      "@1": {
       "value": 0.65,

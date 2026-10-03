@@ -1,5 +1,5 @@
 {
-  "note": "candidates published on the hub but not promoted to release/; measured 2026-10-02 from a download at the revision below: file_hash is the sha256 of the downloaded file (equal to the hub's lfs sha256 and to urna inspect), content_hash and n_chunks come from urna inspect",
+  "note": "candidates published on the hub but not promoted to release/; measured 2026-10-02 from a download at the revision below: file_hash is the sha256 of the downloaded file (equal to the hub's lfs sha256 and to urna inspect), content_hash and n_chunks come from urna inspect. sidecars: each candidate dir on the hub also carries items.jsonl.gz, SHA256SUMS and CITATION_KEY, written by benchmark/tools/candidate_sidecars.py; sidecars lists their sha256 as SHA256SUMS records them",
   "repo": "brennercruvinel/mtg-urna-benchmark",
   "repo_type": "dataset",
   "revision": "bb1c0c2d6d74cdce4eb142bd689be8e1ca2c8e82",
@@ -9,35 +9,66 @@
       "file_hash": "sha256:1fa37ef5717529f5b92e0e9445d8133f065990bf4cd744b21ac317cce08dd270",
       "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
       "bytes": 980715452,
-      "n_chunks": 38627
+      "n_chunks": 38627,
+      "sidecars": {
+        "items.jsonl.gz": "73ab7e838464a40edabd56280f1d9b85dfee5ebaae19defd8e84af7ddfa4bb08",
+        "mtgdataset.build.lock.json": "85d272554a5de99cf57dc4396d8ea99b5f62ba608653402e100dace3da93a0a0",
+        "mtgdataset.manifest.json": "0a81d716c2acb4a116497f720f881f8ecd84b5de044ad66c0a7965fe4ec4a35e"
+      },
+      "built_with": "unrecorded"
     },
     {
       "path": "candidates/v03-retrieval-crf50/mtgdataset.urna",
       "file_hash": "sha256:73f814b711ee3481e4b8c3395a9d33eaaaf7e1eee0f3ffd16f3d85b1014750b3",
       "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
       "bytes": 532671548,
-      "n_chunks": 38627
+      "n_chunks": 38627,
+      "sidecars": {
+        "items.jsonl.gz": "73ab7e838464a40edabd56280f1d9b85dfee5ebaae19defd8e84af7ddfa4bb08",
+        "mtgdataset.build.lock.json": "04a32424db4e2055e285db4ad4d1967ea2c7ea6a13194dfd07aa448949f6281e",
+        "mtgdataset.manifest.json": "7c492d77465ae5f0903e920f15dc68b142f9c0b14206bf7f520c320ea908badd"
+      },
+      "built_with": "nest 0.3.0",
+      "same_file_as": "release/v0.3/retrieval/mtgdataset.urna"
     },
     {
       "path": "candidates/v03-retrieval-crf55/mtgdataset.urna",
       "file_hash": "sha256:43451a4c631fb20d0fb1b1e28c197d1ba8cf7234537d5fbed3bb26c30577a9d3",
       "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
       "bytes": 370108284,
-      "n_chunks": 38627
+      "n_chunks": 38627,
+      "sidecars": {
+        "items.jsonl.gz": "73ab7e838464a40edabd56280f1d9b85dfee5ebaae19defd8e84af7ddfa4bb08",
+        "mtgdataset.build.lock.json": "117b9d139e462f5d9b1a5f97a45729e08207b8a3aa5f69678aaba2fbf0b6b7f5",
+        "mtgdataset.manifest.json": "fd77050908390ddc89f8c58b6e24985961df0c10f6ecbe40056f5d98cc0df351"
+      },
+      "built_with": "unrecorded"
     },
     {
       "path": "candidates/v03-retrieval-crf60/mtgdataset.urna",
       "file_hash": "sha256:b08ab27da78ce2a13f0435969b77b8fbd263ae53c48bc872dfa235a033ebc4b1",
       "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
       "bytes": 229972284,
-      "n_chunks": 38627
+      "n_chunks": 38627,
+      "sidecars": {
+        "items.jsonl.gz": "73ab7e838464a40edabd56280f1d9b85dfee5ebaae19defd8e84af7ddfa4bb08",
+        "mtgdataset.build.lock.json": "4c6f7d37fca8ea74bed39db84e3fb117bcd5ed29efadc393a50a6682b91a2ddc",
+        "mtgdataset.manifest.json": "4e601dde77ec4c2e2f5bc24629a79ca74ff771e93c2c3bd7df0eb5934b128dd1"
+      },
+      "built_with": "unrecorded"
     },
     {
       "path": "candidates/v03-avif-q48/mtgdataset.urna",
       "file_hash": "sha256:dbc5734a622483b08c6a6b1acc90a831287b0e79e779e75e70285cde91019cce",
       "content_hash": "sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b",
       "bytes": 1195973116,
-      "n_chunks": 38627
+      "n_chunks": 38627,
+      "sidecars": {
+        "items.jsonl.gz": "e7ce287ec6c4540e93a75853f0553953e2602b3a5a36994a96015af92bb919d9",
+        "mtgdataset.build.lock.json": "df68d9995423f3bea009fea7b16257d39782f8ecf08d577578765b71bc57359d",
+        "mtgdataset.manifest.json": "0dfc682ecdf338c54d370e598209429a60ebcab75de9d23470efd19fa1dd5ec9"
+      },
+      "built_with": "unrecorded"
     }
   ]
 }

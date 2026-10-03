@@ -22,25 +22,56 @@ anyone with the spellbook sqlite can rebuild the exact samples.
                 (corpus B of 09-inter-ordering). needs the sqlite and the images.
   gate-48       media.crf_auto.sample_indices of the crf40 candidate manifest
                 (quality_gate.stratified_sample, deterministic, no rng).
+  queries-1000  numpy default_rng(7).choice(38627, 1000, replace=False) over the
+                full order (urna_model_bench.py --queries 1000 --seed 7, experiment 14).
+  sample-512    the evenly spaced rule with 512 (urna build --sample 512, experiment 15).
+  queries-200   numpy default_rng(7).choice(512, 200, replace=False) as ordinals of
+                sample-512 (urna_model_bench.py --queries 200 --seed 7, experiment 15).
+                no run saved its per-query list: the three query lists, like
+                queries-100, are the draw of the rule the bench applies.
+
+every list whose ids index the card order (all but reprints-2787) records the
+keys_hash of the full 38627-key order it was drawn from: sha256 over each
+key plus a newline, in ordinal order, the keys_hash sources/sources.toml pins
+for the published snapshot. a derivation from any other order is refused.
+
+every list is validated before anything is written (n, unique ids, ids in the
+card order, ordinals mapping to their ids), and the files are replaced
+atomically, all or none.
+
+--check writes nothing: it reads the card order from a release items.jsonl.gz
+(--items, a local release/, else the pinned hub revision), requires its
+keys_hash to be the pin, re-derives sample-2048, sample-1500, frames-96 and
+queries-100 and compares them with the tracked files, and checks gate-48 and
+reprints-2787 structurally (gate-48 is re-derived when its candidate manifest
+is on disk). it needs no MTG_DATA, so it runs in CI.
 
 usage (repo root):
   export MTG_DATA="/path/to/Spellbook/data"   # optional for sample-2048/frames-96/queries-100/gate-48
   python3 benchmark/tools/export_corpora.py [--dry-run]
+  python3 benchmark/tools/export_corpora.py --check [--items release/v0.3/stills/items.jsonl.gz]
 """
 
 from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
+import os
 import sqlite3
 import sys
+import tomllib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bench_env as env  # noqa: E402
 
 N_FULL = 38627
+SOURCES = env.REPO / "sources" / "sources.toml"
+HUB_ITEMS = "release/v0.3/stills/items.jsonl.gz"
+DETERMINISTIC = ("sample-2048", "sample-1500", "frames-96", "queries-100", "queries-1000", "sample-512", "queries-200")
+CARD_ORDER = DETERMINISTIC + ("gate-48",)
 SQL_CARDS = (
     "SELECT oracle_id, name, mana_cost, type_line, oracle_text, rarity, set_code, image_uri "
     "FROM cards WHERE image_uri IS NOT NULL"
@@ -110,18 +141,190 @@ def reprints(root: Path) -> tuple[list[str], int]:
     return [f"{s}|{oid}" for s, oid, _ in keep], groups
 
 
-def doc(name: str, seed, rule: str, derived_from: str, ids: list[str], **extra) -> dict:
+def doc(name: str, seed, rule: str, derived_from: str, ids: list[str], keys_hash: str | None = None, **extra) -> dict:
     d = {"name": name, "n": len(ids), "seed": seed, "rule": rule, "derived_from": derived_from}
+    if keys_hash:
+        d["keys_hash"] = keys_hash
     d.update(extra)
     d["ids"] = ids
     return d
+
+
+def keys_hash(keys: list[str]) -> str:
+    """sha256 over each key plus a newline, in order: prepare_from_hub's keys_hash."""
+    h = hashlib.sha256()
+    for k in keys:
+        h.update(k.encode() + b"\n")
+    return "sha256:" + h.hexdigest()
+
+
+def snapshot_pin() -> dict:
+    return tomllib.loads(SOURCES.read_text())["snapshot"]
+
+
+def derive(full_keys: list[str]) -> dict[str, tuple[list[str], list[int] | None]]:
+    """the lists that follow from the card order alone: name -> (ids, ordinals)."""
+    import numpy as np
+
+    def draw(n: int, k: int) -> list[int]:
+        return sorted(np.random.default_rng(7).choice(n, size=k, replace=False).tolist())
+
+    s2048, s512 = evenly_spaced(full_keys, 2048), evenly_spaced(full_keys, 512)
+    i96, i100, i1000, i200 = draw(len(s2048), 96), draw(len(full_keys), 100), draw(len(full_keys), 1000), draw(512, 200)
+    return {
+        "sample-2048": (s2048, None),
+        "sample-1500": (evenly_spaced(full_keys, 1500), None),
+        "frames-96": ([s2048[i] for i in i96], i96),
+        "queries-100": ([full_keys[i] for i in i100], i100),
+        "queries-1000": ([full_keys[i] for i in i1000], i1000),
+        "sample-512": (s512, None),
+        "queries-200": ([s512[i] for i in i200], i200),
+    }
+
+
+QUERY_RULES = {
+    "queries-1000": (
+        7,
+        f"sorted(numpy.random.default_rng(7).choice({N_FULL}, size=1000, replace=False)) as ordinals of the full corpus, mapped to keys "
+        "(urna python/tools/urna_model_bench.py pick_items with --queries 1000 --seed 7, experiment 14); "
+        "the run saved no per-query list, so this is the draw of the rule, not a recorded list",
+    ),
+    "sample-512": (
+        None,
+        f"rows[int(i * {N_FULL} / 512)] for i in range(512) over rows sorted by (img_id, oracle_id); "
+        "this is urna build --sample 512 (the three builds of experiment 15)",
+    ),
+    "queries-200": (
+        7,
+        "sorted(numpy.random.default_rng(7).choice(512, size=200, replace=False)) as ordinals of sample-512, mapped to keys "
+        "(urna_model_bench.py pick_items with --queries 200 --seed 7 on the 512-card builds, experiment 15); "
+        "the run saved no per-query list, so this is the draw of the rule, not a recorded list",
+    ),
+}
+
+
+def query_docs(full_keys: list[str], full_from: str, kh: str) -> list[dict]:
+    """queries-1000, sample-512 and queries-200, the lists of experiments 14 and 15."""
+    derived = derive(full_keys)
+    out = []
+    for name, (seed, rule) in QUERY_RULES.items():
+        ids, ords = derived[name]
+        extra = {"ordinals": ords} if ords is not None else {}
+        src = "sample-512 ordinals" if name == "queries-200" else full_from
+        out.append(doc(name, seed, rule, src, ids, keys_hash=kh, **extra))
+    return out
+
+
+def problems(d: dict, full_keys: list[str], kh: str) -> list[str]:
+    """what is wrong with one list, given the card order and its keys_hash; empty when sound."""
+    name, ids = d.get("name"), d.get("ids") or []
+    out = []
+    if d.get("n") != len(ids):
+        out.append(f"n is {d.get('n')}, ids has {len(ids)}")
+    if len(set(ids)) != len(ids):
+        out.append("ids repeat")
+    if name == "reprints-2787":
+        if ids != sorted(ids):
+            out.append("ids are not sorted")
+        if not isinstance(d.get("groups"), int):
+            out.append("no groups count")
+        return out
+    if d.get("keys_hash") != kh:
+        out.append(f"keys_hash is {d.get('keys_hash')}, the card order is {kh}")
+    known = set(full_keys)
+    if any(i not in known for i in ids):
+        out.append("ids outside the card order")
+    ords = d.get("ordinals")
+    if name in ("queries-100", "queries-1000", "gate-48"):
+        if ords is None or any(not 0 <= o < len(full_keys) for o in ords) or ids != [full_keys[o] for o in ords]:
+            out.append("ordinals do not map to the ids through the card order")
+    for list_name, base_n, base in (("frames-96", 2048, "sample-2048"), ("queries-200", 512, "sample-512")):
+        if name == list_name:
+            sample = evenly_spaced(full_keys, base_n)
+            if ords is None or any(not 0 <= o < base_n for o in ords) or ids != [sample[o] for o in ords]:
+                out.append(f"ordinals do not map to the ids through {base}")
+    return out
+
+
+def write_all(docs: list[dict], out: Path) -> None:
+    """every file to a temporary beside its target first, then all renamed: all or none."""
+    out.mkdir(parents=True, exist_ok=True)
+    staged = []
+    for d in docs:
+        tmp = out / f".{d['name']}.json.tmp"
+        tmp.write_text(json.dumps(d, indent=1) + "\n")
+        staged.append((tmp, out / f"{d['name']}.json"))
+    for tmp, path in staged:
+        os.replace(tmp, path)
+        print(f"written: {env.rel(path)} (n={json.loads(path.read_text())['n']})")
+
+
+def items_path(items: Path | None) -> tuple[Path, str]:
+    """a release items.jsonl.gz: the one given, else a local release's, else the pinned hub revision's."""
+    if items is None:
+        local = sorted(env.RELEASE.glob("*/*/items.jsonl.gz")) if env.RELEASE.is_dir() else []
+        items = local[0] if local else None
+    if items is None:
+        from huggingface_hub import hf_hub_download
+
+        pin = snapshot_pin()
+        path = Path(hf_hub_download(pin["repo"], HUB_ITEMS, repo_type="dataset", revision=pin["revision"]))
+        return path, f"{pin['repo']}@{pin['revision'][:12]}:{HUB_ITEMS}"
+    return items, env.rel(items)
+
+
+def card_order_for_check(items: Path | None) -> tuple[list[str], str]:
+    path, where = items_path(items)
+    return manifest_keys(path), where
+
+
+def check(out: Path, items: Path | None) -> int:
+    full_keys, where = card_order_for_check(items)
+    kh, pin = keys_hash(full_keys), snapshot_pin()
+    print(f"card order: {where}, {len(full_keys)} keys, keys_hash {kh}")
+    failed = []
+    if len(full_keys) != N_FULL or kh != pin["keys_hash"]:
+        env.die(f"the card order is not the pinned one: {len(full_keys)} keys, keys_hash {kh}, pin {pin['keys_hash']}")
+    derived = derive(full_keys)
+    crf40 = env.CANDIDATES / "v03-retrieval" / "mtgdataset.manifest.json"
+    for path in sorted(out.glob("*.json")):
+        d = json.loads(path.read_text())
+        bad = problems(d, full_keys, kh)
+        name = d.get("name")
+        how = "structural"
+        if name in derived:
+            ids, ords = derived[name]
+            how = "re-derived"
+            if d.get("ids") != ids or (ords is not None and d.get("ordinals") != ords):
+                bad.append("differs from its re-derivation over the card order")
+        elif name == "gate-48" and crf40.is_file():
+            m = json.loads(crf40.read_text())
+            keys = {it["ordinal"]: it["key"] for it in m["items"]}
+            how = "re-derived from the crf40 candidate manifest"
+            if d.get("ids") != [keys[i] for i in m["media"]["crf_auto"]["sample_indices"]]:
+                bad.append("differs from the crf40 candidate manifest")
+        print(f"{name}: {'ok' if not bad else 'FAIL'} ({how}){''.join('; ' + b for b in bad)}")
+        if bad:
+            failed.append(name)
+    missing = sorted(set(CARD_ORDER + ("reprints-2787",)) - {json.loads(p.read_text()).get("name") for p in out.glob("*.json")})
+    if missing:
+        failed.extend(missing)
+        print(f"missing lists: {', '.join(missing)}")
+    if failed:
+        env.die(f"{len(failed)} corpus list(s) failed: {', '.join(failed)}")
+    return 0
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="report the inputs that would be used, write nothing")
     ap.add_argument("--out", type=Path, default=env.CORPORA)
+    ap.add_argument("--check", action="store_true", help="verify the tracked lists against the pinned card order, write nothing")
+    ap.add_argument("--items", type=Path, help="items.jsonl.gz of a release: the card order for --check, and for a write without MTG_DATA")
+    ap.add_argument("--only", help="comma-separated list names to write; the others on disk are left as they are")
     args = ap.parse_args()
+    if args.check:
+        return check(args.out, args.items)
     root = env.data_root()
     runs_manifest = find_runs_manifest()
     full_manifest = find_full_manifest()
@@ -135,6 +338,9 @@ def main() -> int:
     if root and (root / "mtg.sqlite").is_file():
         full_keys = sqlite_keys(root)
         full_from = "${MTG_DATA}/mtg.sqlite, cards WHERE image_uri IS NOT NULL, sorted by (img_id, oracle_id)"
+    elif args.items:
+        full_keys = manifest_keys(args.items)
+        full_from = f"release items.jsonl.gz ({args.items.name}) in ordinal order"
     elif full_manifest:
         full_keys = manifest_keys(full_manifest)
         full_from = f"{env.rel(full_manifest)} items[] in ordinal order"
@@ -147,8 +353,10 @@ def main() -> int:
         if mk != full_keys:
             env.die("sqlite order and full manifest order disagree; refusing to export")
         print(f"full manifest order matches the sqlite rule ({len(mk)} keys)")
+    kh = keys_hash(full_keys)
+    if kh != snapshot_pin()["keys_hash"]:
+        env.die(f"the card order has keys_hash {kh}, not the published snapshot's {snapshot_pin()['keys_hash']}; refusing to export")
 
-    args.out.mkdir(parents=True, exist_ok=True)
     written = []
 
     # sample-2048: from the runs manifest, verified against the rule
@@ -170,6 +378,7 @@ def main() -> int:
             "this is urna build --sample 2048 (forge corpus_sources.load_rows), evenly spaced, the --seed flag has no effect",
             from_2048,
             keys_2048,
+            keys_hash=kh,
         )
     )
 
@@ -182,6 +391,7 @@ def main() -> int:
             "this is urna build --sample 1500 (the five-model verification build of 03-image-models)",
             full_from,
             evenly_spaced(full_keys, 1500),
+            keys_hash=kh,
         )
     )
 
@@ -199,6 +409,7 @@ def main() -> int:
             "(measure_variants.py SAMPLE_N=96 SEED=7; the i-frame battery reuses the same draw)",
             "sample-2048 ordinals",
             [keys_2048[i] for i in idx96],
+            keys_hash=kh,
             ordinals=idx96,
         )
     )
@@ -211,6 +422,7 @@ def main() -> int:
             "(urna python/tools/urna_model_bench.py pick_items with --queries 100 --seed 7; items filtered to those with image_path, which is all of them)",
             full_from,
             [full_keys[i] for i in idx100],
+            keys_hash=kh,
             ordinals=idx100,
         )
     )
@@ -227,6 +439,7 @@ def main() -> int:
                 "forge quality_gate.stratified_sample: items bucketed by (resolution, entropy, has_text), per sorted bucket members[::max(1, len // 12)][:12]; deterministic, no rng",
                 "candidates/v03-retrieval/mtgdataset.manifest.json media.crf_auto.sample_indices mapped through items[].ordinal",
                 [keys[i] for i in idx],
+                keys_hash=kh,
                 ordinals=list(idx),
                 buckets=m["media"]["crf_auto"]["buckets"],
             )
@@ -252,10 +465,17 @@ def main() -> int:
     else:
         print("reprints-2787: skipped, needs MTG_DATA with images/normal/front")
 
-    for d in written:
-        path = args.out / f"{d['name']}.json"
-        path.write_text(json.dumps(d, indent=1) + "\n")
-        print(f"written: {env.rel(path)} (n={d['n']})")
+    written.extend(query_docs(full_keys, full_from, kh))
+    if args.only:
+        keep = set(args.only.split(","))
+        written = [d for d in written if d["name"] in keep]
+        if {d["name"] for d in written} != keep:
+            env.die(f"--only names lists this run cannot derive: {', '.join(sorted(keep - {d['name'] for d in written}))}")
+    bad = {d["name"]: problems(d, full_keys, kh) for d in written}
+    bad = {k: v for k, v in bad.items() if v}
+    if bad:
+        env.die("refusing to write: " + "; ".join(f"{k}: {', '.join(v)}" for k, v in bad.items()))
+    write_all(written, args.out)
     return 0
 
 

@@ -372,7 +372,8 @@
   "queries": {
    "n": 1000,
    "seed": 7,
-   "rule": "artwork of the card {label}"
+   "rule": "artwork of the card {label}",
+   "list": "benchmark/corpora/queries-1000.json"
   },
   "models": [
    {

@@ -14,14 +14,28 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: install ruff
-        run: pip install ruff
+      - uses: astral-sh/setup-uv@v6
 
-      - name: lint the bench tools
-        run: ruff check benchmark/tools
+      - name: install the locked base dependencies
+        run: uv sync --locked
+
+      - name: lint the bench tools and tests
+        run: uvx ruff check benchmark
+
+      - name: unit tests
+        # the integration and real-release cases skip here: they need a
+        # downloaded release (MTG_EVAL_RELEASE, MTG_RELEASE_DIR) and urna
+        run: uv run python -m unittest discover -s benchmark/tests -v
+
+      - name: corpus lists match the pinned card order
+        # reads release/v0.3/stills/items.jsonl.gz at the pinned hub revision
+        run: uv run python benchmark/tools/export_corpora.py --check
+
+      - name: tracked release sidecars match their SHA256SUMS
+        run: uv run python benchmark/tools/promote.py check-tracked release/v0.3/*/
 
       - name: rendered report is up to date
-        run: python benchmark/tools/render_report.py --check
+        run: uv run python benchmark/tools/render_report.py --check
 
       - name: no tracked file names a machine
         run: |

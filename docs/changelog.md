@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### fixed, 2026-10-03 (license and citation)
+
+- The license declaration said the `.urna` files on Hugging Face are CC BY 4.0 and that their media is "not a redistribution of the originals". Both were wrong: the Parquet under `data/` carries the original JPEGs, the archive release restores them bit for bit, and the card images and text are Wizards of the Coast's, which this project cannot license. The README now names the terms per material: MIT for the code and results, CC BY 4.0 only for what the project wrote on the hub, and the Fan Content Policy and Scryfall's guidelines for the card images and text, with the statement the policy asks for. `CITATION.cff` drops `license: MIT` (it described the dataset as MIT) and lists Urna and Scryfall under `references`.
+
 ### fixed, 2026-10-03
 
 - `CITATION.cff` said the citation key of a specific `.urna` file is its content_hash. The releases share one content_hash (`cb8fdf8f`), so it cannot name a file: a specific file is its file_hash, listed in `SHA256SUMS`, and the content_hash is what a `urna://` citation resolves in any of them. `CITATION_KEY` already recorded both.

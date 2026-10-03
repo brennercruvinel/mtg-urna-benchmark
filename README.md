@@ -45,7 +45,54 @@ urna build --spec profiles/stills.toml     # lands in candidates/stills/
 python3 benchmark/tools/promote.py promote candidates/stills v0.3 stills
 ```
 
-The source data is Scryfall bulk data as cached by the Spellbook app. No image bytes live here; the corpora under `benchmark/corpora/` are id lists with the rule that produced each one.
+The source data is Scryfall bulk data as cached by the Spellbook app. No image bytes live here; the corpora under `benchmark/corpora/` are id lists with the rule that produced each one. Without the Spellbook cache, `prepare_from_hub.py` rebuilds `MTG_DATA` from the Parquet snapshot pinned in `sources/sources.toml` and checks it against the releases.
+
+```sh
+uv sync                                    # pyproject.toml + uv.lock; --extra forge adds torch, open_clip, transformers
+```
+
+```sh
+uv run python benchmark/tools/prepare_from_hub.py     # MTG_DATA must be empty or absent
+```
+
+## Check a release from the hub
+
+```sh
+hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "release/v0.3/stills-5models/*" --local-dir .
+```
+
+```sh
+(cd release/v0.3/stills-5models && shasum -a 256 -c SHA256SUMS)
+```
+
+```sh
+uv run python benchmark/tools/promote.py check release/v0.3/stills-5models    # urna CLI on PATH, or URNA_BIN
+```
+
+`check` wants the `.urna` and every sidecar listed in `SHA256SUMS` with a matching digest, and a `CITATION_KEY` equal to what `urna inspect --json` reads from the file. The candidates under `candidates/` pass the same check under the forge's `mtgdataset.*` names.
+
+## Search it
+
+Two different searches. A text query against the card text runs offline on the potion space and needs only the `urna` CLI and its setup:
+
+```sh
+urna retrieve release/v0.3/stills-5models/mtgdataset.urna "a white creature that gains life when it enters" -k 3 --format jsonl
+```
+
+Finding a card's image from text goes through an image model's text tower into that model's image space. For siglip2 that is the evaluator, offline, against a model snapshot pinned to one hub revision:
+
+```sh
+hf download timm/ViT-B-16-SigLIP2 open_clip_model.safetensors open_clip_config.json tokenizer.json tokenizer_config.json special_tokens_map.json --revision eee10eff6dd8cabae2d7f379d4e8cfcd352030aa
+```
+
+```sh
+HF_HUB_OFFLINE=1 URNA_REPO=/path/to/urna uv run --extra forge python benchmark/tools/bench_full_corpus.py \
+  release/v0.3/stills-5models/mtgdataset.urna --preset siglip2 --queries 20 --seed 7 --out siglip2-q20.json
+```
+
+The Urna checkout needs the pinned-snapshot loader (hoffresearch/urna #271, with the fix in #273): it reads the weights and the tokenizer from `snapshots/<revision>` of the HF cache, never from `refs/main` or the hub name, so the run works with the network off. The evaluator refuses a model whose `model_hash` is not the one in the file. jina and wemm run their repo's code and also need `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`; clip and siglip2 do not. `docs/environment.md` has every model, its source and its hash.
+
+The queries and their single relevant card are on the hub as the `queries` and `qrels` configs, written by `export_queries.py` from the lists under `benchmark/corpora/`.
 
 <details>
 <summary>Layout</summary>
@@ -53,13 +100,15 @@ The source data is Scryfall bulk data as cached by the Spellbook app. No image b
 ```
 profiles/                the four recipes
 benchmark/experiments/   NN-slug/{README.md, results.json, table.md, specs/}; README.md explains the missing 04, 07 and 12
-benchmark/corpora/       id lists per sample
-benchmark/tools/         render_report, export_corpora, promote, measure_variants, ...
+benchmark/corpora/       id lists per sample and per query set, each with the keys_hash of the card order
+benchmark/tools/         render_report, export_corpora, export_queries, promote, candidate_sidecars, bench_full_corpus, ...
+benchmark/tests/         unit tests; the integration test runs the evaluator on a downloaded release
 release/v0.3/<profile>/  build lock, stripped manifest, SHA256SUMS, CITATION_KEY
+release/v0.3/candidates.json  the hub candidates by file_hash, content_hash and sidecar digests
 docs/                    methodology, hypotheses, references, roadmap, glossary, changelog
 ```
 
-`.urna` files, media and caches are gitignored. `render_report.py --check` is the CI gate.
+`.urna` files, media and caches are gitignored. CI runs ruff, the unit tests, `export_corpora.py --check` (the lists against the pinned card order), `promote.py check-tracked` (the tracked sidecars against their `SHA256SUMS`) and `render_report.py --check`.
 
 </details>
 

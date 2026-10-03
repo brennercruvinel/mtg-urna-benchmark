@@ -50,6 +50,8 @@ import _bench_env as env  # noqa: E402
 
 URNA_NAME = "mtgdataset.urna"
 SIDECARS = ("build.lock.json", "manifest.json", "items.jsonl.gz")
+# a published candidate keeps the names the forge wrote (public links point at them)
+CANDIDATE_SIDECARS = ("mtgdataset.build.lock.json", "mtgdataset.manifest.json", "items.jsonl.gz")
 KEY_FIELDS = ("content_hash", "file_hash", "chunker_version", "title", "n_chunks")
 
 
@@ -128,9 +130,12 @@ def citation_key(urna: Path, built_with: str) -> str:
 
 def check(release_dir: Path) -> bool:
     """A complete release: the .urna and every sidecar present and listed in SHA256SUMS, every
-    listed digest matching, and CITATION_KEY naming the file's file_hash and content_hash."""
+    listed digest matching, and CITATION_KEY naming the file's file_hash and content_hash.
+    A candidate dir (mtgdataset.manifest.json beside the file) is held to the same rule
+    under the forge's names."""
     ok = True
-    required = (URNA_NAME, *SIDECARS)
+    candidate = (release_dir / "mtgdataset.manifest.json").is_file()
+    required = (URNA_NAME, *(CANDIDATE_SIDECARS if candidate else SIDECARS))
     for name in (*required, "SHA256SUMS", "CITATION_KEY"):
         if not (release_dir / name).is_file():
             print(f"  missing {name}")
@@ -162,6 +167,29 @@ def check(release_dir: Path) -> bool:
         for field in ("file_hash", "content_hash"):
             if f"{field} = {info.get(field)}" not in key:
                 print(f"  CITATION_KEY {field} differs from the file ({info.get(field)})")
+                ok = False
+    print(f"{env.rel(release_dir)}: {'ok' if ok else 'MISMATCH'}")
+    return ok
+
+
+def check_tracked(release_dir: Path) -> bool:
+    """The tracked part of a release (the .urna and items.jsonl.gz are gitignored): SHA256SUMS
+    and CITATION_KEY present, and every listed file that is on disk matching its digest, so a
+    sidecar edited after the release no longer passes."""
+    ok = True
+    sums = release_dir / "SHA256SUMS"
+    for name in ("SHA256SUMS", "CITATION_KEY"):
+        if not (release_dir / name).is_file():
+            print(f"  missing {name}")
+            ok = False
+    if sums.is_file():
+        for line in sums.read_text().splitlines():
+            if not line.strip():
+                continue
+            digest, name = line.split(maxsplit=1)
+            p = release_dir / name.strip()
+            if p.is_file() and sha256(p) != digest:
+                print(f"  {name.strip()}: sha256 differs from SHA256SUMS")
                 ok = False
     print(f"{env.rel(release_dir)}: {'ok' if ok else 'MISMATCH'}")
     return ok
@@ -259,6 +287,8 @@ def main() -> int:
     p.add_argument("--built-with", help='the urna that built the file, e.g. "urna 0.5.1"; kept from an existing key')
     c = sub.add_parser("check", help="verify release dirs against SHA256SUMS and CITATION_KEY")
     c.add_argument("release_dirs", nargs="+")
+    t = sub.add_parser("check-tracked", help="verify the tracked sidecars of release dirs against SHA256SUMS")
+    t.add_argument("release_dirs", nargs="+")
     s = sub.add_parser("strip", help="split a manifest into manifest.json + items.jsonl.gz")
     s.add_argument("manifest")
     s.add_argument("out_dir")
@@ -277,6 +307,8 @@ def main() -> int:
         return 0
     if args.cmd == "check":
         return 0 if all([check(Path(d)) for d in args.release_dirs]) else 1
+    if args.cmd == "check-tracked":
+        return 0 if all([check_tracked(Path(d)) for d in args.release_dirs]) else 1
     if args.cmd == "key":
         key_path = Path(args.out) if args.out else Path("/nonexistent/CITATION_KEY")
         built_with = resolve_built_with(key_path, "sha256:" + sha256(Path(args.urna)), args.built_with)

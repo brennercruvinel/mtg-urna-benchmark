@@ -31,6 +31,9 @@ jobs:
         # reads release/v0.3/stills/items.jsonl.gz at the pinned hub revision
         run: uv run python benchmark/tools/export_corpora.py --check
 
+      - name: tracked release sidecars match their SHA256SUMS
+        run: uv run python benchmark/tools/promote.py check-tracked release/v0.3/*/
+
       - name: rendered report is up to date
         run: uv run python benchmark/tools/render_report.py --check
 

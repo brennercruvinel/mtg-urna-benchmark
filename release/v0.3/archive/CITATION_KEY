@@ -3,5 +3,5 @@ file_hash = sha256:882427094aa6035aa1ddf6abd26444f1598345fb9be3a66612f50b99be377
 chunker_version = mtgdataset/1
 title = MTG card dataset (lossless archive, self-contained)
 n_chunks = 38627
-built_with = urna 0.3.0
+built_with = nest 0.3.0
 read_with = urna inspect --json

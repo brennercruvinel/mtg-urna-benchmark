@@ -3,8 +3,8 @@
 #
 #   sh benchmark/tools/clean_install_proof.sh WORKDIR [MTG_REF] [URNA_REF] [HUB_REV]
 #
-# WORKDIR must be empty or absent. Defaults: the main branch of both repos and
-# the hub's current main, each resolved to a commit and recorded. Needs git, uv,
+# WORKDIR must be empty or absent. Defaults: this repo's main, Urna's v0.5.3
+# tag and the hub's current main, each resolved to a commit and recorded. Needs git, uv,
 # cargo, the hf CLI (from the locked env), ffmpeg with libsvtav1, and macOS
 # sandbox-exec for the offline step. Writes WORKDIR/record.json and
 # WORKDIR/proof.log; stops at the first failing step, which record.json names.
@@ -30,7 +30,7 @@ set -u
 
 W=${1:?usage: clean_install_proof.sh WORKDIR [MTG_REF] [URNA_REF] [HUB_REV]}
 MTG_REF=${2:-main}
-URNA_REF=${3:-main}
+URNA_REF=${3:-v0.5.3}
 HUB=brennercruvinel/mtg-urna-benchmark
 SIGLIP_REPO=timm/ViT-B-16-SigLIP2
 SIGLIP_REV=eee10eff6dd8cabae2d7f379d4e8cfcd352030aa

@@ -40,7 +40,7 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.0 or later
+export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.3 or later
 ```
 
 ```sh
@@ -96,7 +96,7 @@ HF_HUB_OFFLINE=1 URNA_REPO=/path/to/urna uv run --extra forge python benchmark/t
   release/v0.3/stills-5models/mtgdataset.urna --preset siglip2 --queries 20 --seed 7 --out siglip2-q20.json
 ```
 
-The Urna checkout needs the pinned-snapshot loader, on `main` since hoffresearch/urna #271 and #273 and not in a release yet (the latest is v0.5.1, which still resolves `refs/main` and fails offline here): it reads the weights and the tokenizer from `snapshots/<revision>` of the HF cache, never from `refs/main` or the hub name, so the run works with the network off. The evaluator refuses a model whose `model_hash` is not the one in the file. jina and wemm run their repo's code and also need `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`; clip and siglip2 do not. `docs/environment.md` has every model, its source and its hash.
+The Urna checkout needs v0.5.3 or later, the first release with the pinned-snapshot loader (hoffresearch/urna #271 and #273; v0.5.1 resolves `refs/main` and fails offline here): it reads the weights and the tokenizer from `snapshots/<revision>` of the HF cache, never from `refs/main` or the hub name, so the run works with the network off. The evaluator refuses a model whose `model_hash` is not the one in the file. jina and wemm run their repo's code and also need `URNA_ALLOW_REMOTE_CODE="jina-v5-omni-nano,wemm-2b"`; clip and siglip2 do not. `docs/environment.md` has every model, its source and its hash.
 
 The queries and their single relevant card are on the hub as the `queries` and `qrels` configs, written by `export_queries.py` from the lists under `benchmark/corpora/`.
 

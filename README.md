@@ -131,4 +131,10 @@ The `.urna` files are on Hugging Face: [brennercruvinel/mtg-urna-benchmark](http
 
 ## License
 
-Code, specs and results: MIT (`LICENSE`). The `.urna` artifacts on Hugging Face: CC BY 4.0. The card images belong to Wizards of the Coast and are served by Scryfall under their terms; this repo tracks none of them, and the compressed media inside each `.urna` is a derived encoding of that data, not a redistribution of the originals.
+The material comes from two owners, and no single license covers all of it.
+
+- Code, specs and results in this repository: MIT (`LICENSE`).
+- The card images and the card text (names, mana costs, type lines, oracle text) belong to Wizards of the Coast and were obtained through [Scryfall](https://scryfall.com/docs/api). This repository tracks none of them, but the Hugging Face dataset holds them: the original JPEGs in `data/cards-*.parquet`, the same JPEGs recoverable bit for bit from the archive release, AV1 and AVIF re-encodings in the other `.urna` files, and the text in every chunk. Neither MIT nor CC BY 4.0 applies to them. They are used under the [Wizards of the Coast Fan Content Policy](https://company.wizards.com/en/legal/fancontentpolicy) and Scryfall's guidelines for its data and images: free access, no paywall, non-commercial, no claim of endorsement.
+- What this project wrote on the hub (the sidecars, the `queries` and `qrels` tables, the dataset card): CC BY 4.0, except the card names and text they quote. A `.urna` file mixes both: the container, the vectors and the indexes are this project's work, the text and media inside are Wizards'. The files are distributed as a whole under the terms of the previous item, not under CC BY 4.0.
+
+mtg-urna-benchmark is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.

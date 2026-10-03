@@ -1,11 +1,10 @@
 cff-version: 1.2.0
-message: "If you use this benchmark or its artifacts, cite it as below. A specific .urna file is identified by its file_hash, listed in release/v0.3/<profile>/SHA256SUMS. Its content_hash identifies the content (text and vectors), which the releases share, and is what a urna:// citation resolves in any of them; both are read with urna inspect --json and recorded in CITATION_KEY."
+message: "If you use this benchmark or its artifacts, cite it as below. A specific .urna file is identified by its file_hash, listed in release/v0.3/<profile>/SHA256SUMS. Its content_hash identifies the content (text and vectors), which the releases share, and is what a urna:// citation resolves in any of them; both are read with urna inspect --json and recorded in CITATION_KEY. Cite Urna, the engine that builds and reads the files, and Scryfall, the source of the cards, as listed under references. Licenses differ per material: the code and results are MIT, the card images and text are Wizards of the Coast's (see the License section of the README)."
 type: dataset
 title: "mtg-urna-benchmark"
 version: 0.3.2
 date-released: 2026-09-12
 repository-code: "https://github.com/brennercruvinel/mtg-urna-benchmark"
-license: MIT
 authors:
   - family-names: Cruvinel
     given-names: Brenner
@@ -33,3 +32,21 @@ identifiers:
   - type: other
     value: "sha256:c993ceda5b42749487ebd20df7f9dc10e321f3f6099dc73e8008f6524b98a582"
     description: "historical: content_hash of the v0.3 neardup and archive releases as first built under the spellbook name; replaced by the 2026-09-12 rebuild"
+references:
+  - type: software
+    title: "Urna"
+    abstract: "Offline-first vector database that stores text chunks, embeddings, source spans, indices and a search contract in a single .urna file. The v0.3 files were built with its forge before the rename from nest (built_with in each CITATION_KEY)."
+    authors:
+      - family-names: Cruvinel
+        given-names: Brenner
+        orcid: "https://orcid.org/0009-0002-3079-8829"
+        affiliation: Hoff Research
+    repository-code: "https://github.com/hoffresearch/urna"
+    url: "https://urna.dev"
+    license: MIT
+  - type: database
+    title: "Scryfall bulk data"
+    authors:
+      - name: Scryfall
+    url: "https://scryfall.com/docs/api/bulk-data"
+    notes: "Card data and images. The images and card text are property of Wizards of the Coast."

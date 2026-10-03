@@ -4,9 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
-### added, 2026-10-02
+### changed, 2026-10-02
 
-- every `results.json` carries an `identity` block: the source (corpus, id list, `corpus_input_hash`), the queries, the models with their model_hash, and each measured file by file_hash and content_hash. the content_hash alone does not identify a file, because the releases share it. files that were local or are gone are not given a hash after the fact: `unrecorded` says why. `render_report.py --check` validates the block against what the repo records (release `SHA256SUMS` and `CITATION_KEY`, `release/v0.3/candidates.json` for the five hub candidates, the build locks for model_hash, the manifests for corpus_input_hash, the list paths) and refuses a broken reference; `benchmark/tests/test_identity.py` covers the refusals. every section of `RESULTS.md` ends with an identity line.
+- the profiles name the forge a checkout of hoffresearch/urna at v0.5.0 or later. the v0.4.0 tag the 2026-09-17 entry names no longer exists in the urna repository (its tags are v0.3.0, v0.5.0, v0.5.1), so v0.5.0 is the first tag that carries the spec features; the `stills-5models` header still said `nest build`, now `urna build`. the files already built keep what they record: `built_with` in each `CITATION_KEY`, the `NEST` magic, `chunker_version` and titles.
+- `MTG_DATA` is the one data-root variable; the `SPELLBOOK_DATA` alias is gone from `_bench_env.py`. `sanitize_sidecars.py` still rewrites `${SPELLBOOK_DATA}` in old sidecars; none under `release/` carries it.
 
 ### changed, 2026-09-17
 

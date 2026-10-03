@@ -1,0 +1,31 @@
+[project]
+name = "mtg-urna-benchmark"
+version = "0.3.2"
+description = "Compression and retrieval benchmark of 38,627 Magic card scans in single-file Urna containers"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+# the tools that run without a checkout of urna (docs/environment.md lists them)
+dependencies = [
+    "numpy>=2.0",
+    "pillow>=11",
+    "scipy>=1.13",
+    "pyarrow>=17",
+    "huggingface_hub>=0.30",
+    "datasets>=3.0",
+]
+
+[project.optional-dependencies]
+# the packages of the urna forge, pinned to what every release/v0.3 build.lock.json
+# records; the forge itself comes from a checkout of hoffresearch/urna (URNA_REPO)
+forge = [
+    "numpy==2.5.2",
+    "pillow==12.3.0",
+    "torch==2.13.0",
+    "open-clip-torch==3.3.0",
+    "sentence-transformers==6.0.1",
+    "transformers==5.2.0",
+    "tokenizers==0.22.2",
+]
+
+[tool.uv]
+package = false

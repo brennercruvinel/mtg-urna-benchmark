@@ -6,7 +6,8 @@
 # bad (ssim2 p10 per bucket 9 to 34). the crf-auto ladder variant that produced the
 # crf40 candidate lives in benchmark/experiments/13-retrieval-crf/specs/retrieval-crf-auto.toml.
 #
-# the forge needs nest v0.4.0 or later (hoffresearch/nest, tag v0.4.0, 2026-09-17). export MTG_DATA to the spellbook data root (mtg.sqlite
+# the forge needs a checkout of hoffresearch/urna at v0.5.0 or later: the first tagged release with the spec
+# features these recipes use (they first shipped as nest v0.4.0, a tag that no longer exists). export MTG_DATA to the spellbook data root (mtg.sqlite
 # and images/) and run the build from the repo root:
 #
 #   urna build --spec profiles/retrieval.toml

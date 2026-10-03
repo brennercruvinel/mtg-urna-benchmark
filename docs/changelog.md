@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### fixed, 2026-10-03
+
+- `CITATION.cff` said the citation key of a specific `.urna` file is its content_hash. The releases share one content_hash (`cb8fdf8f`), so it cannot name a file: a specific file is its file_hash, listed in `SHA256SUMS`, and the content_hash is what a `urna://` citation resolves in any of them. `CITATION_KEY` already recorded both.
+
 ### changed, 2026-10-02
 
 - the profiles name the forge a checkout of hoffresearch/urna at v0.5.0 or later. the v0.4.0 tag the 2026-09-17 entry names no longer exists in the urna repository (its tags are v0.3.0, v0.5.0, v0.5.1), so v0.5.0 is the first tag that carries the spec features; the `stills-5models` header still said `nest build`, now `urna build`. the files already built keep what they record: `built_with` in each `CITATION_KEY`, the `NEST` magic, `chunker_version` and titles.

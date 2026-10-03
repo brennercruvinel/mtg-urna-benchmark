@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "if you use this benchmark or its artifacts, cite it as below. the citation key of a specific .urna file is its content_hash, read with urna inspect --json."
+message: "If you use this benchmark or its artifacts, cite it as below. A specific .urna file is identified by its file_hash, listed in release/v0.3/<profile>/SHA256SUMS. Its content_hash identifies the content (text and vectors), which the releases share, and is what a urna:// citation resolves in any of them; both are read with urna inspect --json and recorded in CITATION_KEY."
 type: dataset
 title: "mtg-urna-benchmark"
 version: 0.3.2

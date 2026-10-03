@@ -4,6 +4,24 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### added, 2026-10-03 (clean install)
+
+- `benchmark/tools/clean_install_proof.sh` runs the benchmark from nothing in 24 steps, stopping at the first failure and writing `record.json`:
+  - fresh clones of this repo and Urna, with the CLI and the extension built from that Urna;
+  - the CI checks;
+  - `stills-5models` from the hub at a recorded revision, with `shasum -c` and `promote.py check`;
+  - the query tables rebuilt and compared row for row with the hub's;
+  - `prepare_from_hub.py` into a fresh `MTG_DATA`;
+  - the 512-card sample built twice with separate embed caches;
+  - siglip2 under `sandbox-exec` with the network denied.
+- The run of 2026-10-03 (this repo at `b989b3f`, urna `main` at `7ef2b725`, hub at `bee5842c`) passed every step: `benchmark/tests/data/clean-install-2026-10-03.json`. Its results:
+  - `corpus_input_hash` `5639a3b7`, the pin;
+  - both sample builds at file_hash `c6b18cd5`, keys equal to `sample-512.json`;
+  - siglip2 hit@1 0.65 with `model_hash` `a9946db1`, equal to the recorded run, and no `refs/main` in the cache.
+- The first attempt stopped at the sample: its chunk ids were not in the release. They cannot be. A chunk_id hashes the canonical text, `item://mtgdataset/<key>`, the span (ordinal, ordinal + 1) and the chunker version under a domain string. The v0.3 files used `nest:chunk_id:v1`, before the rename; Urna now uses `urna:chunk_id:v1` (urna `docs/CHANGELOG`, the rename entry).
+  - The check now recomputes each sample chunk with the release's ordinal and the old domain: 512 of 512 are release chunks.
+  - The README's Cards and chunks section says so.
+
 ### changed, 2026-10-03 (header link)
 
 - The header image of the README and of the dataset card links to the Urna documentation, https://docs.urna.dev/, as in Urna's own README and in fakenews-ptbr-urna-benchmark.

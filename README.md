@@ -100,13 +100,21 @@ The Urna checkout needs the pinned-snapshot loader, on `main` since hoffresearch
 
 The queries and their single relevant card are on the hub as the `queries` and `qrels` configs, written by `export_queries.py` from the lists under `benchmark/corpora/`.
 
+## Check everything from scratch
+
+```sh
+sh benchmark/tools/clean_install_proof.sh /path/to/empty/dir
+```
+
+The script clones this repo and Urna, builds the Urna CLI and its Python extension, and runs what CI runs. It downloads `stills-5models` from the hub at the current revision and checks its `SHA256SUMS` and `promote.py check`, rebuilds the `queries` and `qrels` tables and compares them with the published ones, and rebuilds `MTG_DATA` from the pinned snapshot. It builds the 512-card sample twice and expects the same file both times, with every chunk a chunk of the release. Last, it runs siglip2 with the network denied and expects the recorded hit@k. It stops at the first failure and writes `record.json`. The run of 2026-10-03, 24 steps in 35 minutes, is `benchmark/tests/data/clean-install-2026-10-03.json`. It needs about 15 GB of disk, and macOS for `sandbox-exec`.
+
 ## Cards and chunks
 
 One chunk per card, 38,627 in every file: the card name, the Portuguese printed name where Scryfall has one, the mana cost, the type line, rarity, set code and oracle text, rendered by the template in `profiles/*.toml`. The card's image is the chunk's media span in the same file. A card's key is `img_id|oracle_id`, and `ordinal` is its place in the card order every release shares (the `keys_hash` in `sources/sources.toml`).
 
 `file_hash` names a file: the sha256 of its bytes, listed in each release's `SHA256SUMS`. `content_hash` names the content: every full-corpus file shares `sha256:cb8fdf8f13fa50f93969de7603386f1c2b117a5e4946c60ac9894a3c5a1f062b`, because it covers the text and the default text vectors and not the media or the extra image spaces. A `urna://<content_hash>/<chunk_id>` citation therefore resolves in any of them.
 
-A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgdataset/<key>`), the span (`ordinal`, `ordinal + 1`) and the chunker version. The v0.3 files were written before the rename from nest, under the domain `nest:chunk_id:v1`. Urna now derives ids under `urna:chunk_id:v1`, so a rebuild of the same cards gets other chunk ids, and a citation from one does not resolve in the other.
+A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgdataset/<key>`), the span (`ordinal`, `ordinal + 1`) and the chunker version. The v0.3 files were written before the rename from nest, under the domain `nest:chunk_id:v1`. Urna now derives ids under `urna:chunk_id:v1`, so a rebuild of the same cards gets other chunk ids, and a citation from one does not resolve in the other. `clean_install_proof.sh` checks its rebuilt sample against the release with the old domain.
 
 <details>
 <summary>Layout</summary>
@@ -115,7 +123,7 @@ A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgda
 profiles/                the four recipes
 benchmark/experiments/   NN-slug/{README.md, results.json, table.md, specs/}; README.md explains the missing 04, 07 and 12
 benchmark/corpora/       id lists per sample and per query set, each with the keys_hash of the card order
-benchmark/tools/         render_report, export_corpora, export_queries, promote, candidate_sidecars, bench_full_corpus, ...
+benchmark/tools/         render_report, export_corpora, export_queries, promote, candidate_sidecars, bench_full_corpus, clean_install_proof.sh, ...
 benchmark/tests/         unit tests; the integration test runs the evaluator on a downloaded release
 release/v0.3/<profile>/  build lock, stripped manifest, SHA256SUMS, CITATION_KEY
 release/v0.3/candidates.json  the hub candidates by file_hash, content_hash and sidecar digests

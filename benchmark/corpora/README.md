@@ -1,6 +1,6 @@
 # corpora
 
-six id lists, no image bytes. each file is `{"name", "n", "seed", "rule", "derived_from", "keys_hash", "ids"}` and an id is the forge item key `img_id|oracle_id`, where img_id is the basename stem of the card's image_uri and oracle_id is the card. anyone with the spellbook sqlite (scryfall bulk data) can rebuild the exact sample from the rule; the `rule` field in each file is the authoritative statement, this readme only says what each list is for.
+nine id lists, no image bytes. each file is `{"name", "n", "seed", "rule", "derived_from", "keys_hash", "ids"}` and an id is the forge item key `img_id|oracle_id`, where img_id is the basename stem of the card's image_uri and oracle_id is the card. anyone with the spellbook sqlite (scryfall bulk data) can rebuild the exact sample from the rule; the `rule` field in each file is the authoritative statement, this readme only says what each list is for.
 
 | list | n | seed | what it is | used by |
 | --- | ---: | --- | --- | --- |
@@ -9,7 +9,12 @@ six id lists, no image bytes. each file is `{"name", "n", "seed", "rule", "deriv
 | frames-96 | 96 | 7 | `sorted(numpy.random.default_rng(7).choice(2048, 96, replace=False))` as ordinals of sample-2048; the quality sample of measure_variants.py and of the i-frame battery | experiments 02, 08, 11 |
 | queries-100 | 100 | 7 | `sorted(numpy.random.default_rng(7).choice(38627, 100, replace=False))` over the full corpus in manifest order; urna_model_bench.py `--queries 100 --seed 7` | experiment 13 |
 | reprints-2787 | 2787 | none | printings with a local normal/front file whose illustration_id occurs more than once among those files; 1359 groups; corpus B | experiment 09 |
+| queries-1000 | 1000 | 7 | `sorted(numpy.random.default_rng(7).choice(38627, 1000, replace=False))` over the full corpus; urna_model_bench.py `--queries 1000 --seed 7` | experiment 14 |
+| sample-512 | 512 | none | the evenly spaced rule with 512; the forge `--sample 512` | experiment 15 |
+| queries-200 | 200 | 7 | `sorted(numpy.random.default_rng(7).choice(512, 200, replace=False))` as ordinals of sample-512; urna_model_bench.py `--queries 200 --seed 7` on the 512-card builds | experiment 15 |
 | gate-48 | 48 | none | the forge's stratified_sample: items bucketed by (resolution, entropy, has_text), `members[::max(1, len // 12)][:12]` per sorted bucket, deterministic; read from the crf40 candidate manifest | experiment 13 (the crf auto ladder) |
+
+no run saved its per-query list: queries-100, queries-1000 and queries-200 are the draw of the rule `urna_model_bench.py` applies (`pick_items`), not lists read back from a run. `benchmark/tools/export_queries.py` turns them, plus every card for experiment 20, into the `queries` and `qrels` tables published on Hugging Face: one relevant row per query, the card itself.
 
 the 2048 list was cross-checked against the control run manifest, 2048 of 2048 keys equal to the rule; the earlier "seed 42" was a provenance error. frames-96 and queries-100 also carry their `ordinals`, and gate-48 its bucket labels. `keys_hash` names the card order the ids and ordinals refer to: sha256 over each key plus a newline in ordinal order, the `keys_hash` that `sources/sources.toml` pins for the published snapshot. reprints-2787 has none: it is drawn from the printings table, not from the card order (2784 of its 2787 ids are card keys).
 

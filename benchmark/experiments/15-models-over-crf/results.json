@@ -351,12 +351,14 @@
  "identity": {
   "source": {
    "corpus": "sample-512",
-   "rule": "evenly spaced --sample 512"
+   "rule": "evenly spaced --sample 512",
+   "list": "benchmark/corpora/sample-512.json"
   },
   "queries": {
    "n": 200,
    "seed": 7,
-   "rule": "artwork of the card {label}"
+   "rule": "artwork of the card {label}",
+   "list": "benchmark/corpora/queries-200.json"
   },
   "models": [
    {

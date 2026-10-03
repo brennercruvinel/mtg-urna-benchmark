@@ -4,6 +4,11 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### added, 2026-10-03 (queries)
+
+- the query lists of experiments 14 and 15 are tracked: `queries-1000` (14), `sample-512` and `queries-200` (15), derived by `export_corpora.py` with the card order's keys_hash and covered by `--check`; the identity blocks of 14 and 15 point at them. no run saved its per-query list, so these, like `queries-100`, are the draw of the rule `urna_model_bench.py` applies.
+- `benchmark/tools/export_queries.py` writes the `queries` and `qrels` tables for Hugging Face from the tracked lists plus every card (experiment 20): 39927 queries, each "artwork of the card {label}" with exactly one relevant row, the card itself, which is the benchmark's own evaluation (hit@k, no graded relevance). `gallery` says whether a query ran against the full corpus or the 512-card sample, `art_series` marks the 2246 "name // name" rows experiment 20 reports apart. `benchmark/tests/test_export_queries.py` (4 tests).
+
 ### fixed, 2026-10-03 (sidecars)
 
 - the release sidecars tracked here had drifted from the published ones: the nest to urna rename (2026-09-17) rewrote `"mtgdataset.nest"` to `"mtgdataset.urna"` in the `outputs` of each `manifest.json` and `built_with = nest 0.3.0` to `urna 0.3.0` in each `CITATION_KEY`, while `SHA256SUMS` kept the original digests, so every tracked `manifest.json` failed its own `SHA256SUMS` and the files claimed a build tool that did not build them. the ten files are restored byte for byte from the Hugging Face copies, which had stayed consistent; `promote.py check-tracked` verifies every tracked file `SHA256SUMS` lists, and CI runs it on `release/v0.3/*/`.

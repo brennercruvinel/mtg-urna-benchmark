@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### fixed, 2026-10-03
+
+- `CITATION.cff` said the citation key of a specific `.urna` file is its content_hash. The releases share one content_hash (`cb8fdf8f`), so it cannot name a file: a specific file is its file_hash, listed in `SHA256SUMS`, and the content_hash is what a `urna://` citation resolves in any of them. `CITATION_KEY` already recorded both.
+
 ### changed, 2026-10-03 (readme and card)
 
 - the README has the commands to rebuild the source data from the pinned snapshot (`uv sync`, `prepare_from_hub.py`), to check a release from the hub (`hf download --repo-type dataset`, `shasum -c SHA256SUMS`, `promote.py check`) and to search it, with the two searches kept apart: a text query on the potion space (`urna retrieve`) and text-to-image through a model's text tower (`bench_full_corpus.py --preset siglip2`, offline, from the snapshot pinned to `timm/ViT-B-16-SigLIP2@eee10eff`, with the urna loader of #271 and #273, no `refs/main`). `docs/environment.md` names that revision, the five files, the `transformers` dependency, and that clip still resolves `refs/main`. The dataset card gets the same commands (its `hf download` lacked `--repo-type dataset`), the `queries` and `qrels` configs, the candidate sidecars and the siglip2 weights' source; it said any urna after 0.4.0 reads the files, a version with no tag, now 0.5.0 and later.

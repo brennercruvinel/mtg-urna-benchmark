@@ -1,0 +1,189 @@
+{
+ "what": "clean-install proof: the benchmark from fresh clones and a fresh HF cache, every check in benchmark/tools/clean_install_proof.sh, stopped at the first failure (none)",
+ "date": "2026-10-03",
+ "command": "sh benchmark/tools/clean_install_proof.sh WORKDIR main main",
+ "ok": true,
+ "mtg_commit": "b989b3fb90d12d4f5ede880257633a13f3809d93",
+ "urna": {
+  "commit": "7ef2b7251f4ec2be3bf2b0b94178c7a00894db5d",
+  "branch": "main",
+  "cli": "urna 0.5.1, built from that commit (the workspace version on main is still 0.5.1)"
+ },
+ "hub": {
+  "repo": "brennercruvinel/mtg-urna-benchmark",
+  "revision": "bee5842cc644bf7456e57270246119aba73cbc55",
+  "release": "release/v0.3/stills-5models",
+  "file_hash": "sha256:6b2bc21a2057bccea054fa331ee91c04f2b7ee80156f01144399c3065e7d4b3f"
+ },
+ "environment": {
+  "python": "3.12.14",
+  "platform": "macOS-26.6.2-arm64-arm-64bit"
+ },
+ "results": {
+  "queries_rows": 39927,
+  "queries_and_qrels": "equal to the hub tables, row for row",
+  "corpus_input_hash": "sha256:5639a3b761d9a82388d4e2e47572ba3d25038997b3cdd4522ad82b5c01b59a74",
+  "sample_512": {
+   "file_hash": "sha256:c6b18cd53051a96bd6dbe0e99ab0c4f98831ddd921abfdf1a848a50bcbe05c77",
+   "content_hash": "sha256:99d27b62a5aa755d5c1254e859dbfac62501038ab4428fb0b755e1ae6c640184",
+   "n": 512,
+   "builds": "two, separate embed caches, same file_hash; keys equal benchmark/corpora/sample-512.json; all 512 chunks are release chunks under the pre-rename chunk_id domain nest:chunk_id:v1"
+  },
+  "siglip2_q20": {
+   "model_hash": "sha256:a9946db1d33627e773569c415ab202cd759befcdc047ac0d8768937298775f3c",
+   "hit": {
+    "@1": 0.65,
+    "@5": 0.7,
+    "@10": 0.75
+   },
+   "network": "sandbox-exec deny network*, HF_HUB_OFFLINE=1, TRANSFORMERS_OFFLINE=1",
+   "same_as": "benchmark/tests/data/eval-siglip2-stills-5models-q20.json"
+  },
+  "siglip2_cache_before": [
+   ".",
+   "./snapshots",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/open_clip_config.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/open_clip_model.safetensors",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/special_tokens_map.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/tokenizer.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/tokenizer_config.json",
+   "./trees",
+   "./trees/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa.json"
+  ],
+  "siglip2_cache_after": [
+   ".",
+   "./snapshots",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/open_clip_config.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/open_clip_model.safetensors",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/special_tokens_map.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/tokenizer.json",
+   "./snapshots/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa/tokenizer_config.json",
+   "./trees",
+   "./trees/eee10eff6dd8cabae2d7f379d4e8cfcd352030aa.json"
+  ]
+ },
+ "steps": [
+  {
+   "step": "clone-mtg",
+   "rc": 0,
+   "seconds": 1
+  },
+  {
+   "step": "clone-urna",
+   "rc": 0,
+   "seconds": 339
+  },
+  {
+   "step": "uv-sync",
+   "rc": 0,
+   "seconds": 1
+  },
+  {
+   "step": "build-urna",
+   "rc": 0,
+   "seconds": 54
+  },
+  {
+   "step": "ruff",
+   "rc": 0,
+   "seconds": 0
+  },
+  {
+   "step": "unit-tests",
+   "rc": 0,
+   "seconds": 18
+  },
+  {
+   "step": "export-check",
+   "rc": 0,
+   "seconds": 2
+  },
+  {
+   "step": "check-tracked",
+   "rc": 0,
+   "seconds": 0
+  },
+  {
+   "step": "render-check",
+   "rc": 0,
+   "seconds": 0
+  },
+  {
+   "step": "download-release",
+   "rc": 0,
+   "seconds": 339
+  },
+  {
+   "step": "sha256sums",
+   "rc": 0,
+   "seconds": 4
+  },
+  {
+   "step": "promote-check",
+   "rc": 0,
+   "seconds": 4
+  },
+  {
+   "step": "download-queries",
+   "rc": 0,
+   "seconds": 8
+  },
+  {
+   "step": "export-queries",
+   "rc": 0,
+   "seconds": 1
+  },
+  {
+   "step": "compare-queries",
+   "rc": 0,
+   "seconds": 0
+  },
+  {
+   "step": "prepare-from-hub",
+   "rc": 0,
+   "seconds": 905
+  },
+  {
+   "step": "sample-build-a",
+   "rc": 0,
+   "seconds": 30
+  },
+  {
+   "step": "sample-build-b",
+   "rc": 0,
+   "seconds": 28
+  },
+  {
+   "step": "compare-sample",
+   "rc": 0,
+   "seconds": 6
+  },
+  {
+   "step": "download-siglip2",
+   "rc": 0,
+   "seconds": 293
+  },
+  {
+   "step": "siglip2-offline-test",
+   "rc": 0,
+   "seconds": 57
+  },
+  {
+   "step": "siglip2-offline-run",
+   "rc": 0,
+   "seconds": 23
+  },
+  {
+   "step": "siglip2-same-as-recorded",
+   "rc": 0,
+   "seconds": 0
+  },
+  {
+   "step": "no-refs-main",
+   "rc": 0,
+   "seconds": 0
+  }
+ ]
+}

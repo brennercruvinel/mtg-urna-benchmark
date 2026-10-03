@@ -4,6 +4,7 @@
  "seed": null,
  "rule": "forge quality_gate.stratified_sample: items bucketed by (resolution, entropy, has_text), per sorted bucket members[::max(1, len // 12)][:12]; deterministic, no rng",
  "derived_from": "candidates/v03-retrieval/mtgdataset.manifest.json media.crf_auto.sample_indices mapped through items[].ordinal",
+ "keys_hash": "sha256:9f40cd1eb2ace6bc0c5d6790649ff525b3f0d6163f8313fcb53080bdd76e9984",
  "ordinals": [
   0,
   9,

@@ -4,6 +4,7 @@
  "seed": 7,
  "rule": "sorted(numpy.random.default_rng(7).choice(2048, size=96, replace=False)) as ordinals of sample-2048, mapped to keys (measure_variants.py SAMPLE_N=96 SEED=7; the i-frame battery reuses the same draw)",
  "derived_from": "sample-2048 ordinals",
+ "keys_hash": "sha256:9f40cd1eb2ace6bc0c5d6790649ff525b3f0d6163f8313fcb53080bdd76e9984",
  "ordinals": [
   7,
   10,

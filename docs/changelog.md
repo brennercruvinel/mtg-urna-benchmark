@@ -4,9 +4,13 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-03 (export)
+
+- `export_corpora.py` records in every list that indexes the card order (all but reprints-2787) the `keys_hash` of that order, the one `sources/sources.toml` pins; the five tracked lists carry it now, their ids unchanged. it validates every list before writing (n, unique ids, ids in the card order, ordinals mapping to ids), refuses a card order that is not the pinned one, and replaces the files all or none. `--check` verifies the tracked lists without `MTG_DATA`: the card order from a release `items.jsonl.gz` (local, or the pinned hub revision), the four rule-derived lists re-derived and compared, gate-48 and reprints-2787 checked structurally. it passes on the tracked lists with the order of both the hub `stills` release and the local `stills-5models` one; CI runs it. `benchmark/tests/test_export_corpora.py` (10 tests) covers the refusals on a synthetic order.
+
 ### changed, 2026-10-03
 
-- CI runs the unit tests: `uv sync --locked` installs the base dependencies from `uv.lock`, then `python -m unittest discover -s benchmark/tests` (39 tests; the integration and real-release cases skip without a downloaded release and urna). ruff now checks `benchmark/` (tools and tests) instead of `benchmark/tools` alone. `export --check` joins once the export has one.
+- CI runs the unit tests: `uv sync --locked` installs the base dependencies from `uv.lock`, then `python -m unittest discover -s benchmark/tests` (39 tests; the integration and real-release cases skip without a downloaded release and urna). ruff now checks `benchmark/` (tools and tests) instead of `benchmark/tools` alone. `export_corpora.py --check` runs after the tests.
 
 ### changed, 2026-10-02
 

@@ -6,4 +6,4 @@ line-length = 120
 select = ["E4", "E7", "E9", "F", "I"]
 
 [lint.isort]
-known-first-party = ["forge", "_bench_env", "_release", "prepare_from_hub", "promote", "render_report"]
+known-first-party = ["forge", "_bench_env", "_release", "prepare_from_hub", "promote", "render_report", "export_corpora"]

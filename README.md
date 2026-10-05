@@ -1,4 +1,4 @@
-[![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/main/assets/images/urna-hoff-research-db-thumb.png)](https://docs.urna.dev/)
+[![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/v0.5.4/assets/image/urna-hoff-research-db-iage-thumb-git.png)](https://docs.urna.dev/)
 
 38,627 Magic card scans and their text in one searchable `.urna` file, and what it cost to get there.
 
@@ -40,7 +40,7 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.3 or later
+export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.4 or later
 ```
 
 ```sh
@@ -106,7 +106,7 @@ The queries and their single relevant card are on the hub as the `queries` and `
 sh benchmark/tools/clean_install_proof.sh /path/to/empty/dir
 ```
 
-The script clones this repo and Urna, builds the Urna CLI and its Python extension, and runs what CI runs. It downloads `stills-5models` from the hub at the current revision and checks its `SHA256SUMS` and `promote.py check`, rebuilds the `queries` and `qrels` tables and compares them with the published ones, and rebuilds `MTG_DATA` from the pinned snapshot. It builds the 512-card sample twice and expects the same file both times, with every chunk a chunk of the release. Last, it runs siglip2 with the network denied and expects the recorded hit@k. It stops at the first failure and writes `record.json`. The run of 2026-10-03, 24 steps in 35 minutes, is `benchmark/tests/data/clean-install-2026-10-03.json`. It needs about 15 GB of disk, and macOS for `sandbox-exec`.
+The script clones this repo and Urna, builds the Urna CLI and its Python extension, and runs what CI runs. It downloads `stills-5models` from the hub at the current revision and checks its `SHA256SUMS` and `promote.py check`, rebuilds the `queries` and `qrels` tables and compares them with the published ones, and rebuilds `MTG_DATA` from the pinned snapshot. It builds the 512-card sample twice and expects the same file both times, with every chunk a chunk of the release. Last, it runs siglip2 with the network denied and expects the recorded hit@k. It stops at the first failure and writes `record.json`. The run of 2026-10-05 against Urna v0.5.4, 24 steps in 29 minutes, is `benchmark/tests/data/clean-install-2026-10-05.json`; the first run, of 2026-10-03 at urna `main` `7ef2b725`, is `clean-install-2026-10-03.json`. It needs about 15 GB of disk, and macOS for `sandbox-exec`.
 
 ## Cards and chunks
 
@@ -120,7 +120,7 @@ A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgda
 <summary>Layout</summary>
 
 ```
-profiles/                the four recipes
+profiles/                the five recipes
 benchmark/experiments/   NN-slug/{README.md, results.json, table.md, specs/}; README.md explains the missing 04, 07 and 12
 benchmark/corpora/       id lists per sample and per query set, each with the keys_hash of the card order
 benchmark/tools/         render_report, export_corpora, export_queries, promote, candidate_sidecars, bench_full_corpus, clean_install_proof.sh, ...

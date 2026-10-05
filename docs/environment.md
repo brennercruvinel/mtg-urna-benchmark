@@ -20,14 +20,14 @@ uv sync --extra forge         # plus the forge's packages, pinned to the v0.3 bu
 `bench_full_corpus`, `candidate_sidecars`, `crf_for_target`, `encoder_determinism`, `golden_frame`, `measure_latency`, `measure_variants`, and `urna build --spec profiles/*.toml` import the forge from a checkout. The forge is not in the installed payload.
 
 ```sh
-git clone https://github.com/hoffresearch/urna && git -C urna checkout v0.5.3
+git clone https://github.com/hoffresearch/urna && git -C urna checkout v0.5.4
 export URNA_REPO=$PWD/urna
-cd urna && cargo build --release -p urna-python --features pyo3/extension-module \
+cd urna && cargo build --release -p urna-bridge --features pyo3/extension-module \
   && cp target/release/lib_urna.dylib python/_urna.so && cd -      # lib_urna.so on linux
 uv sync --extra forge
 ```
 
-v0.5.0 is the first tag with the spec features the profiles use; v0.5.3 is the one these instructions name, and the first with the pinned-snapshot loader a siglip2 query needs offline (hoffresearch/urna #271 and #273). The recorded siglip2 run was made at urna `main` `7ef2b725`, whose forge, query embedders, runtime and format code are identical to v0.5.3's. The v0.3 files were built with the forge of that period, before the rename (`built_with` in each `CITATION_KEY`).
+v0.5.0 is the first tag with the spec features the profiles use; v0.5.3 is the first with the pinned-snapshot loader a siglip2 query needs offline (hoffresearch/urna #271 and #273); v0.5.4 is the one these instructions name. It renames the crates (the extension is built as `urna-bridge`, `urna-python` before) and changes no format, runtime or API. The recorded siglip2 run was made at urna `main` `7ef2b725`, whose forge, query embedders, runtime and format code are identical to v0.5.3's and v0.5.4's. The v0.3 files were built with the forge of that period, before the rename (`built_with` in each `CITATION_KEY`).
 
 ## Models
 

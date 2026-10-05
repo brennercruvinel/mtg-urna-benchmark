@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-05 (ci)
+
+- CI pins `astral-sh/setup-uv` to a commit SHA with its version in a comment (`d0cc045d`, v6.8.0), as Urna pins third-party actions, so a moved tag upstream cannot change what runs; `actions/*` stay on tags, as in Urna (#46). It runs on pull requests and on pushes to main, once per pull request instead of twice. fakenews-ptbr-urna-benchmark has the same checks (its #9).
+
 ### changed, 2026-10-05 (hub revision)
 
 - The download commands name a hub revision (#45): `hf download` in the README and the card, and the card's three `load_dataset` calls, take `125b3f25`, the hub commit that added the `queries` and `qrels` configs. From there to today's main, `release/v0.3/stills-5models`, `data/` and `queries/` are byte for byte the same (blob and LFS sha256 compared at every hub commit), so the pin changes nothing a reader gets now and a later hub change cannot change it. One revision serves every command: `998d3602`, the pin of `sources/sources.toml`, holds the same release files but not the query configs. Checked: the pinned `hf download` gives `stills-5models/SHA256SUMS` byte-identical to this repo's, and `load_dataset` at that revision gives 39,927 queries and 39,927 qrels. The card follows in hub pull request #12.

@@ -64,7 +64,8 @@ uv run python benchmark/tools/prepare_from_hub.py     # MTG_DATA must be empty o
 ## Check a release from the hub
 
 ```sh
-hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "release/v0.3/stills-5models/*" --local-dir .
+hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "release/v0.3/stills-5models/*" \
+  --revision 125b3f25b731d0b9a7133c53e5987f0dcc5b707e --local-dir .
 ```
 
 ```sh

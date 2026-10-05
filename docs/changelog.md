@@ -4,6 +4,10 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-05 (hub revision)
+
+- The download commands name a hub revision (#45): `hf download` in the README and the card, and the card's three `load_dataset` calls, take `125b3f25`, the hub commit that added the `queries` and `qrels` configs. From there to today's main, `release/v0.3/stills-5models`, `data/` and `queries/` are byte for byte the same (blob and LFS sha256 compared at every hub commit), so the pin changes nothing a reader gets now and a later hub change cannot change it. One revision serves every command: `998d3602`, the pin of `sources/sources.toml`, holds the same release files but not the query configs. Checked: the pinned `hf download` gives `stills-5models/SHA256SUMS` byte-identical to this repo's, and `load_dataset` at that revision gives 39,927 queries and 39,927 qrels. The card follows in hub pull request #12.
+
 ### changed, 2026-10-05 (urna 0.5.4)
 
 - The instructions name Urna v0.5.4, the published release, instead of v0.5.3: the README's build section, `docs/environment.md` and the default `URNA_REF` of `clean_install_proof.sh` (#44). v0.5.4 renames Urna's folders and crates and changes no format, runtime or API; the forge, query embedders, runtime and format code this benchmark uses is identical to v0.5.3's apart from names, so no number is measured again and the recorded runs keep the commit they ran at.

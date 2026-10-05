@@ -4,11 +4,20 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-05 (ci)
+
+- CI pins `astral-sh/setup-uv` to a commit SHA with its version in a comment (`d0cc045d`, v6.8.0), as Urna pins third-party actions, so a moved tag upstream cannot change what runs; `actions/*` stay on tags, as in Urna (#46). It runs on pull requests and on pushes to main, once per pull request instead of twice. fakenews-ptbr-urna-benchmark has the same checks (its #9).
+
+### changed, 2026-10-05 (hub revision)
+
+- The download commands name a hub revision (#45): `hf download` in the README and the card, and the card's three `load_dataset` calls, take `125b3f25`, the hub commit that added the `queries` and `qrels` configs. From there to today's main, `release/v0.3/stills-5models`, `data/` and `queries/` are byte for byte the same (blob and LFS sha256 compared at every hub commit), so the pin changes nothing a reader gets now and a later hub change cannot change it. One revision serves every command: `998d3602`, the pin of `sources/sources.toml`, holds the same release files but not the query configs. Checked: the pinned `hf download` gives `stills-5models/SHA256SUMS` byte-identical to this repo's, and `load_dataset` at that revision gives 39,927 queries and 39,927 qrels. The card follows in hub pull request #12.
+
 ### changed, 2026-10-05 (urna 0.5.4)
 
 - The instructions name Urna v0.5.4, the published release, instead of v0.5.3: the README's build section, `docs/environment.md` and the default `URNA_REF` of `clean_install_proof.sh` (#44). v0.5.4 renames Urna's folders and crates and changes no format, runtime or API; the forge, query embedders, runtime and format code this benchmark uses is identical to v0.5.3's apart from names, so no number is measured again and the recorded runs keep the commit they ran at.
 - What the renames broke here: the extension crate is `urna-bridge` (was `urna-python`), so the proof's build-urna step and the build line of `docs/environment.md` failed against v0.5.4; the proof now builds whichever of the two the checked-out ref has, so older refs still work. The header image of the README and the card pointed at `main/assets/images/`, which answers 404 since Urna moved it to `assets/image/`; it now points at the same image under the v0.5.4 tag, which the next rename cannot move.
 - The README's layout counts five recipes in `profiles/`, `stills-5models` included.
+- `clean_install_proof.sh` ran against Urna v0.5.4 from fresh clones (this repo at `58dc908`, the first signature of this change, same tree; urna `v0.5.4` at `12498808`; hub at `5e19621c`) and passed all 24 steps in 29 minutes: `benchmark/tests/data/clean-install-2026-10-05.json`. Every result equals the 2026-10-03 run: the release `file_hash` `6b2bc21a`, the 39,927 query rows, `corpus_input_hash` `5639a3b7`, both sample builds at `c6b18cd5`, siglip2 hit@1 0.65 with `model_hash` `a9946db1` under `sandbox-exec` with no `refs/main`. The card's header image follows in hub pull request #11.
 - Hub pull requests this changelog had not listed: #2 (the card's image header and sentence-case headings), #8 (the card's Build section points at the clean-install proof) and #9 (the card drops its Citation section; `CITATION.cff` is the citation).
 
 ### changed, 2026-10-03 (urna 0.5.3)

@@ -64,7 +64,8 @@ uv run python benchmark/tools/prepare_from_hub.py     # MTG_DATA must be empty o
 ## Check a release from the hub
 
 ```sh
-hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "release/v0.3/stills-5models/*" --local-dir .
+hf download brennercruvinel/mtg-urna-benchmark --repo-type dataset --include "release/v0.3/stills-5models/*" \
+  --revision 125b3f25b731d0b9a7133c53e5987f0dcc5b707e --local-dir .
 ```
 
 ```sh
@@ -106,7 +107,7 @@ The queries and their single relevant card are on the hub as the `queries` and `
 sh benchmark/tools/clean_install_proof.sh /path/to/empty/dir
 ```
 
-The script clones this repo and Urna, builds the Urna CLI and its Python extension, and runs what CI runs. It downloads `stills-5models` from the hub at the current revision and checks its `SHA256SUMS` and `promote.py check`, rebuilds the `queries` and `qrels` tables and compares them with the published ones, and rebuilds `MTG_DATA` from the pinned snapshot. It builds the 512-card sample twice and expects the same file both times, with every chunk a chunk of the release. Last, it runs siglip2 with the network denied and expects the recorded hit@k. It stops at the first failure and writes `record.json`. The run of 2026-10-03, 24 steps in 35 minutes, is `benchmark/tests/data/clean-install-2026-10-03.json`. It needs about 15 GB of disk, and macOS for `sandbox-exec`.
+The script clones this repo and Urna, builds the Urna CLI and its Python extension, and runs what CI runs. It downloads `stills-5models` from the hub at the current revision and checks its `SHA256SUMS` and `promote.py check`, rebuilds the `queries` and `qrels` tables and compares them with the published ones, and rebuilds `MTG_DATA` from the pinned snapshot. It builds the 512-card sample twice and expects the same file both times, with every chunk a chunk of the release. Last, it runs siglip2 with the network denied and expects the recorded hit@k. It stops at the first failure and writes `record.json`. The run of 2026-10-05 against Urna v0.5.4, 24 steps in 29 minutes, is `benchmark/tests/data/clean-install-2026-10-05.json`; the first run, of 2026-10-03 at urna `main` `7ef2b725`, is `clean-install-2026-10-03.json`. It needs about 15 GB of disk, and macOS for `sandbox-exec`.
 
 ## Cards and chunks
 

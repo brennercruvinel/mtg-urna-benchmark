@@ -1,4 +1,4 @@
-[![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/main/assets/images/urna-hoff-research-db-thumb.png)](https://docs.urna.dev/)
+[![urna: offline-first vector database, rust and python](https://raw.githubusercontent.com/hoffresearch/urna/v0.5.4/assets/image/urna-hoff-research-db-iage-thumb-git.png)](https://docs.urna.dev/)
 
 38,627 Magic card scans and their text in one searchable `.urna` file, and what it cost to get there.
 
@@ -40,7 +40,7 @@ export MTG_DATA=/path/to/Spellbook/data    # mtg.sqlite plus images/normal/front
 ```
 
 ```sh
-export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.3 or later
+export URNA_REPO=/path/to/urna             # a checkout of hoffresearch/urna at v0.5.4 or later
 ```
 
 ```sh
@@ -120,7 +120,7 @@ A `chunk_id` is derived from the canonical text, the `source_uri` (`item://mtgda
 <summary>Layout</summary>
 
 ```
-profiles/                the four recipes
+profiles/                the five recipes
 benchmark/experiments/   NN-slug/{README.md, results.json, table.md, specs/}; README.md explains the missing 04, 07 and 12
 benchmark/corpora/       id lists per sample and per query set, each with the keys_hash of the card order
 benchmark/tools/         render_report, export_corpora, export_queries, promote, candidate_sidecars, bench_full_corpus, clean_install_proof.sh, ...

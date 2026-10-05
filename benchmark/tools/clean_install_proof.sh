@@ -3,7 +3,7 @@
 #
 #   sh benchmark/tools/clean_install_proof.sh WORKDIR [MTG_REF] [URNA_REF] [HUB_REV]
 #
-# WORKDIR must be empty or absent. Defaults: this repo's main, Urna's v0.5.3
+# WORKDIR must be empty or absent. Defaults: this repo's main, Urna's v0.5.4
 # tag and the hub's current main, each resolved to a commit and recorded. Needs git, uv,
 # cargo, the hf CLI (from the locked env), ffmpeg with libsvtav1, and macOS
 # sandbox-exec for the offline step. Writes WORKDIR/record.json and
@@ -30,7 +30,7 @@ set -u
 
 W=${1:?usage: clean_install_proof.sh WORKDIR [MTG_REF] [URNA_REF] [HUB_REV]}
 MTG_REF=${2:-main}
-URNA_REF=${3:-v0.5.3}
+URNA_REF=${3:-v0.5.4}
 HUB=brennercruvinel/mtg-urna-benchmark
 SIGLIP_REPO=timm/ViT-B-16-SigLIP2
 SIGLIP_REV=eee10eff6dd8cabae2d7f379d4e8cfcd352030aa
@@ -102,7 +102,8 @@ fact platform "$($PY -c 'import platform; print(platform.platform())')"
 build_urna() {
     cd "$W/urna" &&
         cargo build -q --release -p urna &&
-        PYO3_PYTHON=$PY cargo build -q --release -p urna-python --features pyo3/extension-module &&
+        pkg=urna-bridge && { [ -d crates/bridge ] || pkg=urna-python; } &&
+        PYO3_PYTHON=$PY cargo build -q --release -p "$pkg" --features pyo3/extension-module &&
         if [ -f target/release/lib_urna.dylib ]; then cp target/release/lib_urna.dylib python/_urna.so; else cp target/release/lib_urna.so python/_urna.so; fi
 }
 step build-urna build_urna

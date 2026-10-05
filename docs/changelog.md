@@ -4,6 +4,13 @@ the format follows keep a changelog. versions are those of the `.urna` releases 
 
 ## [unreleased]
 
+### changed, 2026-10-05 (urna 0.5.4)
+
+- The instructions name Urna v0.5.4, the published release, instead of v0.5.3: the README's build section, `docs/environment.md` and the default `URNA_REF` of `clean_install_proof.sh` (#44). v0.5.4 renames Urna's folders and crates and changes no format, runtime or API; the forge, query embedders, runtime and format code this benchmark uses is identical to v0.5.3's apart from names, so no number is measured again and the recorded runs keep the commit they ran at.
+- What the renames broke here: the extension crate is `urna-bridge` (was `urna-python`), so the proof's build-urna step and the build line of `docs/environment.md` failed against v0.5.4; the proof now builds whichever of the two the checked-out ref has, so older refs still work. The header image of the README and the card pointed at `main/assets/images/`, which answers 404 since Urna moved it to `assets/image/`; it now points at the same image under the v0.5.4 tag, which the next rename cannot move.
+- The README's layout counts five recipes in `profiles/`, `stills-5models` included.
+- Hub pull requests this changelog had not listed: #2 (the card's image header and sentence-case headings), #8 (the card's Build section points at the clean-install proof) and #9 (the card drops its Citation section; `CITATION.cff` is the citation).
+
 ### changed, 2026-10-03 (urna 0.5.3)
 
 - The instructions name Urna v0.5.3, the first release with the pinned-snapshot loader a siglip2 query needs offline (hoffresearch/urna #271 and #273), instead of urna `main`: the README's search section, `docs/environment.md` (the checkout to build and evaluate with) and the default `URNA_REF` of `clean_install_proof.sh`. The recorded runs keep the commit they ran at (`7ef2b725`); its forge, query embedders, runtime and format code are identical to v0.5.3's. 0.5.2 reached PyPI only.

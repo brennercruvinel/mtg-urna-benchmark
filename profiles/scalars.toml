@@ -1,0 +1,99 @@
+# scalars profile: the avif q48 self-contained build with the card columns
+# inside the file (chunk_scalars, 0x0D) and the schema that names them.
+#
+# avif q48 speed 8, one blob per card, embedded via the 0x17 blob section: the
+# recipe of the v03-avif-q48 candidate (benchmark/experiments/11-intra-codecs).
+# [scalars] writes the columns the source rows carry straight from the build,
+# with the manifest schema an app reads to draw and filter them; [dataset]
+# declares where the rows came from. the columns that come from scryfall's
+# bulks (colors, legality, rulings, tags, printings, portuguese text) are
+# added after the build by benchmark/tools/enrich.py and `urna scalars`, with
+# scalars/schema.json, so the build never reads the network.
+#
+# the forge needs a checkout of hoffresearch/urna with chunk_scalars (urna
+# issue #208). export MTG_DATA to the spellbook data root and run from the
+# repo root:
+#
+#   urna build --spec profiles/scalars.toml
+#
+# output lands in candidates/scalars/ (gitignored).
+
+[corpus]
+name = "mtgdataset"
+title = "MTG card dataset (avif q48, self-contained, with columns)"
+chunker_version = "mtgdataset/1"
+reproducible = true
+
+[source]
+kind = "sqlite"
+db = "${MTG_DATA}/mtg.sqlite"
+query = """
+SELECT oracle_id, name, mana_cost, type_line, oracle_text, rarity, set_code, image_uri
+FROM cards WHERE image_uri IS NOT NULL
+"""
+order_by = ["img_id", "oracle_id"]
+
+[source.derive]
+img_id = "basename_stem(image_uri)"
+
+[[source.joins]]
+query = "SELECT oracle_id, printed_name AS pt_name FROM names_localized WHERE lang='pt' AND lang_rank=1"
+on = "oracle_id"
+
+[source.text]
+template = """
+{name} ({pt_name})
+{mana_cost}; {type_line}
+[{rarity}, {set_code}]
+{oracle_text}
+"""
+
+[source.image]
+path_template = "${MTG_DATA}/images/normal/front/{img_id[0]}/{img_id[1]}/{img_id}.jpg"
+label_template = "{name}"
+
+[media]
+backend = "avif"
+crf = 48
+speed = 8
+width = 1024
+dedup = true
+
+[[models]]
+preset = "potion"
+text = "default"
+
+[[models]]
+preset = "clip-vit-b32"
+image = "space"
+
+[build]
+preset = "hybrid"
+dtype = "int8"
+with_graph = true
+
+[output]
+mode = "single"
+dir = "candidates/scalars"
+provenance = "standard"
+embed_media = true
+
+# the columns the source rows carry; scalars/schema.json lists the rest.
+[scalars]
+fields = [
+  { name = "oracle_id", kind = "uuid", label = "Oracle id" },
+  { name = "name", kind = "text", label = "Name", roles = ["label", "display"], prefix = "n", display = "text" },
+  { name = "pt_name", kind = "text", label = "Nome", roles = ["label", "display"], display = "text" },
+  { name = "mana_cost", kind = "text", label = "Mana cost", roles = ["display"], prefix = "m", display = "symbols" },
+  { name = "type_line", kind = "text", label = "Type", roles = ["filter", "display"], prefix = "t", display = "text" },
+  { name = "rarity", kind = "enum", label = "Rarity", roles = ["filter", "facet", "display"], prefix = "r", display = "chip" },
+  { name = "set_code", kind = "enum", label = "Set", roles = ["filter", "facet", "display"], prefix = "s", display = "chip" },
+  { name = "rules", kind = "chunk", label = "Rules", unit = "3", roles = ["display"], display = "text" },
+]
+
+[dataset]
+name = "Scryfall bulk data as cached by the Spellbook app, the parquet snapshot pinned in sources/sources.toml"
+version = "v0.3"
+url = "https://huggingface.co/datasets/brennercruvinel/mtg-urna-benchmark"
+license = "card data under the Wizards of the Coast Fan Content Policy; see LICENSE"
+sha256 = "auto"

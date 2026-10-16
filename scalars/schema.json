@@ -1,0 +1,375 @@
+[
+  {
+    "name": "oracle_id",
+    "kind": "uuid",
+    "label": "Oracle id",
+    "roles": []
+  },
+  {
+    "name": "name",
+    "kind": "text",
+    "label": "Name",
+    "roles": [
+      "label",
+      "display"
+    ],
+    "prefix": "n",
+    "display": "text"
+  },
+  {
+    "name": "pt_name",
+    "kind": "text",
+    "label": "Nome",
+    "roles": [
+      "label",
+      "display"
+    ],
+    "display": "text"
+  },
+  {
+    "name": "mana_cost",
+    "kind": "text",
+    "label": "Mana cost",
+    "roles": [
+      "display"
+    ],
+    "prefix": "m",
+    "display": "symbols"
+  },
+  {
+    "name": "cmc",
+    "kind": "real",
+    "label": "Mana value",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "cmc",
+    "display": "number"
+  },
+  {
+    "name": "type_line",
+    "kind": "text",
+    "label": "Type",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "t",
+    "display": "text"
+  },
+  {
+    "name": "colors",
+    "kind": "enum_list",
+    "label": "Colors",
+    "roles": [
+      "filter",
+      "facet"
+    ],
+    "prefix": "c",
+    "display": "symbols"
+  },
+  {
+    "name": "color_identity",
+    "kind": "enum_list",
+    "label": "Color identity",
+    "roles": [
+      "filter"
+    ],
+    "prefix": "id",
+    "display": "symbols"
+  },
+  {
+    "name": "rarity",
+    "kind": "enum",
+    "label": "Rarity",
+    "roles": [
+      "filter",
+      "facet",
+      "display"
+    ],
+    "prefix": "r",
+    "display": "chip"
+  },
+  {
+    "name": "set_code",
+    "kind": "enum",
+    "label": "Set",
+    "roles": [
+      "filter",
+      "facet",
+      "display"
+    ],
+    "prefix": "s",
+    "display": "chip"
+  },
+  {
+    "name": "kind",
+    "kind": "enum",
+    "label": "Kind",
+    "roles": [
+      "filter",
+      "facet",
+      "tag"
+    ],
+    "prefix": "is",
+    "display": "chip"
+  },
+  {
+    "name": "power",
+    "kind": "enum",
+    "numeric": true,
+    "label": "Power",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "pow",
+    "display": "number"
+  },
+  {
+    "name": "toughness",
+    "kind": "enum",
+    "numeric": true,
+    "label": "Toughness",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "tou",
+    "display": "number"
+  },
+  {
+    "name": "loyalty",
+    "kind": "enum",
+    "numeric": true,
+    "label": "Loyalty",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "loy",
+    "display": "number"
+  },
+  {
+    "name": "keywords",
+    "kind": "enum_list",
+    "label": "Keywords",
+    "roles": [
+      "filter",
+      "facet",
+      "display"
+    ],
+    "prefix": "kw",
+    "display": "chip"
+  },
+  {
+    "name": "layout",
+    "kind": "enum",
+    "label": "Layout",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "layout",
+    "display": "chip"
+  },
+  {
+    "name": "legal",
+    "kind": "enum_map",
+    "label": "Legal in",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "f",
+    "display": "chip"
+  },
+  {
+    "name": "edhrec_rank",
+    "kind": "int",
+    "label": "EDHREC rank",
+    "roles": [
+      "filter",
+      "display",
+      "rank"
+    ],
+    "prefix": "edhrec",
+    "display": "number"
+  },
+  {
+    "name": "games",
+    "kind": "enum_list",
+    "label": "Games",
+    "roles": [
+      "filter"
+    ],
+    "prefix": "game",
+    "display": "chip"
+  },
+  {
+    "name": "flavor_text",
+    "kind": "text",
+    "label": "Flavor",
+    "roles": [
+      "display"
+    ],
+    "display": "text"
+  },
+  {
+    "name": "artist",
+    "kind": "text",
+    "label": "Artist",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "a",
+    "display": "text"
+  },
+  {
+    "name": "artists",
+    "kind": "enum_list",
+    "label": "Artists",
+    "roles": [
+      "filter",
+      "facet"
+    ],
+    "prefix": "artist",
+    "display": "chip"
+  },
+  {
+    "name": "released_at",
+    "kind": "text",
+    "label": "Released",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "date",
+    "display": "text"
+  },
+  {
+    "name": "set_name",
+    "kind": "text",
+    "label": "Set name",
+    "roles": [
+      "display"
+    ],
+    "display": "text"
+  },
+  {
+    "name": "tags",
+    "kind": "enum_list",
+    "label": "Tags",
+    "roles": [
+      "filter",
+      "facet",
+      "display"
+    ],
+    "prefix": "otag",
+    "display": "chip"
+  },
+  {
+    "name": "art_tags",
+    "kind": "enum_list",
+    "label": "Art",
+    "roles": [
+      "filter",
+      "facet",
+      "display"
+    ],
+    "prefix": "atag",
+    "display": "chip"
+  },
+  {
+    "name": "reserved",
+    "kind": "bool",
+    "label": "Reserved list",
+    "roles": [
+      "filter"
+    ],
+    "prefix": "reserved"
+  },
+  {
+    "name": "printings",
+    "kind": "int",
+    "label": "Printings",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "prints",
+    "display": "number"
+  },
+  {
+    "name": "first_printed",
+    "kind": "text",
+    "label": "First printed",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "first",
+    "display": "text"
+  },
+  {
+    "name": "last_printed",
+    "kind": "text",
+    "label": "Last printed",
+    "roles": [
+      "filter"
+    ],
+    "prefix": "last"
+  },
+  {
+    "name": "price_usd",
+    "kind": "real",
+    "label": "USD",
+    "roles": [
+      "filter",
+      "display"
+    ],
+    "prefix": "usd",
+    "display": "number"
+  },
+  {
+    "name": "languages",
+    "kind": "enum_list",
+    "label": "Languages",
+    "roles": [
+      "filter",
+      "facet"
+    ],
+    "prefix": "lang",
+    "display": "chip"
+  },
+  {
+    "name": "pt_text",
+    "kind": "text",
+    "label": "Texto em português",
+    "roles": [
+      "display"
+    ],
+    "display": "text"
+  },
+  {
+    "name": "rulings",
+    "kind": "text",
+    "label": "Rulings",
+    "roles": [
+      "display"
+    ],
+    "display": "text"
+  },
+  {
+    "name": "rules",
+    "kind": "chunk",
+    "label": "Rules",
+    "unit": "3",
+    "roles": [
+      "display"
+    ],
+    "display": "text"
+  }
+]

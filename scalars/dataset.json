@@ -1,0 +1,8 @@
+{
+  "name": "Scryfall bulk data: oracle-cards, rulings, oracle-tags, art-tags, all-cards, joined to the mtg-urna-benchmark dataset by oracle_id",
+  "version": "2026-10-16",
+  "url": "https://api.scryfall.com/bulk-data",
+  "fetched": "2026-10-16",
+  "license": "Scryfall bulk data under the Wizards of the Coast Fan Content Policy; Tagger tags are community data from tagger.scryfall.com",
+  "sha256": "c6466bd64583747bc44305cc62c62639c4d691cccf2a36864b2d710a82312f91"
+}
